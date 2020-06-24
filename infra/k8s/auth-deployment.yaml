@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: auth-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: auth
+    template:
+        metadata:
+            labels:
+                app: auth
+        spec:
+            containers:
+                - name: auth
+                  image: parthikrb/auth
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: auth-service
+spec:
+    selector:
+        app: auth
+    ports:
+        - name: auth
+          protocol: TCP
+          port: 3000
+          targetPort: 3000
