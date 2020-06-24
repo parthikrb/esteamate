@@ -37,5 +37,6 @@ jobs:
         # Username used to log in to a Docker registry. If not set then no login will occur
         username: parthikrb
         # Password or personal access token used to log in to a Docker registry. If not set then no login will occur
-        password: One2three$
-
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        path: 'esteamate/auth/Dockerfile'
+        tags: 'parthikrb/auth'
