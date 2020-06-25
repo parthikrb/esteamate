@@ -1,6 +1,10 @@
 import express from 'express';
 import 'express-async-errors';
+import cors from 'cors';
 import { json } from 'body-parser';
+
+// Set Cookie
+import cookieSession from 'cookie-session';
 
 // DB
 import mongoose from 'mongoose';
@@ -17,7 +21,19 @@ import { errorHandler } from './middlewares/error-handler';
 import { DatabaseConnectionError } from './errors/database-connection-error';
 
 const app = express();
+app.use(cors());
+
+app.set('trust proxy', 1) // trust first proxy
+
 app.use(json());
+
+// Set Cookie in response
+app.use(cookieSession({
+    name: 'session',
+    secure: process.env.NODE_ENV !== 'test',
+    signed: false,
+    maxAge: 24 * 60 * 60 * 1000
+}));
 
 // Routes
 app.use(CurrentuserRouter);

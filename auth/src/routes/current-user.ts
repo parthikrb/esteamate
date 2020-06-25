@@ -1,12 +1,14 @@
-import express from 'express';
-import { User } from '../models/user'
+import express, { Request, Response } from 'express';
+import { currentUser } from '../middlewares/current-user';
 
 const router = express.Router();
 
-router.get('/api/users/currentuser', async (req, res) => {
-
-    const users = await User.find().exec();
-    res.send(`Currentuser - ${users}`)
-});
+router.get('/api/users/currentuser',
+    currentUser,
+    async (req: Request, res: Response) => {
+        res.send({
+            currentUser: req.currentUser || null
+        });
+    });
 
 export { router as CurrentuserRouter };

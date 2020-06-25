@@ -54,6 +54,8 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true
     }
+}, {
+    versionKey: false
 });
 
 userSchema.pre('save', async function (done) {
@@ -62,6 +64,14 @@ userSchema.pre('save', async function (done) {
         this.set('password', hashed);
     }
     done();
+});
+
+userSchema.set('toJSON', {
+    transform: function (doc, ret, options) {
+        ret.id = ret._id;
+        delete ret._id;
+        delete ret.password; // Delete password from response
+    }
 });
 
 userSchema.statics.build = (attributes: UserAttributes) => {
