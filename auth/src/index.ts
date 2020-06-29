@@ -23,14 +23,14 @@ import { DatabaseConnectionError } from './errors/database-connection-error';
 const app = express();
 app.use(cors());
 
-app.set('trust proxy', 1) // trust first proxy
+app.set('trust proxy', true) // trust first proxy
 
 app.use(json());
 
 // Set Cookie in response
 app.use(cookieSession({
     name: 'session',
-    secure: process.env.NODE_ENV !== 'test',
+    secure: true,
     signed: false,
     maxAge: 24 * 60 * 60 * 1000
 }));
@@ -49,6 +49,11 @@ app.use(errorHandler);
 
 
 const startApp = async () => {
+
+    if (!process.env.JWT_KEY) {
+        throw new Error('JWT_KEY must be defined');
+    }
+
     try {
         await mongoose.connect('mongodb://auth-mongo-service:27017/auth', {
             useUnifiedTopology: true,

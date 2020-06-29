@@ -10,7 +10,7 @@ const router = express.Router();
 router.post('/api/users/signin',
     [
         body('username').isString().withMessage('Username is required'),
-        body('password').trim().notEmpty().withMessage('Password is required')
+        // body('password').trim().notEmpty().withMessage('Password is required')
     ]
     , async (req: Request, res: Response) => {
 
@@ -19,6 +19,10 @@ router.post('/api/users/signin',
 
         if (!existingUser) {
             throw new BadRequestError('Invalid username');
+        }
+
+        if ((password === "" || undefined || null) && existingUser) {
+            res.status(200).send({ message: "User exists! Send along the Password." });
         }
 
         const validPassword = await Password.comparePassword(existingUser.password, password);

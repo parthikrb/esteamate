@@ -7,11 +7,11 @@
   display: flex;
 }
 
-.leftBox {
+.left-box {
   margin-left: 0;
   height: 100%;
   width: 300px;
-  background-color: #33135c;
+  background-color: var(--main-color);
   display: flex;
   position: relative;
   border-radius: 0 12.5px 12.5px 0;
@@ -22,25 +22,99 @@
   color: white;
   font-family: "menu-font";
   text-align: center;
+  z-index: 10;
 }
 
-.mainTitle {
+.main-title {
   margin-bottom: 0;
 }
 
-.subTitle {
+.sub-title {
   margin-top: 0;
 }
 
-.brandImage {
+.hex-image {
+  display: flex;
+  position: absolute;
+  color: white;
+  margin-left: -20px;
+  margin-top: -20px;
+  width: inherit;
+  height: auto;
+  filter: invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg)
+    brightness(95%) contrast(80%);
+}
+
+.brand-image {
+  z-index: 1;
   display: flex;
   position: absolute;
   bottom: 10px;
   left: 25%;
 }
 
-.rightBox {
+.right-box {
   display: flex;
   height: 100%;
   position: relative;
+  margin: auto;
+  text-align: center;
+}
+
+.text-content {
+  display: flex;
+  position: relative;
+  margin: auto;
+  font-family: "sub-font";
+  letter-spacing: 1px;
+  flex-wrap: wrap;
+  line-height: 2.5em;
+  max-width: 480px;
+}
+
+.text-content > h3 {
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  letter-spacing: 0.15em;
+  animation: typing 1.8s steps(40, end);
+  word-break: break-all;
+}
+
+.text-content > h3:nth-of-type(2) {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.text-content > input {
+  letter-spacing: 0.15em;
+  border: none;
+  border-bottom: 0.15em solid var(--main-color);
+  width: 0;
+  margin: 0 0 -5px 5px;
+  animation: input-line 1s ease-in 1.8s;
+  animation-fill-mode: forwards;
+}
+
+.text-content > input:focus {
+  outline: none;
+}
+
+.error {
+  color: red;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes input-line {
+  100% {
+    width: 120px;
+  }
 }
