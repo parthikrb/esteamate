@@ -1,42 +1,28 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import React, { Fragment, useState } from "react";
 import axios from "axios";
 import Router from "next/router";
-
+import { TextField, Button } from "@material-ui/core";
+import { Fingerprint } from "@material-ui/icons";
 import classes from "./signin.module.css";
+import { toast } from "react-toastify";
 
-const SignIn = () => {
+const SignInComponent = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [hasError, setHasError] = useState(null);
-  const usernameRef = useRef();
-  const passwordRef = useRef();
 
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (
-        (username === usernameRef.current.value && username !== "") ||
-        (password === passwordRef.current?.value && password !== "")
-      ) {
-        await axios
-          .post("/api/users/signin", {
-            username,
-            password,
-          })
-          .then((res) => {
-            setHasError("false");
-            if (password !== "") Router.push("/dashboard");
-          })
-          .catch((err) => {
-            setHasError("true");
-          });
-
-        console.log(`Sending Request - ${hasError} - ${username}`);
-      }
-    }, 1300);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [username, usernameRef, password, passwordRef]);
+  const loginHandler = async () => {
+    await axios
+      .post("/api/users/signin", {
+        username,
+        password,
+      })
+      .then((response) => {
+        Router.push("/");
+      })
+      .catch((err) => {
+        toast.error("Invalid Credentials!");
+      });
+  };
 
   return (
     <Fragment>
@@ -62,40 +48,42 @@ const SignIn = () => {
           />
         </div>
         <div className={classes["right-box"]}>
-          <div className={classes["text-content"]}>
-            <h3>Hey! type in your username</h3>
-            <input
-              ref={usernameRef}
+          <form className={classes["login-form"]} autoComplete="off">
+            <div className={classes["login-title"]}>
+              <h2>Welcome</h2>
+            </div>
+            <TextField
+              label="Username"
               type="text"
-              autoFocus
-              autoComplete="off"
               value={username}
+              autoFocus
               onChange={(e) => setUsername(e.target.value)}
+              fullWidth
+              required
             />
-            {hasError === "false" || password !== "" ? (
-              <Fragment>
-                <h3>we found your footprint. type in your password</h3>
-                <input
-                  ref={passwordRef}
-                  type="password"
-                  value={password}
-                  autoComplete="off"
-                  autoFocus
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </Fragment>
-            ) : hasError === "true" && password !== "" ? (
-              <h3 className={classes.hasError}>please check password</h3>
-            ) : hasError === "true" && username !== "" ? (
-              <h3 className={classes.hasError}>
-                Sorry, unable to find you. please check username
-              </h3>
-            ) : null}
-          </div>
+            <TextField
+              label="Password"
+              type="password"
+              value={password}
+              autoFocus
+              onChange={(e) => setPassword(e.target.value)}
+              fullWidth
+              required
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => loginHandler()}
+              disabled={!username || !password}
+            >
+              <Fingerprint />
+              Login
+            </Button>
+          </form>
         </div>
       </div>
     </Fragment>
   );
 };
 
-export default SignIn;
+export default SignInComponent;

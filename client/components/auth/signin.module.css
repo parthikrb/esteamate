@@ -61,60 +61,15 @@
   text-align: center;
 }
 
-.text-content {
-  display: flex;
+.login-form {
   position: relative;
   margin: auto;
   font-family: "sub-font";
-  letter-spacing: 1px;
-  flex-wrap: wrap;
-  line-height: 2.5em;
-  max-width: 480px;
+  width: 300px;
 }
 
-.text-content > h3 {
-  margin: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  letter-spacing: 0.15em;
-  animation: typing 1.8s steps(40, end);
-  word-break: break-all;
+.login-form > Button {
+  margin-top: 20px;
+  width: inherit;
 }
 
-.text-content > h3:nth-of-type(2) {
-  opacity: 1;
-  transition: opacity 0.5s ease-in-out;
-}
-
-.text-content > input {
-  letter-spacing: 0.15em;
-  border: none;
-  border-bottom: 0.15em solid var(--main-color);
-  width: 0;
-  margin: 0 0 -5px 5px;
-  animation: input-line 1s ease-in 1.8s;
-  animation-fill-mode: forwards;
-}
-
-.text-content > input:focus {
-  outline: none;
-}
-
-.error {
-  color: red;
-}
-
-@keyframes typing {
-  from {
-    width: 0;
-  }
-  to {
-    width: 100%;
-  }
-}
-
-@keyframes input-line {
-  100% {
-    width: 120px;
-  }
-}

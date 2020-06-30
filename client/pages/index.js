@@ -1,26 +1,10 @@
-import SignIn from "../components/auth/signin";
+import SignInComponent from "../components/auth/signin";
 
-const LandingPage = () => {
+const LandingPage = (props) => {
+  console.log(`index.js - ${JSON.stringify(props.currentUser)}`);
   return (
     <div>
-      <SignIn />
-
-      <style jsx global>{`
-        body {
-          margin: 0;
-          --main-color: #33135c;
-        }
-
-        @font-face {
-          font-family: "menu-font";
-          src: url("/fonts/Nunito-Black.ttf");
-        }
-
-        @font-face {
-          font-family: "sub-font";
-          src: url("/fonts/Dosis.ttf");
-        }
-      `}</style>
+      {props.currentUser ? <div>Dashboard</div> : <SignInComponent />}
     </div>
   );
 };
