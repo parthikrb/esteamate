@@ -11,7 +11,7 @@
   margin-left: 0;
   height: 100%;
   width: 300px;
-  background-color: var(--main-color);
+  background-color: #33135c;
   display: flex;
   position: relative;
   border-radius: 0 12.5px 12.5px 0;
@@ -20,7 +20,7 @@
 .title {
   margin: auto;
   color: white;
-  font-family: "menu-font";
+  /* font-family: "menu-font"; */
   text-align: center;
   z-index: 10;
 }
@@ -64,7 +64,7 @@
 .login-form {
   position: relative;
   margin: auto;
-  font-family: "sub-font";
+  /* font-family: "sub-font"; */
   width: 300px;
 }
 

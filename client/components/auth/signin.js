@@ -4,11 +4,12 @@ import Router from "next/router";
 import { TextField, Button } from "@material-ui/core";
 import { Fingerprint } from "@material-ui/icons";
 import classes from "./signin.module.css";
-import { toast } from "react-toastify";
+import { useToasts } from "react-toast-notifications";
 
 const SignInComponent = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const { addToast } = useToasts();
 
   const loginHandler = async () => {
     await axios
@@ -20,7 +21,7 @@ const SignInComponent = () => {
         Router.push("/");
       })
       .catch((err) => {
-        toast.error("Invalid Credentials!");
+        addToast("Invalid Credentials!", { appearance: "error" });
       });
   };
 
