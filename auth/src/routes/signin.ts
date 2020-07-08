@@ -35,7 +35,8 @@ router.post('/api/users/signin',
             id: existingUser.id,
             fullname: `${existingUser.firstname} ${existingUser.lastname}`,
             username: existingUser.username,
-            email: existingUser.email
+            email: existingUser.email,
+            isAdmin: existingUser.isAdmin
         }, process.env.JWT_KEY!)
 
         req.session = {
