@@ -6,7 +6,7 @@ import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import buildClient from "../helpers/build-client";
 import theme from "./theme";
-import Menu from "../components/menu/menu";
+import Menu from "../containers/menu/menu";
 
 export default function MyApp(props) {
   const { Component, pageProps, currentUser } = props;
