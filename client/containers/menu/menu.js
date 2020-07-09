@@ -15,11 +15,14 @@ import {
   Typography,
 } from "@material-ui/core";
 import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
-import InboxIcon from "@material-ui/icons/MoveToInbox";
-import MailIcon from "@material-ui/icons/Mail";
 import axios from "axios";
 import { useToasts } from "react-toast-notifications";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import capacityRoute from "../../routes/capacity-route";
+import adminRoute from "../../routes/admin-route";
+import retroRoute from "../../routes/retro-route";
+import { plannerRoute, plannerAdminRoute } from "../../routes/planner-route";
 
 const drawerWidth = 220;
 
@@ -63,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "8%",
     color: theme.palette.primary.main,
   },
+  active: {
+    color: theme.palette.primary.main,
+  },
 }));
 
 export default function Menu(props) {
@@ -72,15 +78,16 @@ export default function Menu(props) {
 
   const { isAdmin } = props.currentUser || false;
 
-  const adminMenu = ["User", "Squad", "Release", "Sprint"];
-  const capacityMenu = ["Dashboard", "My Leaves", "Squad Leaves"];
-  const plannerMenu = isAdmin ? ["Poll", "History"] : ["Vote", "History"];
-  const retroMenu = ["Cast", "History"];
+  // const adminMenu = ["User", "Squad", "Release", "Sprint"];
+  // const capacityMenu = ["Dashboard", "My Leaves", "Squad Leaves"];
+  // const plannerMenu = isAdmin ? ["Poll", "History"] : ["Vote", "History"];
+  // const retroMenu = ["Cast", "History"];
+  const plannerMenu = isAdmin ? plannerAdminRoute : plannerRoute;
 
   const [menuList, setMenuList] = useState(plannerMenu);
 
   const handleAdminMenuClick = () => {
-    setMenuList(adminMenu);
+    setMenuList(adminRoute);
   };
 
   const handlePlannerMenuClick = () => {
@@ -88,20 +95,25 @@ export default function Menu(props) {
   };
 
   const handleCapacityMenuClick = () => {
-    setMenuList(capacityMenu);
+    setMenuList(capacityRoute);
   };
 
   const handleRetroMenuClick = () => {
-    setMenuList(retroMenu);
+    setMenuList(retroRoute);
   };
 
   const handleLogoutAction = async () => {
     await axios.post("/api/users/signout").then(() => {
       router.push("/");
-      addToast("User logged out successfully!", {
+      addToast("User logged out!", {
         appearance: "info",
       });
     });
+  };
+
+  const handleRouting = (e, path) => {
+    e.preventDefault();
+    router.push(path);
   };
 
   return (
@@ -167,13 +179,21 @@ export default function Menu(props) {
         </div>
         <Divider />
         <List>
-          {menuList.map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
+          {menuList.map((menu, index) => (
+            <Link
+              key={menu.path}
+              href={menu.path}
+              className={router.pathname === menu.path ? classes.active : ""}
+            >
+              <ListItem
+                button
+                key={menu.path}
+                // onClick={(e) => handleRouting(e, menu.path)}
+              >
+                <ListItemIcon>{menu.icon}</ListItemIcon>
+                <ListItemText primary={menu.label} />
+              </ListItem>
+            </Link>
           ))}
         </List>
         <img
