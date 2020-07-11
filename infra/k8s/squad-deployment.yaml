@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: auth-deployment
+    name: squad-deployment
 spec:
     replicas: 1
     selector:
         matchLabels:
-            app: auth
+            app: squad
     template:
         metadata:
             labels:
-                app: auth
+                app: squad
         spec:
             containers:
-                - name: auth
-                  image: parthikrb/auth
+                - name: squad
+                  image: parthikrb/squad
                   env:
                       - name: NATS_CLIENT_ID
                         valueFrom:
@@ -25,7 +25,7 @@ spec:
                       - name: NATS_CLUSTER_ID
                         value: users
                       - name: MONGO_URI
-                        value: 'mongodb://auth-mongo-service:27017/auth'
+                        value: 'mongodb://squad-mongo-service:27017/squad'
                       - name: JWT_KEY
                         valueFrom:
                             secretKeyRef:
@@ -36,12 +36,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-    name: auth-service
+    name: squad-service
 spec:
     selector:
-        app: auth
+        app: squad
     ports:
-        - name: auth
+        - name: squad
           protocol: TCP
           port: 3000
           targetPort: 3000
