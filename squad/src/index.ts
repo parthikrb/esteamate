@@ -10,10 +10,7 @@ import cookieSession from 'cookie-session';
 import mongoose from 'mongoose';
 
 // Routes
-import { SignupRouter } from './routes/signup';
-import { SigninRouter } from './routes/signin';
-import { SignoutRouter } from './routes/signout';
-import { CurrentuserRouter } from './routes/current-user';
+import { createSquadRouter } from './routes/new';
 
 // Error Handlers
 import { NotFoundError, errorHandler, DatabaseConnectionError, currentUser } from '@parthikrb/common'
@@ -34,11 +31,9 @@ app.use(cookieSession({
 }));
 
 app.use(currentUser);
+
 // Routes
-app.use(CurrentuserRouter);
-app.use(SigninRouter);
-app.use(SignoutRouter);
-app.use(SignupRouter);
+app.use(createSquadRouter);
 
 app.all('*', (req, res) => {
     throw new NotFoundError();
