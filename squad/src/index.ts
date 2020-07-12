@@ -11,6 +11,8 @@ import mongoose from 'mongoose';
 
 // Routes
 import { createSquadRouter } from './routes/new';
+import { deleteSquadRouter } from './routes/delete';
+import { indexSquadRouter } from './routes';
 
 // Error Handlers
 import { NotFoundError, errorHandler, DatabaseConnectionError, currentUser } from '@parthikrb/common'
@@ -34,7 +36,8 @@ app.use(currentUser);
 
 // Routes
 app.use(createSquadRouter);
-
+app.use(deleteSquadRouter);
+app.use(indexSquadRouter);
 app.all('*', (req, res) => {
     throw new NotFoundError();
 })
