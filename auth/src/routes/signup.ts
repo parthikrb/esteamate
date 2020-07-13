@@ -1,8 +1,8 @@
 import express, { Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import { User } from '../models/user';
-import { BadRequestError, validateRequest } from '@parthikrb/common';
-
+import { BadRequestError, validateRequest, natsWrapper } from '@parthikrb/common';
+import { UserCreatedPublisher } from '../events/publishers/user-created-publisher';
 
 const router = express.Router();
 
@@ -29,7 +29,17 @@ router.post('/api/users/signup',
         const user = User.build({ firstname, lastname, username, password, email, role, isAdmin });
         await user.save();
 
+        await new UserCreatedPublisher(natsWrapper.client).publish({
+            id: user.id,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            email: user.email,
+            username: user.username,
+            isAdmin: user.isAdmin,
+            role: user.role
+        });
+
         res.status(201).send(user);
-    })
+    });
 
 export { router as SignupRouter };

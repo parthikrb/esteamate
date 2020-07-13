@@ -1,9 +1,9 @@
 import express, { Request, Response } from 'express';
 import { body } from 'express-validator';
 
-import { NotAuthorizedError, requireAuth, validateRequest, BadRequestError } from '@parthikrb/common';
+import { NotAuthorizedError, requireAuth, validateRequest, BadRequestError, natsWrapper } from '@parthikrb/common';
 import { Squad, SquadDocument } from '../models/squad';
-
+import { SquadCreatedPublisher } from '../events/squad-created-publisher';
 
 const router = express.Router();
 
@@ -32,6 +32,14 @@ router.post('/api/squads', requireAuth,
 
         const squad: SquadDocument = Squad.build(req.body);
         await squad.save();
+
+        await new SquadCreatedPublisher(natsWrapper.client).publish({
+            id: squad.id,
+            squad_name: squad.squad_name,
+            product_owner: squad.product_owner,
+            scrum_master: squad.scrum_master,
+            scrum_team: squad.scrum_team
+        });
 
         res.status(201).send(squad);
     })

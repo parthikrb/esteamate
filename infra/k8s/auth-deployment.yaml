@@ -21,9 +21,9 @@ spec:
                             fieldRef:
                                 fieldPath: metadata.name
                       - name: NATS_URL
-                        value: 'http://nats-srv:4222'
+                        value: 'http://nats-service:4222'
                       - name: NATS_CLUSTER_ID
-                        value: users
+                        value: esteamate
                       - name: MONGO_URI
                         value: 'mongodb://auth-mongo-service:27017/auth'
                       - name: JWT_KEY
