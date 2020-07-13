@@ -12,7 +12,7 @@
   "author": "Parthiban Baskar",
   "license": "MIT",
   "dependencies": {
-    "@parthikrb/common": "^1.0.9",
+    "@parthikrb/common": "^1.0.21",
     "@types/cookie-session": "^2.0.41",
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.3",
