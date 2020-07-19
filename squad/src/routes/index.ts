@@ -14,7 +14,11 @@ router.get('/api/squads', requireAuth,
             throw new NotAuthorizedError();
         }
 
-        const squads = await Squad.find({}).exec();
+        const squads = await Squad.find({})
+            .populate('product_owner')
+            .populate('scrum_master')
+            .populate('scrum_team')
+            .exec();
         res.status(200).send(squads);
     })
 

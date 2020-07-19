@@ -3,16 +3,16 @@ import { body } from 'express-validator';
 
 import { NotAuthorizedError, requireAuth, validateRequest, BadRequestError, natsWrapper } from '@parthikrb/common';
 import { Squad, SquadDocument } from '../models/squad';
-import { SquadCreatedPublisher } from '../events/squad-created-publisher';
+import { SquadCreatedPublisher } from '../events/publishers/squad-created-publisher';
 
 const router = express.Router();
 
 router.post('/api/squads', requireAuth,
     [
         body('squad_name').isString().withMessage('Squadname is required'),
-        body('product_owner').isArray().withMessage('Product Owner must be an array'),
-        body('scrum_master').isArray().withMessage('Scrum Master must be an array'),
-        body('scrum_team').isArray().withMessage('Scrum Team must be an array')
+        body('product_owner').isArray().withMessage('Product Owner must be an id'),
+        body('scrum_master').isArray().withMessage('Scrum Master must be an id'),
+        body('scrum_team').isArray().withMessage('Scrum Team must be an id')
     ],
     validateRequest,
     async (req: Request, res: Response) => {
@@ -42,6 +42,6 @@ router.post('/api/squads', requireAuth,
         });
 
         res.status(201).send(squad);
-    })
+    });
 
 export { router as createSquadRouter };
