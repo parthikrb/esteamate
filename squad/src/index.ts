@@ -12,10 +12,20 @@ import mongoose from 'mongoose';
 // Routes
 import { createSquadRouter } from './routes/new';
 import { deleteSquadRouter } from './routes/delete';
-import { indexSquadRouter } from './routes';
+import { indexSquadRouter } from './routes/index';
+import { showSquadRouter } from './routes/show';
+import { updateSquadRouter } from './routes/update';
 
 // Error Handlers
-import { NotFoundError, errorHandler, DatabaseConnectionError, currentUser, natsWrapper } from '@parthikrb/common'
+import {
+    NotFoundError,
+    errorHandler,
+    DatabaseConnectionError,
+    currentUser,
+    natsWrapper
+} from '@parthikrb/common'
+import { UserCreatedListener } from './events/listeners/user-created-listener';
+import { UserUpdatedListener } from './events/listeners/user-updated-listener';
 
 const app = express();
 app.use(cors());
@@ -38,6 +48,9 @@ app.use(currentUser);
 app.use(createSquadRouter);
 app.use(deleteSquadRouter);
 app.use(indexSquadRouter);
+app.use(showSquadRouter);
+app.use(updateSquadRouter);
+
 app.all('*', (req, res) => {
     throw new NotFoundError();
 })
@@ -76,6 +89,10 @@ const startApp = async () => {
         });
         process.on('SIGINT', () => natsWrapper.client.close());
         process.on('SIGTERM', () => natsWrapper.client.close());
+
+        // listeners
+        new UserCreatedListener(natsWrapper.client).listen();
+        new UserUpdatedListener(natsWrapper.client).listen();
 
         await mongoose.connect(process.env.MONGO_URI!, {
             useUnifiedTopology: true,

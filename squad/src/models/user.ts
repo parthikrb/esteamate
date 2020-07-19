@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 interface UserAttributes {
+    id?: string;
     firstname: string;
     lastname: string;
     username: string;
@@ -60,7 +61,7 @@ userSchema.set('toJSON', {
 });
 
 userSchema.statics.build = (attributes: UserAttributes) => {
-    return new User(attributes);
+    return new User({...attributes, _id: attributes.id});
 }
 
 const User = mongoose.model<UserDocument, UserModel>('User', userSchema);

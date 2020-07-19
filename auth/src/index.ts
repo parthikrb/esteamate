@@ -14,6 +14,7 @@ import { SignupRouter } from './routes/signup';
 import { SigninRouter } from './routes/signin';
 import { SignoutRouter } from './routes/signout';
 import { CurrentuserRouter } from './routes/current-user';
+import { showUserRouter } from './routes/show';
 
 // Error Handlers
 import { NotFoundError, errorHandler, DatabaseConnectionError, currentUser, natsWrapper } from '@parthikrb/common'
@@ -39,6 +40,7 @@ app.use(CurrentuserRouter);
 app.use(SigninRouter);
 app.use(SignoutRouter);
 app.use(SignupRouter);
+app.use(showUserRouter);
 
 app.all('*', (req, res) => {
     throw new NotFoundError();

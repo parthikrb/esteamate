@@ -3,16 +3,16 @@ import { UserDocument, userSchema } from './user'
 
 interface SquadAttributes {
     squad_name: string;
-    product_owner: UserDocument;
-    scrum_master: UserDocument;
-    scrum_team: UserDocument[];
+    product_owner: string[];
+    scrum_master: string[];
+    scrum_team: string[];
 }
 
 export interface SquadDocument extends mongoose.Document {
     squad_name: string;
-    product_owner: UserDocument;
-    scrum_master: UserDocument;
-    scrum_team: UserDocument[];
+    product_owner: string[];
+    scrum_master: string[];
+    scrum_team: string[];
 }
 
 interface SquadModel extends mongoose.Model<SquadDocument> {
@@ -24,21 +24,21 @@ const squadSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    product_owner: {
-        type: [userSchema],
-        default: undefined,
+    product_owner: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
-    },
-    scrum_master: {
-        type: [userSchema],
-        default: undefined,
+    }],
+    scrum_master: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
-    },
-    scrum_team: {
-        type: [userSchema],
-        default: undefined,
+    }],
+    scrum_team: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
-    }
+    }]
 }, {
     versionKey: false
 });
