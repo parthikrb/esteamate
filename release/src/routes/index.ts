@@ -15,7 +15,7 @@ router.get(
 
         const releases = await Release
             .findOne({})
-            .populate('squad_name')
+            .populate('squad')
             .exec();
 
         res.status(200).send(releases);

@@ -12,7 +12,7 @@ router.get(
 
         const release = await Release
             .findById(id)
-            .populate('squad_name')
+            .populate('squad')
             .exec();
 
         if (!release) {

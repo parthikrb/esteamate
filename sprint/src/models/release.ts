@@ -40,6 +40,14 @@ releaseSchema.statics.build = (releaseAttributes: ReleaseAttributes) => {
     });
 }
 
+releaseSchema.set('toJSON', {
+    transform: function (doc, ret, options) {
+        ret.id = ret._id;
+        delete ret._id;
+    }
+});
+
+
 const Release = mongoose.model<ReleaseDocument, ReleaseModel>('Release', releaseSchema);
 
 export { Release };

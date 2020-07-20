@@ -1,14 +1,14 @@
 import mongoose from 'mongoose';
 
 interface SprintAttributes {
-    release_name: string;
+    release: string;
     sprint_name: string;
     start_date: Date;
     end_date: Date;
 }
 
 interface SprintDocument extends mongoose.Document {
-    release_name: string;
+    release: string;
     sprint_name: string;
     start_date: Date;
     end_date: Date;
@@ -19,8 +19,9 @@ interface SprintModel extends mongoose.Model<SprintDocument> {
 }
 
 const sprintSchema = new mongoose.Schema({
-    release_name: {
+    release: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: 'Release',
         required: true
     },
     sprint_name: {
@@ -42,6 +43,13 @@ const sprintSchema = new mongoose.Schema({
 sprintSchema.statics.build = (sprintAttributes: SprintAttributes) => {
     return new Sprint(sprintAttributes);
 }
+
+sprintSchema.set('toJSON', {
+    transform: function (doc, ret, options) {
+        ret.id = ret._id;
+        delete ret._id;
+    }
+});
 
 const Sprint = mongoose.model<SprintDocument, SprintModel>('Sprint', sprintSchema);
 

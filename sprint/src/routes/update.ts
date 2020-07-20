@@ -10,7 +10,7 @@ router.put(
     '/api/sprints/:id',
     requireAuth,
     [
-        body('release_name').isString().withMessage('Release name is required'),
+        body('release').isString().withMessage('Release name is required'),
         body('sprint_name').isString().withMessage('Sprint name is required'),
         body('start_date').isDate().withMessage('Start date is required'),
         body('end_date').isDate().withMessage('End date is required')
@@ -34,7 +34,7 @@ router.put(
 
         await new SprintUpdatedPublisher(natsWrapper.client).publish({
             id: sprint!.id,
-            release_name: sprint!.release_name,
+            release_name: sprint!.release,
             sprint_name: sprint!.sprint_name,
             start_date: sprint!.start_date,
             end_date: sprint!.end_date,

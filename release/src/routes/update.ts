@@ -10,7 +10,7 @@ router.put(
     '/api/releases/:id',
     requireAuth,
     [
-        body('squad_name').isString().withMessage('Squad name is required'),
+        body('squad').isString().withMessage('Squad name is required'),
         body('release_name').isString().withMessage('Release name is required'),
         body('start_date').isDate().withMessage('Start date is required'),
         body('end_date').isDate().withMessage('End date is required'),
@@ -37,7 +37,7 @@ router.put(
 
         await new ReleaseUpdatedPublisher(natsWrapper.client).publish({
             id: release!.id,
-            squad_name: release!.squad_name,
+            squad_name: release!.squad,
             release_name: release!.release_name,
             start_date: release!.start_date,
             end_date: release!.end_date,

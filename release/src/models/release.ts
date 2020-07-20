@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 interface ReleaseAttributes {
-    squad_name: string;
+    squad: string;
     release_name: string;
     start_date: Date;
     end_date: Date;
@@ -12,7 +12,7 @@ interface ReleaseAttributes {
 }
 
 interface ReleaseDocument extends mongoose.Document {
-    squad_name: string;
+    squad: string;
     release_name: string;
     start_date: Date;
     end_date: Date;
@@ -29,7 +29,7 @@ interface ReleaseModel extends mongoose.Model<ReleaseDocument> {
 
 
 const releaseSchema = new mongoose.Schema({
-    squad_name: {
+    squad: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Squad',
         required: true

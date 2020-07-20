@@ -17,7 +17,7 @@ router.get(
 
         const sprints = await Sprint
             .find({})
-            .populate('release_name')
+            .populate('release')
             .exec();
 
         res.status(200).send(sprints);
