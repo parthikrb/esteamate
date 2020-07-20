@@ -24,6 +24,22 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: parthikrb/release
+      context: release
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
+    - image: parthikrb/sprint
+      context: sprint
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: parthikrb/client
       context: client
       docker:

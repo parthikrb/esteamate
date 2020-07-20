@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: release-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: release
+  template:
+    metadata:
+      labels:
+        app: release
+    spec:
+      containers:
+        - name: release
+          image: parthikrb/release
+          env:
+            - name: NATS_CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: NATS_URL
+              value: "http://nats-service:4222"
+            - name: NATS_CLUSTER_ID
+              value: esteamate
+            - name: MONGO_URI
+              value: "mongodb://release-mongo-service:27017/release"
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-service
+spec:
+  selector:
+    app: release
+  ports:
+    - name: release
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

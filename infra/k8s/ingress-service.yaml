@@ -18,6 +18,14 @@ spec:
             backend:
               serviceName: squad-service
               servicePort: 3000
+          - path: /api/releases/?(.*)
+            backend:
+              serviceName: release-service
+              servicePort: 3000
+          - path: /api/sprints/?(.*)
+            backend:
+              serviceName: sprint-service
+              servicePort: 3000
           - path: /?(.*)
             backend:
               serviceName: client-service

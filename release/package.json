@@ -1,13 +1,13 @@
 {
-  "name": "esteamate-auth-service",
+  "name": "esteamate-release-service",
   "version": "1.0.0",
-  "description": "authentication service for esteamate application",
+  "description": "release service for esteamate application",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node-dev --poll src/index.ts"
   },
   "keywords": [
-    "auth"
+    "release"
   ],
   "author": "Parthiban Baskar",
   "license": "MIT",
