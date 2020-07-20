@@ -1,13 +1,13 @@
 {
-  "name": "esteamate-auth-service",
+  "name": "esteamate-sprint-service",
   "version": "1.0.0",
-  "description": "authentication service for esteamate application",
+  "description": "sprint service for esteamate application",
   "main": "src/index.ts",
   "scripts": {
     "start": "ts-node-dev --poll src/index.ts"
   },
   "keywords": [
-    "auth"
+    "sprint"
   ],
   "author": "Parthiban Baskar",
   "license": "MIT",

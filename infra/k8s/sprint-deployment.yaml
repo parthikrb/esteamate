@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: sprint-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: sprint
+    template:
+        metadata:
+            labels:
+                app: sprint
+        spec:
+            containers:
+                - name: sprint
+                  image: parthikrb/sprint
+                  env:
+                      - name: NATS_CLIENT_ID
+                        valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
+                      - name: NATS_URL
+                        value: 'http://nats-service:4222'
+                      - name: NATS_CLUSTER_ID
+                        value: esteamate
+                      - name: MONGO_URI
+                        value: 'mongodb://sprint-mongo-service:27017/sprint'
+                      - name: JWT_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: jwt-secret
+                                key: JWT_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: sprint-service
+spec:
+    selector:
+        app: sprint
+    ports:
+        - name: sprint
+          protocol: TCP
+          port: 3000
+          targetPort: 3000

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: release-mongo-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: release-mongo
+    template:
+        metadata:
+            labels:
+                app: release-mongo
+        spec:
+            containers:
+                - name: release-mongo
+                  image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: release-mongo-service
+spec:
+    selector:
+        app: release-mongo
+    ports:
+        - name: db
+          protocol: TCP
+          port: 27017
+          targetPort: 27017
