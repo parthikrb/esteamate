@@ -14,8 +14,8 @@ router.post(
     [
         body('release_name').isString().withMessage('Release name is required'),
         body('sprint_name').isString().withMessage('Sprint name is required'),
-        body('start_date').isDate().withMessage('Start date is required'),
-        body('end_date').isDate().withMessage('End date is required')
+        body('start_date').isString().withMessage('Start date is required'),
+        body('end_date').isString().withMessage('End date is required')
     ],
     validateRequest,
     async (req: Request, res: Response) => {

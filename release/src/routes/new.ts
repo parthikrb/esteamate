@@ -12,8 +12,8 @@ router.post(
     [
         body('squad_name').isString().withMessage('Squad name is required'),
         body('release_name').isString().withMessage('Release name is required'),
-        body('start_date').isDate().withMessage('Start date is required'),
-        body('end_date').isDate().withMessage('End date is required'),
+        body('start_date').isString().withMessage('Start date is required'),
+        body('end_date').isString().withMessage('End date is required'),
         body('dev_reserve').isNumeric().withMessage('Development reserve is required'),
         body('qa_reserve').isNumeric().withMessage('QA reserve is required'),
         body('is_release_reserve').isBoolean().withMessage('Is_release_reserve is required')
