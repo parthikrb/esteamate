@@ -1,7 +1,8 @@
 import express, { Request, Response } from 'express';
-import { requireAuth, validateRequest, NotAuthorizedError } from '@parthikrb/common';
+import { requireAuth, validateRequest, NotAuthorizedError, natsWrapper } from '@parthikrb/common';
 import { body } from 'express-validator';
 import { Release } from '../models/release';
+import { ReleaseCreatedPublisher } from '../events/publishers/release-created-publisher';
 
 const router = express.Router();
 
@@ -28,6 +29,18 @@ router.post(
 
         const release = Release.build(req.body);
         await release.save();
+
+        await new ReleaseCreatedPublisher(natsWrapper.client).publish({
+            id: release.id,
+            squad_name: release.squad_name,
+            release_name: release.release_name,
+            start_date: release.start_date,
+            end_date: release.end_date,
+            dev_reserve: release.dev_reserve,
+            qa_reserve: release.qa_reserve,
+            ba_reserve: release.ba_reserve,
+            is_release_reserve: release.is_release_reserve,
+        });
 
         res.status(201).send(release);
     }

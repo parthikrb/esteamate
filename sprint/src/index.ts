@@ -10,7 +10,11 @@ import cookieSession from 'cookie-session';
 import mongoose from 'mongoose';
 
 // Routes
-
+import { createSprintRouter } from './routes/new';
+import { showSprintRouter } from './routes/show';
+import { showAllSprintRouter } from './routes';
+import { updateSprintRouter } from './routes/update';
+import { deleteSprintRouter } from './routes/delete';
 
 // Error Handlers
 import {
@@ -20,7 +24,8 @@ import {
     currentUser,
     natsWrapper
 } from '@parthikrb/common'
-
+import { ReleaseCreatedListener } from './events/listeners/release-created-listener';
+import { ReleaseUpdatedListener } from './events/listeners/release-updated-listener';
 
 const app = express();
 app.use(cors());
@@ -40,6 +45,11 @@ app.use(cookieSession({
 app.use(currentUser);
 
 // Routes
+app.use(createSprintRouter);
+app.use(showSprintRouter);
+app.use(showAllSprintRouter);
+app.use(updateSprintRouter);
+app.use(deleteSprintRouter);
 
 
 app.all('*', (req, res) => {
@@ -82,7 +92,9 @@ const startApp = async () => {
         process.on('SIGTERM', () => natsWrapper.client.close());
 
         // listeners
-  
+        new ReleaseCreatedListener(natsWrapper.client).listen();
+        new ReleaseUpdatedListener(natsWrapper.client).listen();
+
 
         await mongoose.connect(process.env.MONGO_URI!, {
             useUnifiedTopology: true,

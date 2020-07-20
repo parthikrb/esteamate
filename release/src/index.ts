@@ -10,6 +10,11 @@ import cookieSession from 'cookie-session';
 import mongoose from 'mongoose';
 
 // Routes
+import { createReleaseRouter } from './routes/new';
+import { showReleaseRouter, } from './routes/show';
+import { updateReleaseRouter, } from './routes/update';
+import { showAllReleaseRouter } from './routes/index';
+import { deleteReleaseRouter, } from './routes/delete';
 
 // Error Handlers
 import {
@@ -19,6 +24,8 @@ import {
     currentUser,
     natsWrapper
 } from '@parthikrb/common'
+import { SquadCreatedListener } from './events/listeners/squad-created-listener';
+import { SquadUpdatedListener } from './events/listeners/squad-updated-listener';
 
 const app = express();
 app.use(cors());
@@ -38,7 +45,11 @@ app.use(cookieSession({
 app.use(currentUser);
 
 // Routes
-
+app.use(createReleaseRouter);
+app.use(showAllReleaseRouter);
+app.use(showReleaseRouter);
+app.use(updateReleaseRouter);
+app.use(deleteReleaseRouter);
 
 app.all('*', (req, res) => {
     throw new NotFoundError();
@@ -80,6 +91,8 @@ const startApp = async () => {
         process.on('SIGTERM', () => natsWrapper.client.close());
 
         // listeners
+        new SquadCreatedListener(natsWrapper.client).listen();
+        new SquadUpdatedListener(natsWrapper.client).listen();
 
 
         await mongoose.connect(process.env.MONGO_URI!, {

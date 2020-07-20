@@ -1,25 +1,27 @@
 import express, { Request, Response } from 'express';
 import { requireAuth, NotAuthorizedError } from '@parthikrb/common';
-import { Release } from '../models/release';
+import { Sprint } from '../models/sprint';
+
 
 const router = express.Router();
 
 router.get(
-    '/api/releases',
+    '/api/sprints',
     requireAuth,
     async (req: Request, res: Response) => {
         const { isAdmin } = req.currentUser!;
+
         if (!isAdmin) {
             throw new NotAuthorizedError();
         }
 
-        const releases = await Release
-            .findOne({})
-            .populate('squad_name')
+        const sprints = await Sprint
+            .find({})
+            .populate('release_name')
             .exec();
 
-        res.status(200).send(releases);
+        res.status(200).send(sprints);
     }
 );
 
-export { router as showAllReleaseRouter};
+export { router as showAllSprintRouter };
