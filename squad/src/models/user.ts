@@ -8,6 +8,7 @@ interface UserAttributes {
     email: string;
     role: string;
     isAdmin: boolean;
+    capacity_reserve: number;
 }
 
 export interface UserDocument extends mongoose.Document {
@@ -17,6 +18,7 @@ export interface UserDocument extends mongoose.Document {
     email: string;
     role: string;
     isAdmin: boolean;
+    capacity_reserve: number;
 }
 
 interface UserModel extends mongoose.Model<UserDocument> {
@@ -46,6 +48,10 @@ const userSchema = new mongoose.Schema({
     },
     isAdmin: {
         type: Boolean,
+        required: true
+    },
+    capacity_reserve: {
+        type: Number,
         required: true
     }
 }, {

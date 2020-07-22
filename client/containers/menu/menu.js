@@ -183,7 +183,7 @@ export default function Menu(props) {
             <Link
               key={menu.path}
               href={menu.path}
-              className={router.pathname === menu.path ? classes.active : ""}
+              // className={router.pathname === menu.path ? classes.active : ""}
             >
               <ListItem
                 button
