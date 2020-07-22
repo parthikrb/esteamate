@@ -14,7 +14,6 @@ import {
   Grid,
   Button,
 } from "@material-ui/core";
-// import { theme } from "../../pages/theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {

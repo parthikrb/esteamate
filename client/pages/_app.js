@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { makeStyles } from "@material-ui/core/styles";
 import { ToastProvider } from "react-toast-notifications";
 import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
@@ -8,7 +9,13 @@ import buildClient from "../helpers/build-client";
 import theme from "./theme";
 import Menu from "../containers/menu/menu";
 
+const useStyles = makeStyles({
+  content: {
+    height: "81vh",
+  },
+});
 export default function MyApp(props) {
+  const classes = useStyles();
   const { Component, pageProps, currentUser } = props;
   console.log(currentUser);
 
@@ -35,7 +42,9 @@ export default function MyApp(props) {
           <CssBaseline />
           {currentUser ? (
             <Menu currentUser={currentUser}>
-              <Component {...pageProps} currentUser={currentUser} />
+              <div className={classes.content}>
+                <Component {...pageProps} currentUser={currentUser} />
+              </div>
             </Menu>
           ) : (
             <Component {...pageProps} currentUser={currentUser} />
@@ -57,7 +66,10 @@ MyApp.getInitialProps = async (appContext) => {
 
   let pageProps = {};
   if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx, client);
+    pageProps = await appContext.Component.getInitialProps(
+      appContext.ctx,
+      client
+    );
   }
 
   return {

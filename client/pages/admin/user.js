@@ -4,11 +4,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Fab, Drawer } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import AddUserComponent from "../../components/users/add-user";
+import ListUsersComponent from "../../components/users/list-users";
 
 const useStyles = makeStyles({
   root: {
     display: "flex",
-    height: "81vh",
+    height: "100%",
     position: "relative",
   },
   fab: {
@@ -34,9 +35,7 @@ const User = ({ users }) => {
     <Fragment>
       <div className={classes.root}>
         <div className={classes.content}>
-          {users.map((user) => (
-            <h3 key={user.username}>{user.firstname}</h3>
-          ))}
+          {/* <ListUsersComponent users={users} /> */}
         </div>
         <Fab
           className={classes.fab}
