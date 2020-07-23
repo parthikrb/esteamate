@@ -14,19 +14,20 @@ router.post('/api/users/signup',
         body('password').trim().isLength({ min: 3, max: 16 }).withMessage('Password must be between 3 and 16 characters'),
         body('email').isEmail().withMessage('Email is required'),
         body('role').isString().withMessage('Role is required'),
-        body('isAdmin').isBoolean().withMessage('IsAdmin is required')
+        body('isAdmin').isBoolean().withMessage('IsAdmin is required'),
+        body('capacity_reserve').isNumeric().withMessage('CapacityReserve is required'),
     ],
     validateRequest,
     async (req: Request, res: Response) => {
 
-        const { firstname, lastname, username, password, email, role, isAdmin } = req.body;
+        const { email } = req.body;
         const existingUser = await User.findOne({ email });
 
         if (existingUser) {
             throw new BadRequestError('User already exists');
         }
 
-        const user = User.build({ firstname, lastname, username, password, email, role, isAdmin });
+        const user = User.build(req.body);
         await user.save();
 
         await new UserCreatedPublisher(natsWrapper.client).publish({
@@ -36,7 +37,8 @@ router.post('/api/users/signup',
             email: user.email,
             username: user.username,
             isAdmin: user.isAdmin,
-            role: user.role
+            role: user.role,
+            capacity_reserve: user.capacity_reserve
         });
 
         res.status(201).send(user);
