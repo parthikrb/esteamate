@@ -1,10 +1,11 @@
 import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Fab, Drawer } from "@material-ui/core";
+import { Fab, Drawer, Paper } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import AddUserComponent from "../../components/users/add-user";
 import ListUsersComponent from "../../components/users/list-users";
+import UserDetailsComponent from "../../components/users/user-details";
 
 const useStyles = makeStyles({
   root: {
@@ -30,13 +31,19 @@ const useStyles = makeStyles({
 const User = ({ users }) => {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [userDetails, setUserDetails] = useState(undefined);
+
+  const fetchUserDetails = (details) => {
+    console.log(details);
+    setUserDetails(details);
+  };
 
   return (
     <Fragment>
       <div className={classes.root}>
-        <div className={classes.content}>
-          {/* <ListUsersComponent users={users} /> */}
-        </div>
+        <ListUsersComponent users={users} sendUserDetails={fetchUserDetails} />
+        {userDetails && <UserDetailsComponent userDetails={userDetails} />}
+
         <Fab
           className={classes.fab}
           color="primary"
