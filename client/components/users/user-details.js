@@ -9,6 +9,7 @@ const useStyles = makeStyles({
   root: {
     width: "27%",
     marginLeft: "25px",
+    backgroundColor: "#778899",
   },
   actionButton: {
     width: "42% !important",
@@ -58,6 +59,7 @@ const UserDetailsComponent = ({ userDetails }) => {
       >
         <span className={classes.avatarText}>PB</span>
       </Avatar>
+      <p>{userDetails.firstname}</p>
     </Paper>
   );
 };
