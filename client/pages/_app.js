@@ -37,7 +37,7 @@ export default function MyApp(props) {
         />
       </Head>
       <ThemeProvider theme={theme}>
-        <ToastProvider autoDismiss>
+        <ToastProvider placement="bottom-right" autoDismiss>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           {currentUser ? (
