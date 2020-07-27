@@ -9,11 +9,14 @@ import {
   Typography,
   FormControl,
   FormControlLabel,
-  MenuItem,
   Checkbox,
   Grid,
   Button,
+  InputLabel,
+  Select,
 } from "@material-ui/core";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,7 +51,20 @@ const AddUserComponent = () => {
   const [reserve, setReserve] = useState(0);
   const [addMore, setAddMore] = useState(false);
 
+  const { register, handleSubmit, errors } = useForm();
   const { addToast } = useToasts();
+
+  const onSubmit = async (data) => {
+    await axios
+      .post("/api/users/signup", { ...data })
+      .then((res) => {
+        addToast("User Added", { appearance: "success" });
+      })
+      .catch((res, err) => {
+        addToast(res.message, { appearance: "error" });
+      });
+    console.log(data);
+  };
 
   const handleFirstnameChange = (event) => {
     setFirstname(event.target.value);
@@ -88,7 +104,11 @@ const AddUserComponent = () => {
 
   return (
     <Fragment>
-      <form className={classes.root} autoComplete="off">
+      <form
+        className={classes.root}
+        autoComplete="off"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
@@ -110,7 +130,7 @@ const AddUserComponent = () => {
                 <Button variant="outlined" className={classes.cancelBtn}>
                   Cancel
                 </Button>
-                <Button variant="outlined" color="secondary">
+                <Button type="submit" variant="outlined" color="secondary">
                   Save
                 </Button>
               </Toolbar>
@@ -120,19 +140,24 @@ const AddUserComponent = () => {
             <FormControl className={classes.formControl}>
               <TextField
                 id="firstname"
+                name="firstname"
                 label="Firstname"
+                inputRef={register({ required: true })}
                 value={firstname}
                 onChange={handleFirstnameChange}
                 required
                 autoFocus
               />
             </FormControl>
+            {errors.firstname && <span>This field is required</span>}
           </Grid>
           <Grid item xs={6}>
             <FormControl className={classes.formControl}>
               <TextField
                 id="lastname"
+                name="lastname"
                 label="Lastname"
+                inputRef={register({ required: true })}
                 value={lastname}
                 onChange={handleLastnameChange}
                 required
@@ -143,7 +168,9 @@ const AddUserComponent = () => {
             <FormControl className={classes.formControl}>
               <TextField
                 id="username"
+                name="username"
                 label="Username"
+                inputRef={register({ required: true })}
                 value={username}
                 onChange={handleUsernameChange}
                 required
@@ -155,7 +182,9 @@ const AddUserComponent = () => {
               <TextField
                 type="password"
                 id="password"
+                name="password"
                 label="Password"
+                inputRef={register({ required: true })}
                 value={password}
                 onChange={handlePasswordChange}
                 required
@@ -166,7 +195,9 @@ const AddUserComponent = () => {
             <FormControl className={classes.formControl}>
               <TextField
                 id="email"
+                name="email"
                 label="Email"
+                inputRef={register({ required: true })}
                 value={email}
                 onChange={handleEmailChange}
                 required
@@ -174,13 +205,14 @@ const AddUserComponent = () => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            {/* <FormControl className={classes.formControl}>
               <TextField
                 classes={{ root: classes.root }}
                 select
                 name="role"
                 id="role"
                 label="Role"
+                inputRef={register({ required: true })}
                 required
                 SelectProps={{
                   multiple: false,
@@ -195,6 +227,28 @@ const AddUserComponent = () => {
                 <MenuItem value={"Product Owner"}>Product Owner</MenuItem>
                 <MenuItem value={"Manager"}>Manager</MenuItem>
               </TextField>
+            </FormControl> */}
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor="role">Role</InputLabel>
+              <Select
+                native
+                value={role}
+                onChange={handleRoleChange}
+                inputProps={{
+                  name: "role",
+                  id: "role",
+                }}
+                inputRef={register({ required: true })}
+                required
+              >
+                <option aria-label="None" value="" />
+                <option value={"Developer"}>Developer</option>
+                <option value={"Quality Analyst"}>Quality Analyst</option>
+                <option value={"Business Analyst"}>Business Analyst</option>
+                <option value={"Scrum Master"}>Scrum Master</option>
+                <option value={"Product Owner"}>Product Owner</option>
+                <option value={"Manager"}>Manager</option>
+              </Select>
             </FormControl>
           </Grid>
           <Grid item xs={6}>
@@ -203,6 +257,7 @@ const AddUserComponent = () => {
                 control={
                   <Checkbox
                     checked={isAdmin}
+                    inputRef={register}
                     onChange={handleIsAdminChange}
                     name="isAdmin"
                   />
@@ -215,8 +270,10 @@ const AddUserComponent = () => {
             <FormControl className={classes.formControl}>
               <TextField
                 type="number"
-                id="reserve"
+                id="capacity_reserve"
+                name="capacity_reserve"
                 label="Reserved Capacity"
+                inputRef={register({ required: true })}
                 value={reserve}
                 onChange={handleReserveChange}
               />

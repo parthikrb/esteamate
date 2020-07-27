@@ -8,11 +8,10 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
-import theme from "../../pages/theme";
 
 const useStyles = makeStyles({
   root: {
-    minWidth: "70%",
+    minWidth: "100%",
     animation: `$reduceWidth 5000ms easeInOut 500ms`,
   },
   container: {
@@ -49,10 +48,6 @@ const columns = [
     label: "Username",
   },
   {
-    id: "email",
-    label: "Email",
-  },
-  {
     id: "role",
     label: "Role",
   },
@@ -81,9 +76,14 @@ const ListUsersComponent = ({ users, sendUserDetails }) => {
   const isSelected = (username) => selectedRow === username;
 
   return (
-    <Paper style={selectedRow ? { width: "70%" } : { width: "100%" }}>
+    <Paper>
       <TableContainer className={classes.container}>
-        <Table className={classes.table} stickyHeader aria-label="User Table">
+        <Table
+          className={classes.table}
+          size="small"
+          stickyHeader
+          aria-label="User Table"
+        >
           <TableHead className={classes.tableHead}>
             <TableRow>
               {columns.map((column) => (
@@ -122,7 +122,7 @@ const ListUsersComponent = ({ users, sendUserDetails }) => {
       </TableContainer>
       <TablePagination
         className={classes.pagination}
-        rowsPerPageOptions={[10, 15, 20]}
+        rowsPerPageOptions={[5, 10]}
         component="div"
         count={users.length}
         rowsPerPage={rowsPerPage}

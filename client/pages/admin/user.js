@@ -6,6 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 import AddUserComponent from "../../components/users/add-user";
 import ListUsersComponent from "../../components/users/list-users";
 import UserDetailsComponent from "../../components/users/user-details";
+import SearchUserComponent from "../../components/users/search-user";
 
 const useStyles = makeStyles({
   root: {
@@ -15,8 +16,8 @@ const useStyles = makeStyles({
   },
   fab: {
     position: "absolute",
-    bottom: 5,
-    right: 5,
+    bottom: 2,
+    right: 4,
   },
   drawer: {
     width: "60%",
@@ -26,28 +27,52 @@ const useStyles = makeStyles({
     width: "60%",
     margin: "auto",
   },
+  userTable: {
+    display: "inline-block",
+  },
 });
 
 const User = ({ users }) => {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [userDetails, setUserDetails] = useState(undefined);
+  const [filterColumn, setFilterColumn] = useState(undefined);
+  const [query, setQuery] = useState(undefined);
 
   const fetchUserDetails = (details) => {
     console.log(details);
     setUserDetails(details);
   };
 
+  const fetchQueryDetails = (column, query) => {
+    setFilterColumn(column);
+    setQuery(query);
+  };
+
   return (
     <Fragment>
       <div className={classes.root}>
-        <ListUsersComponent users={users} sendUserDetails={fetchUserDetails} />
+        <div
+          className={classes.userTable}
+          style={userDetails ? { width: "70%" } : { width: "100%" }}
+        >
+          <SearchUserComponent setQueryDetails={fetchQueryDetails} />
+          <ListUsersComponent
+            users={
+              filterColumn
+                ? users.filter((user) => user[filterColumn].toLowerCase().includes(query))
+                : users
+            }
+            sendUserDetails={fetchUserDetails}
+          />
+        </div>
         {userDetails && <UserDetailsComponent userDetails={userDetails} />}
 
         <Fab
           className={classes.fab}
           color="primary"
           aria-label="add"
+          size="small"
           onClick={() => setOpenDrawer(true)}
         >
           <AddIcon />
