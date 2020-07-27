@@ -15,8 +15,8 @@ const useStyles = makeStyles({
   },
   fab: {
     position: "absolute",
-    bottom: 5,
-    right: 5,
+    bottom: 2,
+    right: 4,
   },
   drawer: {
     width: "60%",
@@ -48,6 +48,7 @@ const User = ({ users }) => {
           className={classes.fab}
           color="primary"
           aria-label="add"
+          size="small"
           onClick={() => setOpenDrawer(true)}
         >
           <AddIcon />

@@ -52,10 +52,6 @@ const columns = [
     id: "email",
     label: "Email",
   },
-  {
-    id: "role",
-    label: "Role",
-  },
 ];
 
 const ListUsersComponent = ({ users, sendUserDetails }) => {
