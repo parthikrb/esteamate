@@ -6,7 +6,7 @@ import AddIcon from "@material-ui/icons/Add";
 import AddUserComponent from "../../components/users/add-user";
 import ListUsersComponent from "../../components/users/list-users";
 import UserDetailsComponent from "../../components/users/user-details";
-import SearchUserComponent from "../../components/users/search-user";
+import SearchComponent from "../../components/shared/search";
 
 const useStyles = makeStyles({
   root: {
@@ -49,6 +49,8 @@ const User = ({ users }) => {
     setQuery(query);
   };
 
+  const filterableColumns = ["firstname", "lastname", "username"];
+
   return (
     <Fragment>
       <div className={classes.root}>
@@ -56,11 +58,16 @@ const User = ({ users }) => {
           className={classes.userTable}
           style={userDetails ? { width: "70%" } : { width: "100%" }}
         >
-          <SearchUserComponent setQueryDetails={fetchQueryDetails} />
+          <SearchComponent
+            filterableColumns={filterableColumns}
+            setQueryDetails={fetchQueryDetails}
+          />
           <ListUsersComponent
             users={
               filterColumn
-                ? users.filter((user) => user[filterColumn].toLowerCase().includes(query))
+                ? users.filter((user) =>
+                    user[filterColumn].toLowerCase().includes(query)
+                  )
                 : users
             }
             sendUserDetails={fetchUserDetails}
