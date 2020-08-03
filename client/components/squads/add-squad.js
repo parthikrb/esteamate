@@ -15,25 +15,18 @@ import {
   Button,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import {
+  styleRoot,
+  styleAppBar,
+  styleAppBarTitle,
+  styleCancelButton,
+  styleAddControls,
+} from "../../helpers/shared-styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     width: "100%",
-  },
-  formControl: {
-    margin: "5px 10px",
-    width: "-webkit-fill-available",
-  },
-  appBar: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  cancelBtn: {
-    color: theme.palette.error.main,
-    marginRight: "20px",
   },
 }));
 
@@ -76,13 +69,13 @@ const AddSquadComponent = ({ users }) => {
 
   return (
     <Fragment>
-      <form className={classes.root} autoComplete="off">
+      <form style={styleRoot} autoComplete="off">
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
             <AppBar position="static">
               <Toolbar>
-                <Typography className={classes.title} variant="h5">
+                <Typography style={styleAppBarTitle} variant="h5">
                   Add Squad
                 </Typography>
                 <FormControlLabel
@@ -95,7 +88,7 @@ const AddSquadComponent = ({ users }) => {
                   }
                   label="Add More"
                 />
-                <Button variant="outlined" className={classes.cancelBtn}>
+                <Button variant="outlined" style={styleCancelButton}>
                   Cancel
                 </Button>
                 <Button variant="outlined" color="secondary">
@@ -105,7 +98,7 @@ const AddSquadComponent = ({ users }) => {
             </AppBar>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 id="squadname"
                 label="Squadname"
@@ -117,7 +110,7 @@ const AddSquadComponent = ({ users }) => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <Autocomplete
                 multiple
                 id="productOwner"
@@ -139,7 +132,7 @@ const AddSquadComponent = ({ users }) => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <Autocomplete
                 multiple
                 id="scrumMaster"
@@ -161,7 +154,7 @@ const AddSquadComponent = ({ users }) => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <Autocomplete
                 multiple
                 id="scrumTeam"

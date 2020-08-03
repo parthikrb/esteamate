@@ -88,6 +88,7 @@ export default function Menu(props) {
 
   const handleAdminMenuClick = () => {
     setMenuList(adminRoute);
+    router.push('/admin');
   };
 
   const handlePlannerMenuClick = () => {

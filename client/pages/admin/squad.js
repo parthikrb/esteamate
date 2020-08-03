@@ -1,62 +1,69 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Fab, Drawer } from "@material-ui/core";
+import { Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import AddSquadComponent from "../../components/squads/add-squad";
+import SearchComponent from "../../components/shared/search";
+import { styleRoot, styleAddFAB } from "../../helpers/shared-styles";
+import AddDrawerComponent from "../../components/shared/add-drawer";
+import ListSquadsComponent from "../../components/squads/list-squads";
 
 const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    height: "100%",
-    position: "relative",
-  },
-  fab: {
-    position: "absolute",
-    bottom: 5,
-    right: 5,
-  },
-  drawer: {
-    width: "60%",
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: "60%",
-    margin: "auto",
+  tableContent: {
+    display: "inline-block",
   },
 });
 
-const Squad = ({ users }) => {
+const Squad = ({ users, squads }) => {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [filterColumn, setFilterColumn] = useState(undefined);
+  const [query, setQuery] = useState(undefined);
+  const [squadDetails, setSquadDetails] = useState(undefined);
+
+  const fetchSquadDetails = (details) => {
+    setSquadDetails(details);
+  };
+
+  const fetchQueryDetails = (column, query) => {
+    setFilterColumn(column);
+    setQuery(query);
+  };
+
+  const filterableColumns = ["squadname"];
+
+  const closingDrawer = () => {
+    setOpenDrawer(false);
+  };
 
   return (
     <Fragment>
-      <div className={classes.root}>
-        <div className={classes.content}>
-          {users.map((user) => (
-            <h3 key={user.username}>{user.firstname}</h3>
-          ))}
+      <div style={styleRoot}>
+        <div
+          className={classes.tableContent}
+          style={squadDetails ? { width: "70%" } : { width: "100%" }}
+        >
+          <SearchComponent
+            filterableColumns={filterableColumns}
+            setQueryDetails={fetchQueryDetails}
+          />
+          <ListSquadsComponent
+            rows={squads}
+            sendRowDetails={fetchSquadDetails}
+          />
         </div>
         <Fab
-          className={classes.fab}
+          style={styleAddFAB}
           color="primary"
           aria-label="add"
           onClick={() => setOpenDrawer(true)}
         >
           <AddIcon />
         </Fab>
-        <Drawer
-          className={classes.drawer}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          anchor="bottom"
-          open={openDrawer}
-          onClose={() => setOpenDrawer(false)}
-        >
+        <AddDrawerComponent shouldOpen={openDrawer} shouldClose={closingDrawer}>
           <AddSquadComponent users={users} />
-        </Drawer>
+        </AddDrawerComponent>
       </div>
     </Fragment>
   );
@@ -64,9 +71,10 @@ const Squad = ({ users }) => {
 
 Squad.getInitialProps = async (context, client) => {
   const userResponse = await client.get("/api/users");
-  console.log(`Users - ${JSON.stringify(userResponse.data)}`);
+  const squadResponse = await client.get("/api/squads");
+  console.log(`Squads - ${JSON.stringify(squadResponse.data)}`);
 
-  return { users: userResponse.data };
+  return { users: userResponse.data, squads: squadResponse.data };
 };
 
 export default Squad;
