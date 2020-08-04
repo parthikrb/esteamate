@@ -17,25 +17,18 @@ import {
 } from "@material-ui/core";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import {
+  styleRoot,
+  styleAddControls,
+  styleCancelButton,
+  styleAppBarTitle,
+  styleAppBar,
+} from "../../helpers/shared-styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     width: "100%",
-  },
-  formControl: {
-    margin: "5px 10px",
-    width: "-webkit-fill-available",
-  },
-  appBar: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  cancelBtn: {
-    color: theme.palette.error.main,
-    marginRight: "20px",
   },
 }));
 
@@ -105,16 +98,16 @@ const AddUserComponent = () => {
   return (
     <Fragment>
       <form
-        className={classes.root}
+        style={styleRoot}
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
-            <AppBar position="static">
+            <AppBar position="static" style={styleAppBar}>
               <Toolbar>
-                <Typography className={classes.title} variant="h5">
+                <Typography style={styleAppBarTitle} variant="h5">
                   Add User
                 </Typography>
                 <FormControlLabel
@@ -127,7 +120,7 @@ const AddUserComponent = () => {
                   }
                   label="Add More"
                 />
-                <Button variant="outlined" className={classes.cancelBtn}>
+                <Button variant="outlined" style={styleCancelButton}>
                   Cancel
                 </Button>
                 <Button type="submit" variant="outlined" color="secondary">
@@ -137,7 +130,7 @@ const AddUserComponent = () => {
             </AppBar>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 id="firstname"
                 name="firstname"
@@ -152,7 +145,7 @@ const AddUserComponent = () => {
             {errors.firstname && <span>This field is required</span>}
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 id="lastname"
                 name="lastname"
@@ -165,7 +158,7 @@ const AddUserComponent = () => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 id="username"
                 name="username"
@@ -178,7 +171,7 @@ const AddUserComponent = () => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 type="password"
                 id="password"
@@ -192,7 +185,7 @@ const AddUserComponent = () => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 id="email"
                 name="email"
@@ -205,30 +198,7 @@ const AddUserComponent = () => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            {/* <FormControl className={classes.formControl}>
-              <TextField
-                classes={{ root: classes.root }}
-                select
-                name="role"
-                id="role"
-                label="Role"
-                inputRef={register({ required: true })}
-                required
-                SelectProps={{
-                  multiple: false,
-                  value: role,
-                  onChange: handleRoleChange,
-                }}
-              >
-                <MenuItem value={"Developer"}>Developer</MenuItem>
-                <MenuItem value={"Quality Analyst"}>Quality Analyst</MenuItem>
-                <MenuItem value={"Business Analyst"}>Business Analyst</MenuItem>
-                <MenuItem value={"Scrum Master"}>Scrum Master</MenuItem>
-                <MenuItem value={"Product Owner"}>Product Owner</MenuItem>
-                <MenuItem value={"Manager"}>Manager</MenuItem>
-              </TextField>
-            </FormControl> */}
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <InputLabel htmlFor="role">Role</InputLabel>
               <Select
                 native
@@ -252,7 +222,7 @@ const AddUserComponent = () => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -267,7 +237,7 @@ const AddUserComponent = () => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 type="number"
                 id="capacity_reserve"

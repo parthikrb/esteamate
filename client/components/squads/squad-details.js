@@ -6,11 +6,10 @@ import {
   Divider,
   Avatar,
   Typography,
-  Tooltip,
+  Chip,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import theme from "../../pages/theme";
 import {
   styleDetailsCard,
   styleDetailsActionButton,
@@ -28,28 +27,22 @@ const useStyles = makeStyles({
   contentSubtitle: {
     fontSize: ".6rem",
   },
+  chip: {
+    marginRight: 2,
+  },
 });
 
-const UserDetailsComponent = React.memo(({ userDetails }) => {
+const SquadDetailsComponent = React.memo(({ squadDetails }) => {
   const classes = useStyles();
 
   const randomColor = `#${(((1 << 24) * Math.random()) | 0).toString(16)}`;
+
   return (
     <Paper style={styleDetailsCard} elevation={3}>
-      <Fab
-        variant="extended"
-        size="small"
-        style={styleDetailsActionButton}
-        // className={[classes.actionButton, classes.deleteButton].join(" ")}
-      >
+      <Fab variant="extended" size="small" style={styleDetailsActionButton}>
         <DeleteIcon /> Delete
       </Fab>
-      <Fab
-        variant="extended"
-        size="small"
-        style={styleDetailsActionButton}
-        // className={[classes.actionButton, classes.editButton].join(" ")}
-      >
+      <Fab variant="extended" size="small" style={styleDetailsActionButton}>
         <EditIcon /> Edit
       </Fab>
       <Divider />
@@ -58,35 +51,45 @@ const UserDetailsComponent = React.memo(({ userDetails }) => {
         style={{ ...styleDetailsAvatar, backgroundColor: randomColor }}
       >
         <span style={styleDetailsAvatarText}>
-          {`${userDetails.firstname
-            .charAt(0)
-            .toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`}
+          {`${squadDetails.squad_name.charAt(0).toUpperCase()}`}
         </span>
       </Avatar>
-      {Object.keys(userDetails).map((key) => {
+      {Object.keys(squadDetails).map((key) => {
         return (
-          key !== "id" && (
+          key === "scrum_team" && (
             <div className={classes.contentRow} key={key}>
-              <Tooltip
-                title={userDetails[key].toString()}
-                arrow
-                placement="left-start"
-              >
-                <Typography
-                  noWrap
-                  variant="h6"
-                  color="primary"
-                  className={classes.contentTitle}
-                >
-                  {userDetails[key].toString()}
-                </Typography>
-              </Tooltip>
               <Typography
                 variant="body2"
                 color="secondary"
                 className={classes.contentSubtitle}
               >
                 {key.toLocaleUpperCase()}
+              </Typography>
+              <Typography
+                noWrap
+                variant="h6"
+                color="primary"
+                className={classes.contentTitle}
+              >
+                {typeof squadDetails[key] === "string"
+                  ? squadDetails[key].toString()
+                  : squadDetails[key].map((v) => {
+                      return (
+                        <Chip
+                          className={classes.chip}
+                          variant="outlined"
+                          size="small"
+                          key={v.id}
+                          avatar={
+                            <Avatar>
+                              {`${v.firstname.charAt(0).toUpperCase()}`}
+                            </Avatar>
+                          }
+                          label={`${v.firstname} ${v.lastname}`}
+                          color="primary"
+                        />
+                      );
+                    })}
               </Typography>
             </div>
           )
@@ -96,4 +99,4 @@ const UserDetailsComponent = React.memo(({ userDetails }) => {
   );
 });
 
-export default UserDetailsComponent;
+export default SquadDetailsComponent;

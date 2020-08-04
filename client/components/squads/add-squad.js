@@ -15,25 +15,20 @@ import {
   Button,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import {
+  styleRoot,
+  styleAppBar,
+  styleAppBarTitle,
+  styleCancelButton,
+  styleAddControls,
+} from "../../helpers/shared-styles";
+import axios from "axios";
+import { useForm, Controller } from "react-hook-form";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     width: "100%",
-  },
-  formControl: {
-    margin: "5px 10px",
-    width: "-webkit-fill-available",
-  },
-  appBar: {
-    backgroundColor: theme.palette.primary.main,
-  },
-  title: {
-    flexGrow: 1,
-  },
-  cancelBtn: {
-    color: theme.palette.error.main,
-    marginRight: "20px",
   },
 }));
 
@@ -46,9 +41,10 @@ const AddSquadComponent = ({ users }) => {
   const [scrumMaster, setScrumMaster] = useState([]);
   const [scrumTeam, setScrumTeam] = useState([]);
 
+  const { register, handleSubmit } = useForm();
   const { addToast } = useToasts();
 
-  const handleAddMoreChange = (event) => {
+    const handleAddMoreChange = (event) => {
     setAddMore(event.target.checked);
   };
 
@@ -74,15 +70,34 @@ const AddSquadComponent = ({ users }) => {
     setScrumTeam(selectedST);
   };
 
+  const handleClick = async () => {
+    const data = {
+      squad_name: squadName,
+      product_owner: productOwner,
+      scrum_master: scrumMaster,
+      scrum_team: scrumTeam,
+    };
+
+    await axios
+      .post("/api/squads", { ...data })
+      .then((res) => {
+        addToast("Squad Added", { appearance: "success" });
+      })
+      .catch((res, err) => {
+        addToast(res.message, { appearance: "error" });
+      });
+    console.log("Button Clicked");
+  };
+
   return (
     <Fragment>
-      <form className={classes.root} autoComplete="off">
+      <form style={styleRoot} autoComplete="off" onSubmit={handleSubmit()}>
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
-            <AppBar position="static">
+            <AppBar position="static" style={styleAppBar}>
               <Toolbar>
-                <Typography className={classes.title} variant="h5">
+                <Typography style={styleAppBarTitle} variant="h5">
                   Add Squad
                 </Typography>
                 <FormControlLabel
@@ -95,20 +110,27 @@ const AddSquadComponent = ({ users }) => {
                   }
                   label="Add More"
                 />
-                <Button variant="outlined" className={classes.cancelBtn}>
+                <Button variant="outlined" style={styleCancelButton}>
                   Cancel
                 </Button>
-                <Button variant="outlined" color="secondary">
+                <Button
+                  type="submit"
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => handleClick()}
+                >
                   Save
                 </Button>
               </Toolbar>
             </AppBar>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <TextField
                 id="squadname"
+                name="squadname"
                 label="Squadname"
+                inputRef={register({ required: true })}
                 value={squadName}
                 onChange={handleSquadNameChange}
                 required
@@ -117,7 +139,7 @@ const AddSquadComponent = ({ users }) => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <Autocomplete
                 multiple
                 id="productOwner"
@@ -132,6 +154,8 @@ const AddSquadComponent = ({ users }) => {
                   <TextField
                     {...params}
                     label="Product Owner"
+                    name="productOwner"
+                    inputRef={register({ required: true })}
                     placeholder="Parthiban Baskar"
                   />
                 )}
@@ -139,7 +163,7 @@ const AddSquadComponent = ({ users }) => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <Autocomplete
                 multiple
                 id="scrumMaster"
@@ -154,6 +178,7 @@ const AddSquadComponent = ({ users }) => {
                   <TextField
                     {...params}
                     label="Scrum Master"
+                    name="scrumMaster"
                     placeholder="Parthiban Baskar"
                   />
                 )}
@@ -161,7 +186,7 @@ const AddSquadComponent = ({ users }) => {
             </FormControl>
           </Grid>
           <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
+            <FormControl style={styleAddControls}>
               <Autocomplete
                 multiple
                 id="scrumTeam"
@@ -175,6 +200,8 @@ const AddSquadComponent = ({ users }) => {
                 renderInput={(params) => (
                   <TextField
                     {...params}
+                    name="scrumTeam"
+                    inputRef={register({ required: true })}
                     label="Scrum Team"
                     placeholder="Parthiban Baskar"
                   />

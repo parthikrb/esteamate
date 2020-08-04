@@ -1,33 +1,17 @@
 import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Fab, Drawer, Paper } from "@material-ui/core";
+import { Fab } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import AddUserComponent from "../../components/users/add-user";
 import ListUsersComponent from "../../components/users/list-users";
 import UserDetailsComponent from "../../components/users/user-details";
-import SearchUserComponent from "../../components/users/search-user";
+import SearchComponent from "../../components/shared/search";
+import { styleRoot, styleAddFAB } from "../../helpers/shared-styles";
+import AddDrawerComponent from "../../components/shared/add-drawer";
 
 const useStyles = makeStyles({
-  root: {
-    display: "flex",
-    height: "100%",
-    position: "relative",
-  },
-  fab: {
-    position: "absolute",
-    bottom: 2,
-    right: 4,
-  },
-  drawer: {
-    width: "60%",
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: "60%",
-    margin: "auto",
-  },
-  userTable: {
+  tableContent: {
     display: "inline-block",
   },
 });
@@ -49,27 +33,38 @@ const User = ({ users }) => {
     setQuery(query);
   };
 
+  const filterableColumns = ["firstname", "lastname", "username"];
+
+  const closingDrawer = () => {
+    setOpenDrawer(false);
+  };
+
   return (
     <Fragment>
-      <div className={classes.root}>
+      <div style={styleRoot}>
         <div
-          className={classes.userTable}
+          className={classes.tableContent}
           style={userDetails ? { width: "70%" } : { width: "100%" }}
         >
-          <SearchUserComponent setQueryDetails={fetchQueryDetails} />
+          <SearchComponent
+            filterableColumns={filterableColumns}
+            setQueryDetails={fetchQueryDetails}
+          />
           <ListUsersComponent
-            users={
+            rows={
               filterColumn
-                ? users.filter((user) => user[filterColumn].toLowerCase().includes(query))
+                ? users.filter((user) =>
+                    user[filterColumn].toLowerCase().includes(query)
+                  )
                 : users
             }
-            sendUserDetails={fetchUserDetails}
+            sendRowDetails={fetchUserDetails}
           />
         </div>
         {userDetails && <UserDetailsComponent userDetails={userDetails} />}
 
         <Fab
-          className={classes.fab}
+          style={styleAddFAB}
           color="primary"
           aria-label="add"
           size="small"
@@ -77,17 +72,10 @@ const User = ({ users }) => {
         >
           <AddIcon />
         </Fab>
-        <Drawer
-          className={classes.drawer}
-          classes={{
-            paper: classes.drawerPaper,
-          }}
-          anchor="bottom"
-          open={openDrawer}
-          onClose={() => setOpenDrawer(false)}
-        >
+
+        <AddDrawerComponent shouldOpen={openDrawer} shouldClose={closingDrawer}>
           <AddUserComponent />
-        </Drawer>
+        </AddDrawerComponent>
       </div>
     </Fragment>
   );

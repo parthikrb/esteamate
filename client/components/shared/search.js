@@ -1,5 +1,4 @@
 import React, { useState, Fragment, useEffect } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Select,
   MenuItem,
@@ -7,16 +6,10 @@ import {
   InputLabel,
   TextField,
 } from "@material-ui/core";
+import capitalize from "../../helpers/capitalize";
+import { styleSearchControls } from "../../helpers/shared-styles";
 
-const useStyles = makeStyles({
-  formControl: {
-    margin: "10px",
-    width: "47%",
-  },
-});
-
-const SearchUserComponent = ({ setQueryDetails }) => {
-  const classes = useStyles();
+const SearchComponent = ({ filterableColumns, setQueryDetails }) => {
   const [filterColumn, setFilterColumn] = useState("");
   const [filterQuery, setFilterQuery] = useState("");
 
@@ -34,7 +27,7 @@ const SearchUserComponent = ({ setQueryDetails }) => {
 
   return (
     <Fragment>
-      <FormControl className={classes.formControl}>
+      <FormControl style={styleSearchControls}>
         <InputLabel htmlFor="filter-column">Filter column</InputLabel>
         <Select
           labelId="filter-column"
@@ -45,12 +38,16 @@ const SearchUserComponent = ({ setQueryDetails }) => {
           onChange={handleChange}
           fullWidth
         >
-          <MenuItem value={"firstname"}>Firstname</MenuItem>
-          <MenuItem value={"lastname"}>Lastname</MenuItem>
-          <MenuItem value={"username"}>Username</MenuItem>
+          {filterableColumns.map((column) => {
+            return (
+              <MenuItem value={column} key={column}>
+                {capitalize(column)}
+              </MenuItem>
+            );
+          })}
         </Select>
       </FormControl>
-      <FormControl className={classes.formControl}>
+      <FormControl style={styleSearchControls}>
         <TextField
           id="filter-query"
           label="Query"
@@ -63,4 +60,4 @@ const SearchUserComponent = ({ setQueryDetails }) => {
   );
 };
 
-export default SearchUserComponent;
+export default SearchComponent;

@@ -7,7 +7,7 @@ import BusinessCenterIcon from "@material-ui/icons/BusinessCenter";
 const adminRoute = [
   {
     label: "User",
-    path: "/admin/user",
+    path: "/admin",
     icon: <PersonIcon />,
   },
   {
