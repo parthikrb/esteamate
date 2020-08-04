@@ -8,6 +8,9 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TablePagination from "@material-ui/core/TablePagination";
 import TableRow from "@material-ui/core/TableRow";
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
+import FaceIcon from "@material-ui/icons/Face";
 
 const useStyles = makeStyles({
   root: {
@@ -23,6 +26,9 @@ const useStyles = makeStyles({
   pagination: {
     bottom: 0,
     position: "absolute",
+  },
+  chip: {
+    marginRight: 5,
   },
   "@keyframes reduceWidth": {
     "0%": {
@@ -91,7 +97,27 @@ const ListTableComponent = ({ columns, rows, sendRowDetails }) => {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {value}
+                          {typeof value === "string"
+                            ? value
+                            : value.map((v) => {
+                                return (
+                                  <Chip
+                                    className={classes.chip}
+                                    variant="outlined"
+                                    size="small"
+                                    key={v.id}
+                                    avatar={
+                                      <Avatar>
+                                        {`${v.firstname
+                                          .charAt(0)
+                                          .toUpperCase()}`}
+                                      </Avatar>
+                                    }
+                                    label={`${v.firstname} ${v.lastname}`}
+                                    color="primary"
+                                  />
+                                );
+                              })}
                         </TableCell>
                       );
                     })}

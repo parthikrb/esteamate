@@ -8,6 +8,7 @@ import SearchComponent from "../../components/shared/search";
 import { styleRoot, styleAddFAB } from "../../helpers/shared-styles";
 import AddDrawerComponent from "../../components/shared/add-drawer";
 import ListSquadsComponent from "../../components/squads/list-squads";
+import SquadDetailsComponent from "../../components/squads/squad-details";
 
 const useStyles = makeStyles({
   tableContent: {
@@ -18,11 +19,12 @@ const useStyles = makeStyles({
 const Squad = ({ users, squads }) => {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [squadDetails, setSquadDetails] = useState(undefined);
   const [filterColumn, setFilterColumn] = useState(undefined);
   const [query, setQuery] = useState(undefined);
-  const [squadDetails, setSquadDetails] = useState(undefined);
 
   const fetchSquadDetails = (details) => {
+    console.log(details);
     setSquadDetails(details);
   };
 
@@ -31,7 +33,7 @@ const Squad = ({ users, squads }) => {
     setQuery(query);
   };
 
-  const filterableColumns = ["squadname"];
+  const filterableColumns = ["squad_name"];
 
   const closingDrawer = () => {
     setOpenDrawer(false);
@@ -49,18 +51,27 @@ const Squad = ({ users, squads }) => {
             setQueryDetails={fetchQueryDetails}
           />
           <ListSquadsComponent
-            rows={squads}
+            rows={
+              filterColumn
+                ? squads.filter((squad) => {
+                    squad[filterColumn].toLowerCase().includes(query);
+                  })
+                : squads
+            }
             sendRowDetails={fetchSquadDetails}
           />
         </div>
+        {squadDetails && <SquadDetailsComponent squadDetails={squadDetails} />}
         <Fab
           style={styleAddFAB}
           color="primary"
           aria-label="add"
+          size="small"
           onClick={() => setOpenDrawer(true)}
         >
           <AddIcon />
         </Fab>
+
         <AddDrawerComponent shouldOpen={openDrawer} shouldClose={closingDrawer}>
           <AddSquadComponent users={users} />
         </AddDrawerComponent>

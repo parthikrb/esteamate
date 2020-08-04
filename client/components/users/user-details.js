@@ -11,34 +11,14 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import theme from "../../pages/theme";
+import {
+  styleDetailsCard,
+  styleDetailsActionButton,
+  styleDetailsAvatar,
+  styleDetailsAvatarText,
+} from "../../helpers/shared-styles";
 
 const useStyles = makeStyles({
-  root: {
-    width: "27%",
-    marginLeft: "25px",
-    backgroundColor: "#EDF5F5",
-  },
-  actionButton: {
-    width: "42% !important",
-    margin: "10px 10px",
-  },
-  deleteButton: {
-    backgroundColor: "red",
-  },
-  editButton: {
-    backgroundColor: theme.palette.secondary.main,
-  },
-  avatar: {
-    width: "120px",
-    height: "120px",
-    margin: "10px auto auto auto",
-    boxShadow:
-      "inset 0 1px 0 rgba(255,255,255,0.5), 0 2px 2px rgba(0, 0, 0, 0.19)",
-  },
-  avatarText: {
-    fontWeight: "bold",
-    fontSize: "50px",
-  },
   contentRow: {
     margin: "5px 0px 0px 20px",
   },
@@ -50,32 +30,34 @@ const useStyles = makeStyles({
   },
 });
 
-const UserDetailsComponent = ({ userDetails }) => {
+const UserDetailsComponent = React.memo(({ userDetails }) => {
   const classes = useStyles();
 
   const randomColor = `#${(((1 << 24) * Math.random()) | 0).toString(16)}`;
   return (
-    <Paper className={classes.root} elevation={3}>
+    <Paper style={styleDetailsCard} elevation={3}>
       <Fab
         variant="extended"
         size="small"
-        className={[classes.actionButton, classes.deleteButton].join(" ")}
+        style={styleDetailsActionButton}
+        // className={[classes.actionButton, classes.deleteButton].join(" ")}
       >
         <DeleteIcon /> Delete
       </Fab>
       <Fab
         variant="extended"
         size="small"
-        className={[classes.actionButton, classes.editButton].join(" ")}
+        style={styleDetailsActionButton}
+        // className={[classes.actionButton, classes.editButton].join(" ")}
       >
         <EditIcon /> Edit
       </Fab>
       <Divider />
       <Avatar
-        className={classes.avatar}
-        style={{ backgroundColor: randomColor }}
+        // className={classes.avatar}
+        style={{ ...styleDetailsAvatar, backgroundColor: randomColor }}
       >
-        <span className={classes.avatarText}>
+        <span style={styleDetailsAvatarText}>
           {`${userDetails.firstname
             .charAt(0)
             .toUpperCase()}${userDetails.lastname.charAt(0).toUpperCase()}`}
@@ -112,6 +94,6 @@ const UserDetailsComponent = ({ userDetails }) => {
       })}
     </Paper>
   );
-};
+});
 
 export default UserDetailsComponent;

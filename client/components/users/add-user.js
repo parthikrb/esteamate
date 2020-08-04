@@ -18,6 +18,7 @@ import {
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import {
+  styleRoot,
   styleAddControls,
   styleCancelButton,
   styleAppBarTitle,
@@ -97,7 +98,7 @@ const AddUserComponent = () => {
   return (
     <Fragment>
       <form
-        className={classes.root}
+        style={styleRoot}
         autoComplete="off"
         onSubmit={handleSubmit(onSubmit)}
       >
