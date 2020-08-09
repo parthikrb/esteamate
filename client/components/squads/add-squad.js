@@ -1,31 +1,22 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useToasts } from "react-toast-notifications";
 import {
   TextField,
-  AppBar,
-  Toolbar,
   CssBaseline,
-  Typography,
   FormControl,
-  FormControlLabel,
-  Chip,
-  Checkbox,
   Grid,
-  Button,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import AddHeaderComponent from "../shared/add-header";
 import {
   styleRoot,
-  styleAppBar,
-  styleAppBarTitle,
-  styleCancelButton,
   styleAddControls,
 } from "../../helpers/shared-styles";
 import axios from "axios";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     width: "100%",
@@ -33,9 +24,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddSquadComponent = ({ users }) => {
-  const classes = useStyles();
 
-  const [addMore, setAddMore] = useState(false);
+  const [, setAddMore] = useState(false);
   const [squadName, setSquadName] = useState("");
   const [productOwner, setProductOwner] = useState([]);
   const [scrumMaster, setScrumMaster] = useState([]);
@@ -44,7 +34,7 @@ const AddSquadComponent = ({ users }) => {
   const { register, handleSubmit } = useForm();
   const { addToast } = useToasts();
 
-    const handleAddMoreChange = (event) => {
+  const handleAddMoreChange = (event) => {
     setAddMore(event.target.checked);
   };
 
@@ -70,7 +60,7 @@ const AddSquadComponent = ({ users }) => {
     setScrumTeam(selectedST);
   };
 
-  const handleClick = async () => {
+  const handleSave = async () => {
     const data = {
       squad_name: squadName,
       product_owner: productOwner,
@@ -80,10 +70,10 @@ const AddSquadComponent = ({ users }) => {
 
     await axios
       .post("/api/squads", { ...data })
-      .then((res) => {
+      .then(() => {
         addToast("Squad Added", { appearance: "success" });
       })
-      .catch((res, err) => {
+      .catch((res) => {
         addToast(res.message, { appearance: "error" });
       });
     console.log("Button Clicked");
@@ -95,34 +85,10 @@ const AddSquadComponent = ({ users }) => {
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
-            <AppBar position="static" style={styleAppBar}>
-              <Toolbar>
-                <Typography style={styleAppBarTitle} variant="h5">
-                  Add Squad
-                </Typography>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={addMore}
-                      onChange={handleAddMoreChange}
-                      name="addMore"
-                    />
-                  }
-                  label="Add More"
-                />
-                <Button variant="outlined" style={styleCancelButton}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => handleClick()}
-                >
-                  Save
-                </Button>
-              </Toolbar>
-            </AppBar>
+            <AddHeaderComponent
+              isAddMore={handleAddMoreChange}
+              shouldSave={handleSave}
+            />
           </Grid>
           <Grid item xs={6}>
             <FormControl style={styleAddControls}>

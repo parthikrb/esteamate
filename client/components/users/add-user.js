@@ -3,29 +3,23 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useToasts } from "react-toast-notifications";
 import {
   TextField,
-  AppBar,
-  Toolbar,
   CssBaseline,
-  Typography,
   FormControl,
   FormControlLabel,
   Checkbox,
   Grid,
-  Button,
   InputLabel,
   Select,
 } from "@material-ui/core";
+import AddHeaderComponent from "../shared/add-header";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import {
   styleRoot,
   styleAddControls,
-  styleCancelButton,
-  styleAppBarTitle,
-  styleAppBar,
 } from "../../helpers/shared-styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     width: "100%",
@@ -33,7 +27,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddUserComponent = () => {
-  const classes = useStyles();
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [username, setUsername] = useState("");
@@ -42,18 +35,18 @@ const AddUserComponent = () => {
   const [role, setRole] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [reserve, setReserve] = useState(0);
-  const [addMore, setAddMore] = useState(false);
+  const [, setAddMore] = useState(false);
 
   const { register, handleSubmit, errors } = useForm();
   const { addToast } = useToasts();
 
-  const onSubmit = async (data) => {
+  const handleSave = async (data) => {
     await axios
       .post("/api/users/signup", { ...data })
-      .then((res) => {
+      .then(() => {
         addToast("User Added", { appearance: "success" });
       })
-      .catch((res, err) => {
+      .catch((res) => {
         addToast(res.message, { appearance: "error" });
       });
     console.log(data);
@@ -100,34 +93,15 @@ const AddUserComponent = () => {
       <form
         style={styleRoot}
         autoComplete="off"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(handleSave)}
       >
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
-            <AppBar position="static" style={styleAppBar}>
-              <Toolbar>
-                <Typography style={styleAppBarTitle} variant="h5">
-                  Add User
-                </Typography>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={addMore}
-                      onChange={handleAddMoreChange}
-                      name="addMore"
-                    />
-                  }
-                  label="Add More"
-                />
-                <Button variant="outlined" style={styleCancelButton}>
-                  Cancel
-                </Button>
-                <Button type="submit" variant="outlined" color="secondary">
-                  Save
-                </Button>
-              </Toolbar>
-            </AppBar>
+            <AddHeaderComponent
+              isAddMore={handleAddMoreChange}
+              shouldSave={handleSave}
+            />
           </Grid>
           <Grid item xs={6}>
             <FormControl style={styleAddControls}>
