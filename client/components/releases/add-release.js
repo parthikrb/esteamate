@@ -1,45 +1,37 @@
 import React, { Fragment, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { useToasts } from "react-toast-notifications";
+import "date-fns";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
 import {
   TextField,
-  AppBar,
-  Toolbar,
   CssBaseline,
-  Typography,
   FormControl,
   FormControlLabel,
-  Chip,
-  Checkbox,
   Grid,
-  Button,
+  Switch,
+  Input,
+  InputLabel,
+  InputAdornment,
 } from "@material-ui/core";
-import {
-  styleRoot,
-  styleAppBar,
-  styleAppBarTitle,
-  styleCancelButton,
-  styleAddControls,
-} from "../../helpers/shared-styles";
-import axios from "axios";
+import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import AddHeaderComponent from "../shared/add-header";
 import { useForm } from "react-hook-form";
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    width: "100%",
-  },
-}));
 
 const AddReleaseComponent = ({ squads }) => {
   const [addMore, setAddMore] = useState(false);
-  const [squadname, setSquadName] = useState("");
+  const [squadName, setSquadName] = useState("");
   const [releaseName, setReleaseName] = useState("");
-  const [startDate, setStartDate] = useState(undefined);
-  const [endDate, setEndDate] = useState(undefined);
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [devReserve, setDevReserve] = useState(undefined);
+  const [qaReserve, setQAReserve] = useState(undefined);
+  const [isReleaseConfig, setIsReleaseConfig] = useState(false);
 
-  const { register, handleSubmit } = useForm();
-  const { addToast } = useToasts();
+  const { handleSubmit: handleSave } = useForm();
 
   const handleAddMoreChange = (event) => {
     setAddMore(event.target.checked);
@@ -53,54 +45,160 @@ const AddReleaseComponent = ({ squads }) => {
     setReleaseName(event.target.value);
   };
 
-  const handleStartDateChange = (event) => {
-    setStartDate(event.target.value);
+  const handleStartDateChange = (date) => {
+    setStartDate(date);
   };
 
-  const handleEndDateChange = (event) => {
-    setEndDate(event.target.value);
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+  };
+
+  const handleDevReserveChange = (event) => {
+    setDevReserve(event.target.value);
+  };
+
+  const handleQaReserveChange = (event) => {
+    setQAReserve(event.target.value);
+  };
+
+  const handleIsReleaseConfigChange = (event) => {
+    setIsReleaseConfig(event.target.checked);
   };
 
   return (
     <Fragment>
-      <form style={styleRoot} autoComplete="off" onSubmit={handleSubmit()}>
-        <Grid container spacing={0}>
-          <Grid item xs={12}>
-            <CssBaseline />
-            <AppBar position="static" style={styleAppBar}>
-              <Toolbar>
-                <Typography style={styleAppBarTitle} variant="h5">
-                  Add Release
-                </Typography>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <form style={styleRoot} autoComplete="off" onSubmit={handleSave()}>
+          <Grid container spacing={0}>
+            <Grid item xs={12}>
+              <CssBaseline />
+              <AddHeaderComponent
+                headerName="Add Release"
+                isAddMore={handleAddMoreChange}
+                shouldSave={handleSave}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl style={styleAddControls}>
+                <Autocomplete
+                  id="squadName"
+                  options={squads}
+                  onChange={handleSquadNameChange}
+                  size="small"
+                  getOptionLabel={(option) => `${option.squad_name}`}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Squad Name"
+                      name="squadName"
+                      placeholder="Squad"
+                    />
+                  )}
+                ></Autocomplete>
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl style={styleAddControls}>
+                <TextField
+                  id="releaseName"
+                  name="releaseName"
+                  label="Release Name"
+                  value={releaseName}
+                  onChange={handleReleaseNameChange}
+                  required
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl style={styleAddControls}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="MM/dd/yyyy"
+                  margin="normal"
+                  id="start-date-picker"
+                  label="Start Date"
+                  value={startDate}
+                  autoOk
+                  onChange={handleStartDateChange}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={6}>
+              <FormControl style={styleAddControls}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="MM/dd/yyyy"
+                  margin="normal"
+                  id="end-date-picker"
+                  label="End Date"
+                  value={endDate}
+                  autoOk
+                  minDate={new Date(startDate)}
+                  onChange={handleEndDateChange}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl style={styleAddControls}>
+                <InputLabel htmlFor="devReserve">
+                  Development Reserve
+                </InputLabel>
+                <Input
+                  type="number"
+                  id="devReserve"
+                  label="Development Reserve"
+                  value={devReserve}
+                  onChange={handleDevReserveChange}
+                  endAdornment={
+                    <InputAdornment position="end">%</InputAdornment>
+                  }
+                  required
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl style={styleAddControls}>
+                <InputLabel htmlFor="qaReserve">QA Reserve</InputLabel>
+                <Input
+                  type="number"
+                  id="qaReserve"
+                  label="QA Reserve"
+                  value={qaReserve}
+                  onChange={handleQaReserveChange}
+                  endAdornment={
+                    <InputAdornment position="end">%</InputAdornment>
+                  }
+                  required
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={4}>
+              <FormControl style={styleAddControls}>
                 <FormControlLabel
                   control={
-                    <Checkbox
-                      checked={addMore}
-                      onChange={handleAddMoreChange}
-                      name="addMore"
+                    <Switch
+                      checked={isReleaseConfig}
+                      onChange={handleIsReleaseConfigChange}
+                      name="isReleaseConfig"
                     />
                   }
-                  label="Add More"
+                  label="Is Release Config?"
                 />
-                <Button variant="outlined" style={styleCancelButton}>
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  variant="outlined"
-                  color="secondary"
-                  onClick={() => handleSave()}
-                >
-                  Save
-                </Button>
-              </Toolbar>
-            </AppBar>
+              </FormControl>
+            </Grid>
           </Grid>
-          <Grid item xs={6}>
-              
-          </Grid>
-        </Grid>
-      </form>
+        </form>
+      </MuiPickersUtilsProvider>
     </Fragment>
   );
 };
+
+export default AddReleaseComponent;

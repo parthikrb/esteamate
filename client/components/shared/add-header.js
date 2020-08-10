@@ -13,7 +13,7 @@ import {
   styleCancelButton,
 } from "../../helpers/shared-styles";
 
-const AddHeaderComponent = ({ isAddMore, shouldSave }) => {
+const AddHeaderComponent = ({ headerName, isAddMore, shouldSave }) => {
   const [addMore, setAddMore] = useState(false);
 
   const handleAddMoreChange = (event) => {
@@ -29,7 +29,7 @@ const AddHeaderComponent = ({ isAddMore, shouldSave }) => {
     <AppBar position="static" style={styleAppBar}>
       <Toolbar>
         <Typography style={styleAppBarTitle} variant="h5">
-          Add Squad
+          {headerName}
         </Typography>
         <FormControlLabel
           control={

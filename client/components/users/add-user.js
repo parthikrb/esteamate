@@ -14,10 +14,7 @@ import {
 import AddHeaderComponent from "../shared/add-header";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import {
-  styleRoot,
-  styleAddControls,
-} from "../../helpers/shared-styles";
+import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -99,6 +96,7 @@ const AddUserComponent = () => {
           <Grid item xs={12}>
             <CssBaseline />
             <AddHeaderComponent
+              headerName="Add User"
               isAddMore={handleAddMoreChange}
               shouldSave={handleSave}
             />

@@ -1,18 +1,10 @@
 import React, { Fragment, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useToasts } from "react-toast-notifications";
-import {
-  TextField,
-  CssBaseline,
-  FormControl,
-  Grid,
-} from "@material-ui/core";
+import { TextField, CssBaseline, FormControl, Grid } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddHeaderComponent from "../shared/add-header";
-import {
-  styleRoot,
-  styleAddControls,
-} from "../../helpers/shared-styles";
+import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
@@ -24,7 +16,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 const AddSquadComponent = ({ users }) => {
-
   const [, setAddMore] = useState(false);
   const [squadName, setSquadName] = useState("");
   const [productOwner, setProductOwner] = useState([]);
@@ -86,6 +77,7 @@ const AddSquadComponent = ({ users }) => {
           <Grid item xs={12}>
             <CssBaseline />
             <AddHeaderComponent
+              headerName="Add Squad"
               isAddMore={handleAddMoreChange}
               shouldSave={handleSave}
             />
