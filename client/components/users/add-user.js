@@ -1,5 +1,4 @@
 import React, { Fragment, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
 import { useToasts } from "react-toast-notifications";
 import {
   TextField,
@@ -15,13 +14,7 @@ import AddHeaderComponent from "../shared/add-header";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
-
-const useStyles = makeStyles(() => ({
-  root: {
-    display: "flex",
-    width: "100%",
-  },
-}));
+import RequiredField from "../../helpers/required-field";
 
 const AddUserComponent = () => {
   const [firstname, setFirstname] = useState("");
@@ -33,8 +26,18 @@ const AddUserComponent = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [reserve, setReserve] = useState(0);
   const [, setAddMore] = useState(false);
+  const [error, setError] = useState(false);
 
-  const { register, handleSubmit, errors } = useForm();
+  const [formErrors, setFormErrors] = useState({
+    firstname: false,
+    lastname: false,
+    username: false,
+    password: false,
+    email: false,
+    role: false,
+  });
+
+  const { register, handleSubmit } = useForm();
   const { addToast } = useToasts();
 
   const handleSave = async (data) => {
@@ -47,6 +50,22 @@ const AddUserComponent = () => {
         addToast(res.message, { appearance: "error" });
       });
     console.log(data);
+  };
+
+  const validateField = (event) => {
+    const formFieldErrors = { ...formErrors };
+    const valueLength =
+      typeof event.target.value === "string"
+        ? event.target.value.trim().length
+        : event.target.value.length;
+
+    if (valueLength === 0) {
+      formFieldErrors[event.target.name] = true;
+    } else {
+      formFieldErrors[event.target.name] = false;
+    }
+    setError(Object.values(formFieldErrors).includes(true));
+    setFormErrors(formFieldErrors);
   };
 
   const handleFirstnameChange = (event) => {
@@ -99,6 +118,7 @@ const AddUserComponent = () => {
               headerName="Add User"
               isAddMore={handleAddMoreChange}
               shouldSave={handleSave}
+              disableSave={error}
             />
           </Grid>
           <Grid item xs={6}>
@@ -110,11 +130,12 @@ const AddUserComponent = () => {
                 inputRef={register({ required: true })}
                 value={firstname}
                 onChange={handleFirstnameChange}
+                onBlur={validateField}
                 required
                 autoFocus
+                error={formErrors.firstname}
               />
             </FormControl>
-            {errors.firstname && <span>This field is required</span>}
           </Grid>
           <Grid item xs={6}>
             <FormControl style={styleAddControls}>
@@ -125,7 +146,9 @@ const AddUserComponent = () => {
                 inputRef={register({ required: true })}
                 value={lastname}
                 onChange={handleLastnameChange}
+                onBlur={validateField}
                 required
+                error={formErrors.lastname}
               />
             </FormControl>
           </Grid>
@@ -138,7 +161,9 @@ const AddUserComponent = () => {
                 inputRef={register({ required: true })}
                 value={username}
                 onChange={handleUsernameChange}
+                onBlur={validateField}
                 required
+                error={formErrors.username}
               />
             </FormControl>
           </Grid>
@@ -152,7 +177,9 @@ const AddUserComponent = () => {
                 inputRef={register({ required: true })}
                 value={password}
                 onChange={handlePasswordChange}
+                onBlur={validateField}
                 required
+                error={formErrors.password}
               />
             </FormControl>
           </Grid>
@@ -165,7 +192,9 @@ const AddUserComponent = () => {
                 inputRef={register({ required: true })}
                 value={email}
                 onChange={handleEmailChange}
+                onBlur={validateField}
                 required
+                error={formErrors.email}
               />
             </FormControl>
           </Grid>
@@ -176,12 +205,14 @@ const AddUserComponent = () => {
                 native
                 value={role}
                 onChange={handleRoleChange}
+                onBlur={validateField}
                 inputProps={{
                   name: "role",
                   id: "role",
                 }}
                 inputRef={register({ required: true })}
                 required
+                error={formErrors.role}
               >
                 <option aria-label="None" value="" />
                 <option value={"Developer"}>Developer</option>
@@ -221,6 +252,11 @@ const AddUserComponent = () => {
               />
             </FormControl>
           </Grid>
+          {error && (
+            <Grid item xs={12}>
+              <RequiredField />
+            </Grid>
+          )}
         </Grid>
       </form>
     </Fragment>

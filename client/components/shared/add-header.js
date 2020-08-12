@@ -13,7 +13,12 @@ import {
   styleCancelButton,
 } from "../../helpers/shared-styles";
 
-const AddHeaderComponent = ({ headerName, isAddMore, shouldSave }) => {
+const AddHeaderComponent = ({
+  headerName,
+  isAddMore,
+  shouldSave,
+  disableSave,
+}) => {
   const [addMore, setAddMore] = useState(false);
 
   const handleAddMoreChange = (event) => {
@@ -49,6 +54,7 @@ const AddHeaderComponent = ({ headerName, isAddMore, shouldSave }) => {
           variant="outlined"
           color="secondary"
           onClick={() => handleSave()}
+          disabled={disableSave}
         >
           Save
         </Button>
