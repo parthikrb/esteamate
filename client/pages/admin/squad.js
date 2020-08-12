@@ -83,8 +83,7 @@ const Squad = ({ users, squads }) => {
 Squad.getInitialProps = async (context, client) => {
   const userResponse = await client.get("/api/users");
   const squadResponse = await client.get("/api/squads");
-  console.log(`Squads - ${JSON.stringify(squadResponse.data)}`);
-
+  
   return { users: userResponse.data, squads: squadResponse.data };
 };
 
