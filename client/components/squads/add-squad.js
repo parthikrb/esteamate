@@ -7,6 +7,7 @@ import AddHeaderComponent from "../shared/add-header";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import axios from "axios";
 import { useForm } from "react-hook-form";
+import RequiredField from "../shared/required-field";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -17,46 +18,63 @@ const useStyles = makeStyles(() => ({
 
 const AddSquadComponent = ({ users }) => {
   const [, setAddMore] = useState(false);
-  const [squadName, setSquadName] = useState("");
-  const [productOwner, setProductOwner] = useState([]);
-  const [scrumMaster, setScrumMaster] = useState([]);
-  const [scrumTeam, setScrumTeam] = useState([]);
+
+  const [formFields, setFormFields] = useState({
+    squadName: "",
+    productOwner: [],
+    scrumMaster: [],
+    scrumTeam: [],
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    squadName: false,
+    productOwner: false,
+    scrumMaster: false,
+    scrumTeam: false,
+  });
+
+  const [error, setError] = useState(false);
 
   const { register, handleSubmit } = useForm();
   const { addToast } = useToasts();
+
+  const validateField = (event) => {
+    const formFieldErrors = { ...formErrors };
+    const valueLength =
+      typeof event.target.value === "string"
+        ? event.target.value.trim().length
+        : event.target.value.length;
+
+    formFieldErrors[event.target.name] = valueLength === 0 ? true : false;
+
+    setError(Object.values(formFieldErrors).includes(true));
+    setFormErrors(formFieldErrors);
+  };
+
+  const handleValueChange = (event, value) => {
+    const formValues = { ...formFields };
+    const selectedValues = [];
+
+    if (value) {
+      value.map((v) => selectedValues.push(v.id));
+      formValues[event.target.name] = selectedValues;
+    } else {
+      formValues[event.target.name] = event.target.value;
+    }
+
+    setFormFields(formValues);
+  };
 
   const handleAddMoreChange = (event) => {
     setAddMore(event.target.checked);
   };
 
-  const handleSquadNameChange = (event) => {
-    setSquadName(event.target.value);
-  };
-
-  const handleProductOwnerChange = (event, values) => {
-    const selectedPO = [];
-    values.map((value) => selectedPO.push(value.id));
-    setProductOwner(selectedPO);
-  };
-
-  const handleScrumMasterChange = (event, values) => {
-    const selectedSM = [];
-    values.map((value) => selectedSM.push(value.id));
-    setScrumMaster(selectedSM);
-  };
-
-  const handleScrumTeamChange = (event, values) => {
-    const selectedST = [];
-    values.map((value) => selectedST.push(value.id));
-    setScrumTeam(selectedST);
-  };
-
   const handleSave = async () => {
     const data = {
-      squad_name: squadName,
-      product_owner: productOwner,
-      scrum_master: scrumMaster,
-      scrum_team: scrumTeam,
+      squad_name: formFields.squadName,
+      product_owner: formFields.productOwner,
+      scrum_master: formFields.scrumMaster,
+      scrum_team: formFields.scrumTeam,
     };
 
     await axios
@@ -72,7 +90,7 @@ const AddSquadComponent = ({ users }) => {
 
   return (
     <Fragment>
-      <form style={styleRoot} autoComplete="off" onSubmit={handleSubmit()}>
+      <form style={styleRoot} autoComplete="off">
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
@@ -86,13 +104,14 @@ const AddSquadComponent = ({ users }) => {
             <FormControl style={styleAddControls}>
               <TextField
                 id="squadname"
-                name="squadname"
+                name="squadName"
                 label="Squadname"
-                inputRef={register({ required: true })}
-                value={squadName}
-                onChange={handleSquadNameChange}
+                value={formFields.squadName}
+                onChange={handleValueChange}
+                onBlur={validateField}
                 required
                 autoFocus
+                error={formErrors.squadName}
               />
             </FormControl>
           </Grid>
@@ -102,7 +121,8 @@ const AddSquadComponent = ({ users }) => {
                 multiple
                 id="productOwner"
                 options={users}
-                onChange={handleProductOwnerChange}
+                onChange={handleValueChange}
+                onClose={validateField}
                 size="small"
                 getOptionLabel={(option) =>
                   `${option.firstname} ${option.lastname}`
@@ -113,8 +133,8 @@ const AddSquadComponent = ({ users }) => {
                     {...params}
                     label="Product Owner"
                     name="productOwner"
-                    inputRef={register({ required: true })}
                     placeholder="Parthiban Baskar"
+                    error={formErrors.productOwner}
                   />
                 )}
               />
@@ -130,7 +150,8 @@ const AddSquadComponent = ({ users }) => {
                   `${option.firstname} ${option.lastname}`
                 }
                 size="small"
-                onChange={handleScrumMasterChange}
+                onChange={handleValueChange}
+                onClose={validateField}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
@@ -138,6 +159,7 @@ const AddSquadComponent = ({ users }) => {
                     label="Scrum Master"
                     name="scrumMaster"
                     placeholder="Parthiban Baskar"
+                    error={formErrors.scrumMaster}
                   />
                 )}
               />
@@ -153,20 +175,26 @@ const AddSquadComponent = ({ users }) => {
                   `${option.firstname} ${option.lastname}`
                 }
                 size="small"
-                onChange={handleScrumTeamChange}
+                onChange={handleValueChange}
+                onClose={validateField}
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     name="scrumTeam"
-                    inputRef={register({ required: true })}
                     label="Scrum Team"
                     placeholder="Parthiban Baskar"
+                    error={formErrors.scrumTeam}
                   />
                 )}
               />
             </FormControl>
           </Grid>
+          {error && (
+            <Grid item xs={12}>
+              <RequiredField />
+            </Grid>
+          )}
         </Grid>
       </form>
     </Fragment>

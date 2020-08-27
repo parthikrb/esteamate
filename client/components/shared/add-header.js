@@ -50,10 +50,10 @@ const AddHeaderComponent = ({
           Cancel
         </Button>
         <Button
-          type="submit"
+          // type="submit"
           variant="outlined"
           color="secondary"
-          onClick={() => handleSave()}
+          onClick={handleSave}
           disabled={disableSave}
         >
           Save

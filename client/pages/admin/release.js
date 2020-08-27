@@ -7,6 +7,8 @@ import AddReleaseComponent from "../../components/releases/add-release";
 import SearchComponent from "../../components/shared/search";
 import { styleRoot, styleAddFAB } from "../../helpers/shared-styles";
 import AddDrawerComponent from "../../components/shared/add-drawer";
+import ListReleasesComponent from "../../components/releases/list-releases";
+import ReleaseDetailsComponent from "../../components/releases/release-details";
 
 const useStyles = makeStyles({
   tableContent: {
@@ -14,16 +16,16 @@ const useStyles = makeStyles({
   },
 });
 
-const Release = ({ squads }) => {
+const Release = ({ squads, releases }) => {
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [releaseDetails, setReleaseDetails] = useState(undefined);
   const [filterColumn, setFilterColumn] = useState(undefined);
   const [query, setQuery] = useState(undefined);
 
-  const fetchSquadDetails = (details) => {
+  const fetchReleaseDetails = (details) => {
     console.log(details);
-    setSquadDetails(details);
+    setReleaseDetails(details);
   };
 
   const fetchQueryDetails = (column, query) => {
@@ -31,7 +33,7 @@ const Release = ({ squads }) => {
     setQuery(query);
   };
 
-  const filterableColumns = ["squad_name", "release_name"];
+  const filterableColumns = ["squad", "release_name"];
 
   const closingDrawer = () => {
     setOpenDrawer(false);
@@ -47,7 +49,20 @@ const Release = ({ squads }) => {
             filterableColumns={filterableColumns}
             setQueryDetails={fetchQueryDetails}
           />
+          <ListReleasesComponent
+            rows={
+              filterColumn
+                ? releases.filter((release) => {
+                    release[filterColumn].toLowerCase().includes(query);
+                  })
+                : releases
+            }
+            sendRowDetails={fetchReleaseDetails}
+          />
         </div>
+        {releaseDetails && (
+          <ReleaseDetailsComponent releaseDetails={releaseDetails} />
+        )}
         <Fab
           style={styleAddFAB}
           color="primary"
@@ -69,7 +84,7 @@ Release.getInitialProps = async (context, client) => {
   const squadResponse = await client.get("/api/squads");
   const releaseResponse = await client.get("/api/releases");
 
-  console.log(`Releases - ${JSON.stringify(releaseResponse.data)}`);
+  console.log(releaseResponse.data);
   return { squads: squadResponse.data, releases: releaseResponse.data };
 };
 

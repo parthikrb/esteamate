@@ -17,6 +17,7 @@ import {
   styleDetailsAvatar,
   styleDetailsAvatarText,
 } from "../../helpers/shared-styles";
+import randomColor from "../../helpers/random-color";
 
 const useStyles = makeStyles({
   contentRow: {
@@ -33,7 +34,6 @@ const useStyles = makeStyles({
 const UserDetailsComponent = React.memo(({ userDetails }) => {
   const classes = useStyles();
 
-  const randomColor = `#${(((1 << 24) * Math.random()) | 0).toString(16)}`;
   return (
     <Paper style={styleDetailsCard} elevation={3}>
       <Fab
@@ -55,7 +55,7 @@ const UserDetailsComponent = React.memo(({ userDetails }) => {
       <Divider />
       <Avatar
         // className={classes.avatar}
-        style={{ ...styleDetailsAvatar, backgroundColor: randomColor }}
+        style={{ ...styleDetailsAvatar, backgroundColor: randomColor() }}
       >
         <span style={styleDetailsAvatarText}>
           {`${userDetails.firstname

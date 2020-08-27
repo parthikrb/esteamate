@@ -5,7 +5,7 @@ import {
   CssBaseline,
   FormControl,
   FormControlLabel,
-  Checkbox,
+  Switch,
   Grid,
   InputLabel,
   Select,
@@ -14,19 +14,22 @@ import AddHeaderComponent from "../shared/add-header";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
-import RequiredField from "../../helpers/required-field";
+import RequiredField from "../shared/required-field";
 
 const AddUserComponent = () => {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [reserve, setReserve] = useState(0);
   const [, setAddMore] = useState(false);
   const [error, setError] = useState(false);
+
+  const [formFields, setFormFields] = useState({
+    firstname: "",
+    lastname: "",
+    username: "",
+    password: "",
+    email: "",
+    role: "",
+    isAdmin: false,
+    capacity_reserve: 0,
+  });
 
   const [formErrors, setFormErrors] = useState({
     firstname: false,
@@ -37,19 +40,17 @@ const AddUserComponent = () => {
     role: false,
   });
 
-  const { register, handleSubmit } = useForm();
   const { addToast } = useToasts();
 
-  const handleSave = async (data) => {
+  const handleSave = async () => {
     await axios
-      .post("/api/users/signup", { ...data })
+      .post("/api/users/signup", formFields)
       .then(() => {
         addToast("User Added", { appearance: "success" });
       })
       .catch((res) => {
         addToast(res.message, { appearance: "error" });
       });
-    console.log(data);
   };
 
   const validateField = (event) => {
@@ -59,45 +60,20 @@ const AddUserComponent = () => {
         ? event.target.value.trim().length
         : event.target.value.length;
 
-    if (valueLength === 0) {
-      formFieldErrors[event.target.name] = true;
-    } else {
-      formFieldErrors[event.target.name] = false;
-    }
+    formFieldErrors[event.target.name] = valueLength === 0 ? true : false;
+
     setError(Object.values(formFieldErrors).includes(true));
     setFormErrors(formFieldErrors);
   };
 
-  const handleFirstnameChange = (event) => {
-    setFirstname(event.target.value);
-  };
-
-  const handleLastnameChange = (event) => {
-    setLastname(event.target.value);
-  };
-
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handleRoleChange = (event) => {
-    setRole(event.target.value);
-  };
-
-  const handleIsAdminChange = (event) => {
-    setIsAdmin(event.target.checked);
-  };
-
-  const handleReserveChange = (event) => {
-    setReserve(event.target.value);
+  const handleValueChange = (event) => {
+    const formValues = { ...formFields };
+    const value =
+      event.target.type === "checkbox"
+        ? event.target.checked
+        : event.target.value;
+    formValues[event.target.name] = value;
+    setFormFields(formValues);
   };
 
   const handleAddMoreChange = (event) => {
@@ -106,11 +82,7 @@ const AddUserComponent = () => {
 
   return (
     <Fragment>
-      <form
-        style={styleRoot}
-        autoComplete="off"
-        onSubmit={handleSubmit(handleSave)}
-      >
+      <form style={styleRoot} autoComplete="off">
         <Grid container spacing={0}>
           <Grid item xs={12}>
             <CssBaseline />
@@ -127,9 +99,8 @@ const AddUserComponent = () => {
                 id="firstname"
                 name="firstname"
                 label="Firstname"
-                inputRef={register({ required: true })}
-                value={firstname}
-                onChange={handleFirstnameChange}
+                value={formFields.firstname}
+                onChange={handleValueChange}
                 onBlur={validateField}
                 required
                 autoFocus
@@ -143,9 +114,8 @@ const AddUserComponent = () => {
                 id="lastname"
                 name="lastname"
                 label="Lastname"
-                inputRef={register({ required: true })}
-                value={lastname}
-                onChange={handleLastnameChange}
+                value={formFields.lastname}
+                onChange={handleValueChange}
                 onBlur={validateField}
                 required
                 error={formErrors.lastname}
@@ -158,9 +128,8 @@ const AddUserComponent = () => {
                 id="username"
                 name="username"
                 label="Username"
-                inputRef={register({ required: true })}
-                value={username}
-                onChange={handleUsernameChange}
+                value={formFields.username}
+                onChange={handleValueChange}
                 onBlur={validateField}
                 required
                 error={formErrors.username}
@@ -174,9 +143,8 @@ const AddUserComponent = () => {
                 id="password"
                 name="password"
                 label="Password"
-                inputRef={register({ required: true })}
-                value={password}
-                onChange={handlePasswordChange}
+                value={formFields.password}
+                onChange={handleValueChange}
                 onBlur={validateField}
                 required
                 error={formErrors.password}
@@ -189,9 +157,8 @@ const AddUserComponent = () => {
                 id="email"
                 name="email"
                 label="Email"
-                inputRef={register({ required: true })}
-                value={email}
-                onChange={handleEmailChange}
+                value={formFields.email}
+                onChange={handleValueChange}
                 onBlur={validateField}
                 required
                 error={formErrors.email}
@@ -203,14 +170,13 @@ const AddUserComponent = () => {
               <InputLabel htmlFor="role">Role</InputLabel>
               <Select
                 native
-                value={role}
-                onChange={handleRoleChange}
+                value={formFields.role}
+                onChange={handleValueChange}
                 onBlur={validateField}
                 inputProps={{
                   name: "role",
                   id: "role",
                 }}
-                inputRef={register({ required: true })}
                 required
                 error={formErrors.role}
               >
@@ -228,10 +194,9 @@ const AddUserComponent = () => {
             <FormControl style={styleAddControls}>
               <FormControlLabel
                 control={
-                  <Checkbox
-                    checked={isAdmin}
-                    inputRef={register}
-                    onChange={handleIsAdminChange}
+                  <Switch
+                    checked={formFields.isAdmin}
+                    onChange={handleValueChange}
                     name="isAdmin"
                   />
                 }
@@ -246,9 +211,8 @@ const AddUserComponent = () => {
                 id="capacity_reserve"
                 name="capacity_reserve"
                 label="Reserved Capacity"
-                inputRef={register({ required: true })}
-                value={reserve}
-                onChange={handleReserveChange}
+                value={formFields.capacity_reserve}
+                onChange={handleValueChange}
               />
             </FormControl>
           </Grid>

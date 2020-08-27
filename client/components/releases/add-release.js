@@ -19,56 +19,95 @@ import {
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddHeaderComponent from "../shared/add-header";
-import { useForm } from "react-hook-form";
+import axios from "axios";
+import RequiredField from "../shared/required-field";
 
 const AddReleaseComponent = ({ squads }) => {
   const [addMore, setAddMore] = useState(false);
-  const [squadName, setSquadName] = useState("");
-  const [releaseName, setReleaseName] = useState("");
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-  const [devReserve, setDevReserve] = useState(undefined);
-  const [qaReserve, setQAReserve] = useState(undefined);
-  const [isReleaseConfig, setIsReleaseConfig] = useState(false);
 
-  const { handleSubmit: handleSave } = useForm();
+  const [formFields, setFormFields] = useState({
+    squadName: "",
+    releaseName: "",
+    startDate: new Date(),
+    endDate: new Date(),
+    devReserve: 0,
+    qaReserve: 0,
+    isReleaseConfig: false,
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    squadName: false,
+    releaseName: false,
+    startDate: false,
+    endDate: false,
+    devReserve: false,
+    qaReserve: false,
+    isReleaseConfig: false,
+  });
+
+  const [error, setError] = useState(false);
+
+  const handleSave = async () => {
+    const data = {
+      squad: formFields.squadName,
+      release_name: formFields.releaseName,
+      start_date: formFields.startDate,
+      end_date: formFields.endDate,
+      dev_reserve: formFields.devReserve,
+      qa_reserve: formFields.qaReserve,
+      is_release_reserve: formFields.isReleaseConfig,
+    };
+    await axios.post("/api/releases", { ...data });
+  };
+
+  const validateField = (event) => {
+    const formFieldErrors = { ...formErrors };
+    const valueLength =
+      typeof event.target.value === "string"
+        ? event.target.value.trim().length
+        : event.target.value.length;
+
+    formFieldErrors[event.target.name] = valueLength === 0 ? true : false;
+
+    setError(Object.values(formFieldErrors).includes(true));
+    setFormErrors(formFieldErrors);
+  };
+
+  const handleValueChange = (event, value) => {
+    console.log(typeof value);
+    const formValues = { ...formFields };
+    const values =
+      event.target.type === "checkbox" ? value : event.target.value;
+
+    formValues[event.target.name] =
+      value && typeof value !== "boolean"
+        ? value.id
+        : value && event.target.type === "checkbox"
+        ? value
+        : values;
+    setFormFields(formValues);
+  };
 
   const handleAddMoreChange = (event) => {
     setAddMore(event.target.checked);
   };
 
-  const handleSquadNameChange = (event) => {
-    setSquadName(event.target.value);
-  };
-
-  const handleReleaseNameChange = (event) => {
-    setReleaseName(event.target.value);
-  };
-
   const handleStartDateChange = (date) => {
-    setStartDate(date);
+    const formValues = { ...formFields };
+    formValues.startDate = date;
+    setFormFields(formValues);
   };
 
   const handleEndDateChange = (date) => {
-    setEndDate(date);
-  };
-
-  const handleDevReserveChange = (event) => {
-    setDevReserve(event.target.value);
-  };
-
-  const handleQaReserveChange = (event) => {
-    setQAReserve(event.target.value);
-  };
-
-  const handleIsReleaseConfigChange = (event) => {
-    setIsReleaseConfig(event.target.checked);
+    const formValues = { ...formFields };
+    formValues.endDate = date;
+    setFormFields(formValues);
   };
 
   return (
     <Fragment>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <form style={styleRoot} autoComplete="off" onSubmit={handleSave()}>
+        <form style={styleRoot} autoComplete="off">
           <Grid container spacing={0}>
             <Grid item xs={12}>
               <CssBaseline />
@@ -76,6 +115,7 @@ const AddReleaseComponent = ({ squads }) => {
                 headerName="Add Release"
                 isAddMore={handleAddMoreChange}
                 shouldSave={handleSave}
+                disableSave={error}
               />
             </Grid>
             <Grid item xs={6}>
@@ -83,7 +123,8 @@ const AddReleaseComponent = ({ squads }) => {
                 <Autocomplete
                   id="squadName"
                   options={squads}
-                  onChange={handleSquadNameChange}
+                  onChange={handleValueChange}
+                  onClose={validateField}
                   size="small"
                   getOptionLabel={(option) => `${option.squad_name}`}
                   renderInput={(params) => (
@@ -92,6 +133,7 @@ const AddReleaseComponent = ({ squads }) => {
                       label="Squad Name"
                       name="squadName"
                       placeholder="Squad"
+                      error={formErrors.squadName}
                     />
                   )}
                 ></Autocomplete>
@@ -103,8 +145,10 @@ const AddReleaseComponent = ({ squads }) => {
                   id="releaseName"
                   name="releaseName"
                   label="Release Name"
-                  value={releaseName}
-                  onChange={handleReleaseNameChange}
+                  value={formFields.releaseName}
+                  onChange={handleValueChange}
+                  onBlur={validateField}
+                  error={formErrors.releaseName}
                   required
                 />
               </FormControl>
@@ -118,7 +162,7 @@ const AddReleaseComponent = ({ squads }) => {
                   margin="normal"
                   id="start-date-picker"
                   label="Start Date"
-                  value={startDate}
+                  value={formFields.startDate}
                   autoOk
                   onChange={handleStartDateChange}
                   KeyboardButtonProps={{
@@ -136,9 +180,9 @@ const AddReleaseComponent = ({ squads }) => {
                   margin="normal"
                   id="end-date-picker"
                   label="End Date"
-                  value={endDate}
+                  value={formFields.endDate}
                   autoOk
-                  minDate={new Date(startDate)}
+                  minDate={new Date(formFields.startDate)}
                   onChange={handleEndDateChange}
                   KeyboardButtonProps={{
                     "aria-label": "change date",
@@ -154,9 +198,10 @@ const AddReleaseComponent = ({ squads }) => {
                 <Input
                   type="number"
                   id="devReserve"
+                  name="devReserve"
                   label="Development Reserve"
-                  value={devReserve}
-                  onChange={handleDevReserveChange}
+                  value={formFields.devReserve}
+                  onChange={handleValueChange}
                   endAdornment={
                     <InputAdornment position="end">%</InputAdornment>
                   }
@@ -170,9 +215,10 @@ const AddReleaseComponent = ({ squads }) => {
                 <Input
                   type="number"
                   id="qaReserve"
+                  name="qaReserve"
                   label="QA Reserve"
-                  value={qaReserve}
-                  onChange={handleQaReserveChange}
+                  value={formFields.qaReserve}
+                  onChange={handleValueChange}
                   endAdornment={
                     <InputAdornment position="end">%</InputAdornment>
                   }
@@ -185,8 +231,8 @@ const AddReleaseComponent = ({ squads }) => {
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={isReleaseConfig}
-                      onChange={handleIsReleaseConfigChange}
+                      checked={formFields.isReleaseConfig}
+                      onChange={handleValueChange}
                       name="isReleaseConfig"
                     />
                   }
@@ -194,6 +240,11 @@ const AddReleaseComponent = ({ squads }) => {
                 />
               </FormControl>
             </Grid>
+            {error && (
+              <Grid item xs={12}>
+                <RequiredField />
+              </Grid>
+            )}
           </Grid>
         </form>
       </MuiPickersUtilsProvider>

@@ -40,7 +40,8 @@ const useStyles = makeStyles({
   },
 });
 
-const ListTableComponent = ({ columns, rows, sendRowDetails }) => {
+const ListTableComponent = React.memo(({ columns, rows, sendRowDetails }) => {
+  console.log(rows);
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -99,6 +100,8 @@ const ListTableComponent = ({ columns, rows, sendRowDetails }) => {
                         <TableCell key={column.id} align={column.align}>
                           {typeof value === "string"
                             ? value
+                            : Object.keys(value).length === 2
+                            ? value.squad_name
                             : value.map((v) => {
                                 return (
                                   <Chip
@@ -139,6 +142,6 @@ const ListTableComponent = ({ columns, rows, sendRowDetails }) => {
       />
     </Paper>
   );
-};
+});
 
 export default ListTableComponent;
