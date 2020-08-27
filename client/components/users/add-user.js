@@ -69,7 +69,7 @@ const AddUserComponent = () => {
   const handleValueChange = (event) => {
     const formValues = { ...formFields };
     const value =
-      event.target.name === "isAdmin"
+      event.target.type === "checkbox"
         ? event.target.checked
         : event.target.value;
     formValues[event.target.name] = value;

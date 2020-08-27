@@ -14,7 +14,7 @@ router.get(
         }
 
         const releases = await Release
-            .findOne({})
+            .find({})
             .populate('squad')
             .exec();
 
@@ -22,4 +22,4 @@ router.get(
     }
 );
 
-export { router as showAllReleaseRouter};
+export { router as showAllReleaseRouter };
