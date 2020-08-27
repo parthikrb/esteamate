@@ -64,7 +64,9 @@ const ReleaseDetailsComponent = React.memo(({ releaseDetails }) => {
                   color="primary"
                   className={classes.contentTitle}
                 >
-                  {releaseDetails[key].toString()}
+                  {key.includes("date")
+                    ? releaseDetails[key].substring(0, 10)
+                    : releaseDetails[key].toString()}
                 </Typography>
               </Tooltip>
               <Typography

@@ -23,12 +23,14 @@ const useStyles = makeStyles({
   },
   contentTitle: {
     marginBottom: "-7px",
+    display: "contents",
   },
   contentSubtitle: {
     fontSize: ".6rem",
   },
   chip: {
     marginRight: 2,
+    marginTop: '5px',
   },
 });
 
