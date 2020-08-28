@@ -24,7 +24,6 @@ const Release = ({ squads, releases }) => {
   const [query, setQuery] = useState(undefined);
 
   const fetchReleaseDetails = (details) => {
-    console.log(details);
     setReleaseDetails(details);
   };
 
@@ -33,7 +32,7 @@ const Release = ({ squads, releases }) => {
     setQuery(query);
   };
 
-  const filterableColumns = ["squad", "release_name"];
+  const filterableColumns = ["Squad", "Release Name"];
 
   const closingDrawer = () => {
     setOpenDrawer(false);
@@ -51,9 +50,15 @@ const Release = ({ squads, releases }) => {
           />
           <ListReleasesComponent
             rows={
-              filterColumn
+              filterColumn === "Squad" && query.length > 0
                 ? releases.filter((release) => {
-                    release[filterColumn].toLowerCase().includes(query);
+                    return release.squad.squad_name
+                      .toLowerCase()
+                      .includes(query);
+                  })
+                : filterColumn === "Release Name" && query.length > 0
+                ? releases.filter((release) => {
+                    return release.release_name.toLowerCase().includes(query);
                   })
                 : releases
             }
@@ -84,7 +89,6 @@ Release.getInitialProps = async (context, client) => {
   const squadResponse = await client.get("/api/squads");
   const releaseResponse = await client.get("/api/releases");
 
-  console.log(releaseResponse.data);
   return { squads: squadResponse.data, releases: releaseResponse.data };
 };
 

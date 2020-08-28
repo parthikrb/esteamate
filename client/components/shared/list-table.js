@@ -29,6 +29,7 @@ const useStyles = makeStyles({
   },
   chip: {
     marginRight: 5,
+    marginBottom: 5,
   },
   "@keyframes reduceWidth": {
     "0%": {
@@ -98,9 +99,12 @@ const ListTableComponent = React.memo(({ columns, rows, sendRowDetails }) => {
                       const value = row[column.id];
                       return (
                         <TableCell key={column.id} align={column.align}>
-                          {typeof value === "string"
+                          {typeof value === "string" &&
+                          column.id.includes("date")
+                            ? value.substring(0, 10)
+                            : typeof value === "string"
                             ? value
-                            : Object.keys(value).length === 2
+                            : value.hasOwnProperty("squad_name")
                             ? value.squad_name
                             : value.map((v) => {
                                 return (
