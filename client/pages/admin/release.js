@@ -89,7 +89,6 @@ Release.getInitialProps = async (context, client) => {
   const squadResponse = await client.get("/api/squads");
   const releaseResponse = await client.get("/api/releases");
 
-  console.log(releaseResponse.data);
   return { squads: squadResponse.data, releases: releaseResponse.data };
 };
 

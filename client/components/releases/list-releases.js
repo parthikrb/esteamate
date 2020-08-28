@@ -21,7 +21,6 @@ const columns = [
 ];
 
 const ListReleasesComponent = ({ rows, sendRowDetails }) => {
-  console.log(rows);
   return (
     <ListTableComponent
       columns={columns}

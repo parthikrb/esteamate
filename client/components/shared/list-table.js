@@ -42,6 +42,7 @@ const useStyles = makeStyles({
 });
 
 const ListTableComponent = React.memo(({ columns, rows, sendRowDetails }) => {
+  console.log(rows);
   const classes = useStyles();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);

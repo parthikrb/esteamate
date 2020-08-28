@@ -38,11 +38,11 @@ const AddReleaseComponent = ({ squads }) => {
   const [formErrors, setFormErrors] = useState({
     squadName: false,
     releaseName: false,
-    startDate: false,
-    endDate: false,
-    devReserve: false,
-    qaReserve: false,
-    isReleaseConfig: false,
+    // startDate: false,
+    // endDate: false,
+    // devReserve: false,
+    // qaReserve: false,
+    // isReleaseConfig: false,
   });
 
   const [error, setError] = useState(false);
