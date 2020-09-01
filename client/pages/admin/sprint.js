@@ -91,7 +91,7 @@ Sprint.getInitialProps = async (context, client) => {
   const releaseResponse = await client.get("/api/releases");
   const sprintResponse = await client.get("/api/sprints");
   console.log("Server");
-  return { releases: releaseResponse.body, sprints: sprintResponse.body };
+  return { releases: releaseResponse.data, sprints: sprintResponse.data };
 };
 
 export default Sprint;
