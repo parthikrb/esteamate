@@ -64,6 +64,8 @@ const SprintDetailsComponent = React.memo(({ sprintDetails }) => {
                 >
                   {key.includes("date")
                     ? sprintDetails[key].substring(0, 10)
+                    : key.includes("release")
+                    ? sprintDetails[key]["release_name"]
                     : sprintDetails[key].toString()}
                 </Typography>
               </Tooltip>

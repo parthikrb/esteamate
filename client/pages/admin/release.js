@@ -37,6 +37,7 @@ const Release = ({ squads, releases }) => {
   const closingDrawer = () => {
     setOpenDrawer(false);
   };
+
   return (
     <Fragment>
       <div style={styleRoot}>
@@ -88,7 +89,7 @@ const Release = ({ squads, releases }) => {
 Release.getInitialProps = async (context, client) => {
   const squadResponse = await client.get("/api/squads");
   const releaseResponse = await client.get("/api/releases");
-
+  console.log("Release");
   return { squads: squadResponse.data, releases: releaseResponse.data };
 };
 

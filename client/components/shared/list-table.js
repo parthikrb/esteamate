@@ -106,6 +106,8 @@ const ListTableComponent = React.memo(({ columns, rows, sendRowDetails }) => {
                             ? value
                             : value.hasOwnProperty("squad_name")
                             ? value.squad_name
+                            : value.hasOwnProperty("release_name")
+                            ? value.release_name
                             : value.map((v) => {
                                 return (
                                   <Chip
