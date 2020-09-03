@@ -1,4 +1,7 @@
 import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import * as actions from "../../store/actions/index";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Fab } from "@material-ui/core";
@@ -83,7 +86,10 @@ const User = ({ users }) => {
 
 User.getInitialProps = async (context, client) => {
   const { data } = await client.get("/api/users");
-  console.log(`Users - ${JSON.stringify(data)}`);
+  // console.log(`Users - ${JSON.stringify(data)}`);
+
+  await actions.loadUsers(client);
+  console.log(`User ----- ${JSON.stringify(context.store.getState())}`);
 
   return { users: data };
 };

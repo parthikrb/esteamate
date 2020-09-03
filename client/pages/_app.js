@@ -9,15 +9,16 @@ import buildClient from "../helpers/build-client";
 import theme from "./theme";
 import Menu from "../containers/menu/menu";
 
+import { wrapper } from "../store/store";
+
 const useStyles = makeStyles({
   content: {
     height: "81vh",
   },
 });
-export default function MyApp(props) {
+const MyApp = (props) => {
   const classes = useStyles();
   const { Component, pageProps, currentUser } = props;
-  console.log(currentUser);
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -53,23 +54,20 @@ export default function MyApp(props) {
       </ThemeProvider>
     </React.Fragment>
   );
-}
+};
 
 MyApp.propTypes = {
   Component: PropTypes.elementType.isRequired,
   pageProps: PropTypes.object.isRequired,
 };
 
-MyApp.getInitialProps = async (appContext) => {
-  const client = buildClient(appContext.ctx);
+MyApp.getInitialProps = async ({ Component, ctx }) => {
+  const client = buildClient(ctx);
   const { data } = await client.get("/api/users/currentUser");
 
   let pageProps = {};
-  if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(
-      appContext.ctx,
-      client
-    );
+  if (Component.getInitialProps) {
+    pageProps = await Component.getInitialProps(ctx, client);
   }
 
   return {
@@ -77,3 +75,5 @@ MyApp.getInitialProps = async (appContext) => {
     ...data,
   };
 };
+
+export default wrapper.withRedux(MyApp);
