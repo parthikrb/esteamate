@@ -1,9 +1,20 @@
 import * as types from "./action-types";
 import axios from "axios";
 
-export const addUser = (data) => {
+export const addUserStart = () => {
+  return { type: types.ADD_USER_START };
+};
+
+export const addUserSuccess = (data) => {
   return {
-    type: types.ADD_USER,
+    type: types.ADD_USER_SUCCESS,
+    payload: { data },
+  };
+};
+
+export const addUserFailure = (data) => {
+  return {
+    type: types.ADD_USER_FAILURE,
     payload: { data },
   };
 };
@@ -46,6 +57,16 @@ export const loadUsersFailure = (error) => {
   return {
     type: types.LOAD_USERS_FAILURE,
     payload: { data: error },
+  };
+};
+
+export const addUser = (data) => {
+  return (dispatch) => {
+    dispatch(addUserStart());
+    axios
+      .post("/api/users/signup", data)
+      .then((response) => dispatch(addUserSuccess(response.data)))
+      .catch((error) => dispatch(addUserFailure(errror)));
   };
 };
 

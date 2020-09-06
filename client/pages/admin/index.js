@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../store/actions/index";
+import { loadUsers } from "../../store/actions/user";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -19,7 +19,8 @@ const useStyles = makeStyles({
   },
 });
 
-const User = ({ users }) => {
+const User = (props) => {
+  const users = props.users;
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [userDetails, setUserDetails] = useState(undefined);
@@ -85,13 +86,19 @@ const User = ({ users }) => {
 };
 
 User.getInitialProps = async (context, client) => {
-  const { data } = await client.get("/api/users");
+  // const { data } = await client.get("/api/users");
   // console.log(`Users - ${JSON.stringify(data)}`);
 
-  await actions.loadUsers(client);
-  console.log(`User ----- ${JSON.stringify(context.store.getState())}`);
+  await context.store.dispatch(loadUsers(client));
 
-  return { users: data };
+  return { users: [] };
 };
 
-export default User;
+const mapStateToProps = (state) => {
+  return {
+    user: state.user.users,
+    loading: state.users.loading,
+  };
+};
+
+export default connect(mapStateToProps)(User);

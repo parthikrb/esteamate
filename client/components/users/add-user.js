@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import { addUser } from "../../store/actions/user";
 import { useToasts } from "react-toast-notifications";
 import {
   TextField,
@@ -16,7 +18,7 @@ import axios from "axios";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import RequiredField from "../shared/required-field";
 
-const AddUserComponent = () => {
+const AddUserComponent = (props) => {
   const [, setAddMore] = useState(false);
   const [error, setError] = useState(false);
 
@@ -43,14 +45,15 @@ const AddUserComponent = () => {
   const { addToast } = useToasts();
 
   const handleSave = async () => {
-    await axios
-      .post("/api/users/signup", formFields)
-      .then(() => {
-        addToast("User Added", { appearance: "success" });
-      })
-      .catch((res) => {
-        addToast(res.message, { appearance: "error" });
-      });
+    // await axios
+    //   .post("/api/users/signup", formFields)
+    //   .then(() => {
+    //     addToast("User Added", { appearance: "success" });
+    //   })
+    //   .catch((res) => {
+    //     addToast(res.message, { appearance: "error" });
+    //   });
+    props.onSaveUser(formFields);
   };
 
   const validateField = (event) => {
@@ -227,4 +230,17 @@ const AddUserComponent = () => {
   );
 };
 
-export default AddUserComponent;
+const mapStateToProps = (state) => {
+  return {
+    users: state.user.users,
+    loading: state.user.loading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSaveUser: (data) => dispatch(addUser(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddUserComponent);

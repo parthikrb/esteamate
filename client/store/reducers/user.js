@@ -12,8 +12,17 @@ const userReducer = (state = intialState, action) => {
   switch (action.type) {
     // case HYDRATE:
     //   return { ...state, ...action.payload };
-    case types.ADD_USER:
-      return { ...state, users: state.users.concat(action.payload.data) };
+    case types.ADD_USER_START:
+      return { ...state, loading: true };
+    case types.ADD_USER_FAILURE:
+      return { ...state, loading: false, error: action.payload.data };
+    case types.ADD_USER_SUCCESS:
+      return {
+        ...state,
+        users: state.users.concat(action.payload.data),
+        loading: false,
+        error: null,
+      };
     case types.REMOVE_USER:
       return {
         ...state,
