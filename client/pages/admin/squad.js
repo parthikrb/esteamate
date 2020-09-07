@@ -1,4 +1,7 @@
 import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import { loadSquads } from "../../store/actions/squad";
+import { loadUsers } from "../../store/actions/user";
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Fab } from "@material-ui/core";
@@ -16,7 +19,8 @@ const useStyles = makeStyles({
   },
 });
 
-const Squad = ({ users, squads }) => {
+const Squad = (props) => {
+  const { users, squads } = props;
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [squadDetails, setSquadDetails] = useState(undefined);
@@ -81,10 +85,19 @@ const Squad = ({ users, squads }) => {
 };
 
 Squad.getInitialProps = async (context, client) => {
-  const userResponse = await client.get("/api/users");
-  const squadResponse = await client.get("/api/squads");
-  
-  return { users: userResponse.data, squads: squadResponse.data };
+  await context.store.dispatch(loadUsers(client));
+  await context.store.dispatch(loadSquads(client));
+
+  return { users: [], squads: [] };
 };
 
-export default Squad;
+const mapStateToProps = (state) => {
+  return {
+    users: state.user.users,
+    squads: state.squad.squads,
+    loading: state.squad.loading,
+    error: state.squad.error,
+  };
+};
+
+export default connect(mapStateToProps)(Squad);

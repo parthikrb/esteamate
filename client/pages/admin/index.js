@@ -20,7 +20,7 @@ const useStyles = makeStyles({
 });
 
 const User = (props) => {
-  const users = props.users;
+  const { users } = props;
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [userDetails, setUserDetails] = useState(undefined);
@@ -58,8 +58,8 @@ const User = (props) => {
             rows={
               filterColumn
                 ? users.filter((user) =>
-                    user[filterColumn].toLowerCase().includes(query)
-                  )
+                  user[filterColumn].toLowerCase().includes(query)
+                )
                 : users
             }
             sendRowDetails={fetchUserDetails}
@@ -86,18 +86,15 @@ const User = (props) => {
 };
 
 User.getInitialProps = async (context, client) => {
-  // const { data } = await client.get("/api/users");
-  // console.log(`Users - ${JSON.stringify(data)}`);
-
   await context.store.dispatch(loadUsers(client));
-
   return { users: [] };
 };
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user.users,
-    loading: state.users.loading,
+    users: state.user.users,
+    loading: state.user.loading,
+    error: state.user.error
   };
 };
 

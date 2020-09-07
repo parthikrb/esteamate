@@ -1,22 +1,14 @@
 import React, { Fragment, useState } from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { useToasts } from "react-toast-notifications";
+import { connect } from "react-redux";
+import { addSquad } from "../../store/actions/squad";
 import { TextField, CssBaseline, FormControl, Grid } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddHeaderComponent from "../shared/add-header";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
-import axios from "axios";
-import { useForm } from "react-hook-form";
 import RequiredField from "../shared/required-field";
 
-const useStyles = makeStyles(() => ({
-  root: {
-    display: "flex",
-    width: "100%",
-  },
-}));
-
-const AddSquadComponent = ({ users }) => {
+const AddSquadComponent = (props) => {
+  const { users } = props;
   const [, setAddMore] = useState(false);
 
   const [formFields, setFormFields] = useState({
@@ -34,9 +26,6 @@ const AddSquadComponent = ({ users }) => {
   });
 
   const [error, setError] = useState(false);
-
-  const { register, handleSubmit } = useForm();
-  const { addToast } = useToasts();
 
   const validateField = (event) => {
     const formFieldErrors = { ...formErrors };
@@ -77,15 +66,7 @@ const AddSquadComponent = ({ users }) => {
       scrum_team: formFields.scrumTeam,
     };
 
-    await axios
-      .post("/api/squads", { ...data })
-      .then(() => {
-        addToast("Squad Added", { appearance: "success" });
-      })
-      .catch((res) => {
-        addToast(res.message, { appearance: "error" });
-      });
-    console.log("Button Clicked");
+    props.onSave(data);
   };
 
   return (
@@ -201,4 +182,15 @@ const AddSquadComponent = ({ users }) => {
   );
 };
 
-export default AddSquadComponent;
+const mapStateToProps = (state) => {
+  return {
+    users: state.user.users,
+    loading: state.squad.loading,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSave: (data) => dispatch(addSquad(data)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(AddSquadComponent);

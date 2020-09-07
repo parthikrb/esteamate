@@ -1,1 +1,0 @@
-export { loadUsers } from "./user";

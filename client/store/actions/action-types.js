@@ -11,7 +11,10 @@ export const LOAD_USERS_SUCCESS = "LOAD_USERS_SUCCESS";
 export const LOAD_USERS_FAILURE = "LOAD_USERS_FAILURE";
 
 // Squads
-export const ADD_SQUAD = "ADD_SQUAD";
+export const ADD_SQUAD_START = "ADD_SQUAD_START";
+export const ADD_SQUAD_SUCCESS = "ADD_SQUAD_SUCCESS";
+export const ADD_SQUAD_FAILURE = "ADD_SQUAD_FAILURE";
+
 export const REMOVE_SQUAD = "REMOVE_SQUAD";
 export const UPDATE_SQUAD = "UPDATE_SQUAD";
 

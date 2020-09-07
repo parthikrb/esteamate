@@ -45,7 +45,6 @@ export const loadUsersStart = () => {
 };
 
 export const loadUsersSuccess = (users) => {
-  console.log(users);
   return {
     type: types.LOAD_USERS_SUCCESS,
     payload: { data: users },
@@ -53,7 +52,6 @@ export const loadUsersSuccess = (users) => {
 };
 
 export const loadUsersFailure = (error) => {
-  console.log(error);
   return {
     type: types.LOAD_USERS_FAILURE,
     payload: { data: error },
@@ -66,16 +64,19 @@ export const addUser = (data) => {
     axios
       .post("/api/users/signup", data)
       .then((response) => dispatch(addUserSuccess(response.data)))
-      .catch((error) => dispatch(addUserFailure(errror)));
+      .catch((error) => dispatch(addUserFailure(error)));
   };
 };
 
 export const loadUsers = (client) => {
-  return (dispatch) => {
-    dispatch(loadUsersStart());
-    client
-      .get("/api/users")
-      .then((response) => dispatch(loadUsersSuccess(response.data)))
-      .catch((error) => dispatch(loadUsersFailure(error)));
+  return (dispatch, getState) => {
+    const state = getState();
+    if (state.user.users.length === 0) {
+      dispatch(loadUsersStart());
+      client
+        .get("/api/users")
+        .then((response) => dispatch(loadUsersSuccess(response.data)))
+        .catch((error) => dispatch(loadUsersFailure(error)));
+    }
   };
 };

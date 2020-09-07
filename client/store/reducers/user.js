@@ -1,5 +1,5 @@
 import * as types from "../actions/action-types";
-import { HYDRATE } from "next-redux-wrapper";
+// import { HYDRATE } from "next-redux-wrapper";
 
 const intialState = {
   users: [],
@@ -8,10 +8,7 @@ const intialState = {
 };
 
 const userReducer = (state = intialState, action) => {
-  console.log(`Reducer ${JSON.stringify(action)}`);
   switch (action.type) {
-    // case HYDRATE:
-    //   return { ...state, ...action.payload };
     case types.ADD_USER_START:
       return { ...state, loading: true };
     case types.ADD_USER_FAILURE:
