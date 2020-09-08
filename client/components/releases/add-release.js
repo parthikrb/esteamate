@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import { addRelease } from "../../store/actions/release";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -22,7 +24,8 @@ import AddHeaderComponent from "../shared/add-header";
 import axios from "axios";
 import RequiredField from "../shared/required-field";
 
-const AddReleaseComponent = ({ squads }) => {
+const AddReleaseComponent = (props) => {
+  const { squads } = props;
   const [addMore, setAddMore] = useState(false);
 
   const [formFields, setFormFields] = useState({
@@ -57,7 +60,7 @@ const AddReleaseComponent = ({ squads }) => {
       qa_reserve: formFields.qaReserve,
       is_release_reserve: formFields.isReleaseConfig,
     };
-    await axios.post("/api/releases", { ...data });
+    props.onSave(data);
   };
 
   const validateField = (event) => {
@@ -252,4 +255,20 @@ const AddReleaseComponent = ({ squads }) => {
   );
 };
 
-export default AddReleaseComponent;
+const mapStateToProps = (state) => {
+  return {
+    squads: state.squad.squads,
+    loading: state.release.loading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSave: (data) => dispatch(addRelease(data)),
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AddReleaseComponent);

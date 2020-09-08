@@ -1,4 +1,6 @@
 import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import { addSprint } from "../../store/actions/sprint";
 import "date-fns";
 import DateFnsUtils from "@date-io/date-fns";
 import {
@@ -22,7 +24,8 @@ import AddHeaderComponent from "../shared/add-header";
 import axios from "axios";
 import RequiredField from "../shared/required-field";
 
-const AddSprintComponent = ({ releases }) => {
+const AddSprintComponent = (props) => {
+  const { releases } = props;
   const [addMore, setAddMore] = useState(false);
   const [formFields, setFormFields] = useState({
     releaseName: "",
@@ -45,7 +48,7 @@ const AddSprintComponent = ({ releases }) => {
       start_date: formFields.startDate,
       end_date: formFields.endDate,
     };
-    await axios.post("/api/sprints", { ...data });
+    props.onSave(data);
   };
 
   const validateField = (event) => {
@@ -190,4 +193,17 @@ const AddSprintComponent = ({ releases }) => {
   );
 };
 
-export default AddSprintComponent;
+const mapStateToProps = (state) => {
+  return {
+    releases: state.release.releases,
+    loading: state.sprint.loading,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onSave: (data) => dispatch(addSprint(data)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddSprintComponent);

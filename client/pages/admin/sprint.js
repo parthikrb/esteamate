@@ -1,4 +1,8 @@
 import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import { loadReleases } from "../../store/actions/release";
+import { loadSprints } from "../../store/actions/sprint";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Fab } from "@material-ui/core";
@@ -16,8 +20,8 @@ const useStyles = makeStyles({
   },
 });
 
-const Sprint = ({ releases, sprints }) => {
-  console.log(`Test - ${releases}`);
+const Sprint = (props) => {
+  const { releases, sprints } = props;
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [sprintDetails, setSprintDetails] = useState(undefined);
@@ -88,10 +92,17 @@ const Sprint = ({ releases, sprints }) => {
 };
 
 Sprint.getInitialProps = async (context, client) => {
-  const releaseResponse = await client.get("/api/releases");
-  const sprintResponse = await client.get("/api/sprints");
-  console.log("Server");
-  return { releases: releaseResponse.data, sprints: sprintResponse.data };
+  await context.store.dispatch(loadReleases(client));
+  await context.store.dispatch(loadSprints(client));
+  return { releases: [], sprints: [] };
 };
 
-export default Sprint;
+const mapStateToProps = (state) => {
+  return {
+    releases: state.release.releases,
+    sprints: state.sprint.sprints,
+    loading: state.sprint.loading,
+  };
+};
+
+export default connect(mapStateToProps)(Sprint);
