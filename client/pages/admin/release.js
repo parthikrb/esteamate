@@ -1,4 +1,8 @@
 import React, { Fragment, useState } from "react";
+import { connect } from "react-redux";
+import { loadSquads } from "../../store/actions/squad";
+import { loadReleases } from "../../store/actions/release";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import { Fab } from "@material-ui/core";
@@ -16,7 +20,8 @@ const useStyles = makeStyles({
   },
 });
 
-const Release = ({ squads, releases }) => {
+const Release = (props) => {
+  const { squads, releases } = props;
   const classes = useStyles();
   const [openDrawer, setOpenDrawer] = useState(false);
   const [releaseDetails, setReleaseDetails] = useState(undefined);
@@ -87,10 +92,17 @@ const Release = ({ squads, releases }) => {
 };
 
 Release.getInitialProps = async (context, client) => {
-  const squadResponse = await client.get("/api/squads");
-  const releaseResponse = await client.get("/api/releases");
-  console.log("Release");
-  return { squads: squadResponse.data, releases: releaseResponse.data };
+  await context.store.dispatch(loadSquads(client));
+  await context.store.dispatch(loadReleases(client));
+  return { squads: [], releases: [] };
 };
 
-export default Release;
+const mapStateToProps = (state) => {
+  return {
+    squads: state.squad.squads,
+    releases: state.release.releases,
+    loading: state.release.loading,
+  };
+};
+
+export default connect(mapStateToProps)(Release);
