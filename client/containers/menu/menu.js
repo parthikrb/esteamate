@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -78,29 +78,41 @@ export default function Menu(props) {
 
   const { isAdmin } = props.currentUser || false;
 
-  // const adminMenu = ["User", "Squad", "Release", "Sprint"];
-  // const capacityMenu = ["Dashboard", "My Leaves", "Squad Leaves"];
-  // const plannerMenu = isAdmin ? ["Poll", "History"] : ["Vote", "History"];
-  // const retroMenu = ["Cast", "History"];
-  const plannerMenu = isAdmin ? plannerAdminRoute : plannerRoute;
+  const plannerMenu = !isAdmin ? plannerAdminRoute : plannerRoute;
 
   const [menuList, setMenuList] = useState(plannerMenu);
 
+  useEffect(() => {
+    const path = router.pathname;
+    if (path.includes("/admin")) {
+      handleAdminMenuClick();
+    } else if (path.includes("/retro")) {
+      handleRetroMenuClick();
+    } else if (path.includes("/capacity")) {
+      handleCapacityMenuClick();
+    } else {
+      handlePlannerMenuClick();
+    }
+  }, []);
+
   const handleAdminMenuClick = () => {
     setMenuList(adminRoute);
-    router.push('/admin');
+    router.push("/admin");
   };
 
   const handlePlannerMenuClick = () => {
     setMenuList(plannerMenu);
+    router.push("/planner");
   };
 
   const handleCapacityMenuClick = () => {
     setMenuList(capacityRoute);
+    router.push("/capacity");
   };
 
   const handleRetroMenuClick = () => {
     setMenuList(retroRoute);
+    router.push("/retro");
   };
 
   const handleLogoutAction = async () => {
@@ -112,11 +124,6 @@ export default function Menu(props) {
     });
   };
 
-  const handleRouting = (e, path) => {
-    e.preventDefault();
-    router.push(path);
-  };
-
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -125,6 +132,11 @@ export default function Menu(props) {
           <div className={classes.menuButton}>
             <Button
               color="inherit"
+              style={{
+                textDecoration: router.pathname.includes("/planner")
+                  ? "underline"
+                  : "none",
+              }}
               onClick={() => handlePlannerMenuClick()}
               disableRipple
             >
@@ -132,6 +144,11 @@ export default function Menu(props) {
             </Button>
             <Button
               color="inherit"
+              style={{
+                textDecoration: router.pathname.includes("/capacity")
+                  ? "underline"
+                  : "none",
+              }}
               onClick={() => handleCapacityMenuClick()}
               disableRipple
             >
@@ -139,6 +156,11 @@ export default function Menu(props) {
             </Button>
             <Button
               color="inherit"
+              style={{
+                textDecoration: router.pathname.includes("/retro")
+                  ? "underline"
+                  : "none",
+              }}
               onClick={() => handleRetroMenuClick()}
               disableRipple
             >
@@ -147,6 +169,11 @@ export default function Menu(props) {
             {isAdmin && (
               <Button
                 color="inherit"
+                style={{
+                  textDecoration: router.pathname.includes("/admin")
+                    ? "underline"
+                    : "none",
+                }}
                 onClick={() => handleAdminMenuClick()}
                 disableRipple
               >
@@ -181,15 +208,16 @@ export default function Menu(props) {
         <Divider />
         <List>
           {menuList.map((menu, index) => (
-            <Link
-              key={menu.path}
-              href={menu.path}
-              // className={router.pathname === menu.path ? classes.active : ""}
-            >
+            <Link key={menu.path} href={menu.path}>
               <ListItem
                 button
                 key={menu.path}
-                // onClick={(e) => handleRouting(e, menu.path)}
+                style={{
+                  borderRight:
+                    router.pathname === menu.path
+                      ? "10px solid #33135c"
+                      : "inherit",
+                }}
               >
                 <ListItemIcon>{menu.icon}</ListItemIcon>
                 <ListItemText primary={menu.label} />
