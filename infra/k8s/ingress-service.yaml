@@ -26,6 +26,10 @@ spec:
             backend:
               serviceName: sprint-service
               servicePort: 3000
+          - path: /api/retros/?(.*)
+            backend:
+              serviceName: retro-service
+              servicePort: 3000
           - path: /?(.*)
             backend:
               serviceName: client-service

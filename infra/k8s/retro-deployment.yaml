@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: retro-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: retro
+    template:
+        metadata:
+            labels:
+                app: retro
+        spec:
+            containers:
+                - name: retro
+                  image: parthikrb/retro
+                  env:
+                      - name: NATS_CLIENT_ID
+                        valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
+                      - name: NATS_URL
+                        value: 'http://nats-service:4222'
+                      - name: NATS_CLUSTER_ID
+                        value: esteamate
+                      - name: MONGO_URI
+                        value: 'mongodb://host.docker.internal:27017/retro'
+                      - name: JWT_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: jwt-secret
+                                key: JWT_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: retro-service
+spec:
+    selector:
+        app: retro
+    ports:
+        - name: retro
+          protocol: TCP
+          port: 3000
+          targetPort: 3000
