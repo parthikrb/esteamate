@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { connect } from "react-redux";
+import { clearCurrentUser } from "../../store/actions/current-user";
 import {
   AppBar,
   Toolbar,
@@ -71,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Menu(props) {
+const Menu = (props) => {
   const classes = useStyles();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -118,6 +120,7 @@ export default function Menu(props) {
   const handleLogoutAction = async () => {
     await axios.post("/api/users/signout").then(() => {
       router.push("/");
+      props.onLogout();
       addToast("User logged out!", {
         appearance: "info",
       });
@@ -238,4 +241,13 @@ export default function Menu(props) {
       </main>
     </div>
   );
-}
+};
+
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onLogout: () => dispatch(clearCurrentUser()),
+  };
+};
+
+export default connect(null, mapDispatchToProps)(Menu);

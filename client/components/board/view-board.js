@@ -60,7 +60,6 @@ const ViewBoard = React.memo(({ retros, onSave }) => {
 
   useEffect(() => {
     console.log("Inside");
-
     const copiedGood = { ...columns.good };
     const copiedBad = { ...columns.bad };
     const copiedAction = { ...columns.action };
@@ -116,8 +115,8 @@ const ViewBoard = React.memo(({ retros, onSave }) => {
                             ? "lightblue"
                             : "lightgray",
                           padding: 4,
-                          width: 300,
-                          height: 450,
+                          width: 320,
+                          height: 420,
                           overflowY: "auto",
                         }}
                       >
