@@ -48,7 +48,6 @@ export const updateRetroFailure = (data) => {
 };
 
 export const updateRetro = (id, data) => {
-  console.log(data);
   return (dispatch) => {
     dispatch(updateRetroStart());
     axios

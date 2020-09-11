@@ -5,8 +5,18 @@ import { addRetro } from "../../store/actions/retro";
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import AddRetroPoint from "./add-retro-point";
+import Fab from "@material-ui/core/Fab";
+import DoneIcon from "@material-ui/icons/Done";
+import DoneAllIcon from "@material-ui/icons/DoneAll";
 
-const onDragEnd = (result, columns, setColumns, retros, sprint, onUpdate) => {
+const onDragEnd = (
+  result,
+  columns,
+  setColumns,
+  retros,
+  onUpdate,
+  currentUser
+) => {
   if (!result.destination) return;
   const { source, destination } = result;
   const id = result.draggableId;
@@ -14,7 +24,9 @@ const onDragEnd = (result, columns, setColumns, retros, sprint, onUpdate) => {
   const data = {
     classification: destination.droppableId,
     description: retroPoint.description,
-    sprint: sprint,
+    sprint: retroPoint.sprint.id,
+    created_by: retroPoint.createdBy,
+    updated_by: currentUser.id,
   };
 
   if (source.droppableId !== destination.droppableId) {
@@ -52,7 +64,7 @@ const onDragEnd = (result, columns, setColumns, retros, sprint, onUpdate) => {
 };
 
 const ViewBoard = React.memo(
-  ({ retros, sprint, onSave, onUpdate, history }) => {
+  ({ retros, sprint, onSave, onUpdate, history, currentUser }) => {
     const initialColumn = {
       good: {
         name: "Went well",
@@ -69,6 +81,9 @@ const ViewBoard = React.memo(
     };
 
     useEffect(() => {
+      if (!history) {
+        retros = retros && retros.filter((retro) => retro.resolved !== true);
+      }
       if (sprint) {
         retros = retros && retros.filter((retro) => retro.sprint.id === sprint);
       }
@@ -97,6 +112,21 @@ const ViewBoard = React.memo(
       onSave(data);
     };
 
+    const handleResolve = (event) => {
+      event.persist();
+      const id = event.target.id;
+      console.log(event.target.id);
+      const retroPoint = retros.find((retro) => retro.id === id);
+      console.log(retroPoint);
+      const data = {
+        ...retroPoint,
+        sprint: retroPoint.sprint.id,
+        updated_by: currentUser.id,
+        resolved: true,
+      };
+      onUpdate(id, data);
+    };
+
     return (
       <div
         style={{
@@ -107,7 +137,14 @@ const ViewBoard = React.memo(
       >
         <DragDropContext
           onDragEnd={(result) =>
-            onDragEnd(result, columns, setColumns, retros, sprint, onUpdate)
+            onDragEnd(
+              result,
+              columns,
+              setColumns,
+              retros,
+              onUpdate,
+              currentUser
+            )
           }
         >
           {Object.entries(columns).map(([key, column], index) => {
@@ -142,6 +179,7 @@ const ViewBoard = React.memo(
                             <AddRetroPoint
                               classification={key}
                               sprint={sprint}
+                              currentUser={currentUser}
                               handleSave={handleSave}
                             />
                           )}
@@ -161,17 +199,21 @@ const ViewBoard = React.memo(
                                       {...provided.dragHandleProps}
                                       style={{
                                         userSelect: "none",
+                                        display: "flex",
                                         padding: 5,
                                         margin: "0 0 8px 0",
                                         minHeight: "50px",
+
                                         backgroundColor: snapshot.isDragging
                                           ? "#33135C"
                                           : key === "good"
                                           ? "lightgreen"
                                           : key === "bad"
                                           ? "#FC6C85"
-                                          : key === "action"
+                                          : key === "action" && !item.resolved
                                           ? "orange"
+                                          : key === "action" && item.resolved
+                                          ? "#AFE3D0"
                                           : "inherit",
                                         color: snapshot.isDragging
                                           ? "white"
@@ -179,7 +221,46 @@ const ViewBoard = React.memo(
                                         ...provided.draggableProps.style,
                                       }}
                                     >
-                                      {item.description}
+                                      <div
+                                        style={{
+                                          display: "flex",
+                                          flexWrap: "wrap",
+                                          flexDirection: "column",
+                                          flexGrow: 1,
+                                        }}
+                                      >
+                                        {item.description}
+                                      </div>
+                                      {item.classification === "action" &&
+                                        !history && (
+                                          <div
+                                            style={{
+                                              float: "right",
+                                            }}
+                                          >
+                                            <Fab
+                                              size="small"
+                                              color="primary"
+                                              aria-label="resolve"
+                                              onClick={handleResolve}
+                                            >
+                                              <DoneIcon
+                                                fontSize="large"
+                                                id={item.id}
+                                              />
+                                            </Fab>
+                                          </div>
+                                        )}
+                                      {item.classification === "action" &&
+                                        item.resolved &&
+                                        history && (
+                                          <div style={{ float: "right" }}>
+                                            <DoneAllIcon
+                                              fontSize="large"
+                                              color="primary"
+                                            />
+                                          </div>
+                                        )}
                                     </div>
                                   );
                                 }}
@@ -206,6 +287,7 @@ const mapStateToProps = (state) => {
     retros: state.retro.retros,
     loading: state.retro.loading,
     error: state.retro.error,
+    currentUser: state.current_user.user,
   };
 };
 

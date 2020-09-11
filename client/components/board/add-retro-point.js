@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const AddRetroPoint = React.memo((props) => {
-  const { classification, sprint, handleSave } = props;
+  const { classification, sprint, currentUser, handleSave } = props;
   const classes = useStyles();
   const [description, setDescription] = useState("");
 
@@ -37,6 +37,8 @@ const AddRetroPoint = React.memo((props) => {
       sprint,
       classification,
       description,
+      created_by: currentUser.id,
+      updated_by: currentUser.id,
     };
     handleSave(data);
     setDescription("");
