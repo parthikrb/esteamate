@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -15,10 +15,12 @@ const useStyles = makeStyles((theme) => ({
 
 const SelectSprint = (props) => {
   const { sprints } = props;
+  const [sprintId, setSprintId] = useState(sprints[0].id);
 
   const classes = useStyles();
 
   const handleChange = (event) => {
+    setSprintId(event.target.value);
     props.handleSprintChange(event.target.value);
   };
 
@@ -29,12 +31,12 @@ const SelectSprint = (props) => {
         <Select
           labelId="select-sprint"
           id="select-sprint"
-          value={sprints}
+          value={sprintId}
           onChange={handleChange}
         >
           {sprints.map((sprint) => {
             return (
-              <MenuItem key={sprint.id} value={sprint}>
+              <MenuItem key={sprint.id} value={sprint.id}>
                 {sprint.sprint_name}
               </MenuItem>
             );

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { loadCurrentUserSquads } from "../../store/actions/current-user";
 import { loadRetros } from "../../store/actions/retro";
 import { isAfter, isBefore, isEqual, addDays } from "date-fns";
 
@@ -10,7 +11,7 @@ const Cast = (props) => {
   const { retros, sprints } = props;
 
   const [sprintId, setSprintId] = useState(undefined);
-  const [retrospective, setRetrospective] = useState(retros);
+  // const [retrospective, setRetrospective] = useState(retros);
 
   const currentSprints = sprints.filter(
     (sprint) =>
@@ -22,13 +23,12 @@ const Cast = (props) => {
   );
 
   useEffect(() => {
-    setSprintId(currentSprints[0].id);
-  }, [props]);
-  console.log(currentSprints);
+    const _sprintId = sprintId ? sprintId : currentSprints[0].id;
+    setSprintId(_sprintId);
+  }, [retros]);
 
   const handleSprintChange = (id) => {
     setSprintId(id);
-    setRetrospective(retrospective.filter((retro) => retro.sprint.id === id));
   };
 
   return (
@@ -37,12 +37,13 @@ const Cast = (props) => {
         sprints={currentSprints}
         handleSprintChange={handleSprintChange}
       />
-      <ViewBoard retros={retrospective} />
+      <ViewBoard retros={retros} sprint={sprintId} />
     </div>
   );
 };
 
 Cast.getInitialProps = async (context, client) => {
+  await context.store.dispatch(loadCurrentUserSquads(client));
   await context.store.dispatch(loadRetros(client));
   return { retros: [] };
 };

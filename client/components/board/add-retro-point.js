@@ -27,14 +27,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AddRetroPoint = (props) => {
-  const { classification, handleSave } = props;
+const AddRetroPoint = React.memo((props) => {
+  const { classification, sprint, handleSave } = props;
   const classes = useStyles();
   const [description, setDescription] = useState("");
 
   const addItem = (event) => {
     const data = {
-      sprint: "5f589e0f9e5a4000236e83de",
+      sprint,
       classification,
       description,
     };
@@ -60,6 +60,6 @@ const AddRetroPoint = (props) => {
       </IconButton>
     </Paper>
   );
-};
+});
 
 export default AddRetroPoint;

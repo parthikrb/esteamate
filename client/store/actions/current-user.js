@@ -65,16 +65,16 @@ export const loadCurrentUserSquads = (client) => {
     const state = getState();
     if (state.current_user.user) {
       const current_user_id = state.current_user.user.id || 0;
-      if (state.current_user.squads.length === 0) {
-        dispatch(loadCurrentUserSquadsStart());
-        client
-          .get("/api/squads/user/" + current_user_id)
-          .then((response) => {
-            dispatch(loadCurrentUserSquadsSuccess(response.data));
-            dispatch(loadCurrentUserReleases(client));
-          })
-          .catch((error) => dispatch(loadCurrentUserSquadsFailure(error)));
-      }
+      // if (state.current_user.squads.length === 0) {
+      dispatch(loadCurrentUserSquadsStart());
+      client
+        .get("/api/squads/user/" + current_user_id)
+        .then((response) => {
+          dispatch(loadCurrentUserSquadsSuccess(response.data));
+          dispatch(loadCurrentUserReleases(client));
+        })
+        .catch((error) => dispatch(loadCurrentUserSquadsFailure(error)));
+      // }
     }
   };
 };

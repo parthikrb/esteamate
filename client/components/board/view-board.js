@@ -42,7 +42,7 @@ const onDragEnd = (result, columns, setColumns) => {
   }
 };
 
-const ViewBoard = React.memo(({ retros, onSave }) => {
+const ViewBoard = React.memo(({ retros, sprint, onSave }) => {
   const initialColumn = {
     good: {
       name: "Went well",
@@ -59,7 +59,9 @@ const ViewBoard = React.memo(({ retros, onSave }) => {
   };
 
   useEffect(() => {
-    console.log("Inside");
+    if (sprint) {
+      retros = retros.filter((retro) => retro.sprint.id === sprint);
+    }
     const copiedGood = { ...columns.good };
     const copiedBad = { ...columns.bad };
     const copiedAction = { ...columns.action };
@@ -78,7 +80,7 @@ const ViewBoard = React.memo(({ retros, onSave }) => {
         items: retros.filter((retro) => retro.classification === "action"),
       },
     });
-  }, [retros]);
+  }, [retros, sprint]);
 
   const [columns, setColumns] = useState(initialColumn);
   const handleSave = (data) => {
@@ -122,6 +124,7 @@ const ViewBoard = React.memo(({ retros, onSave }) => {
                       >
                         <AddRetroPoint
                           classification={key}
+                          sprint={sprint}
                           handleSave={handleSave}
                         />
                         {column.items.map((item, index) => {
