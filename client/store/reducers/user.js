@@ -1,13 +1,13 @@
 import * as types from "../actions/action-types";
 // import { HYDRATE } from "next-redux-wrapper";
 
-const intialState = {
+const initialState = {
   users: [],
   loading: false,
   error: null,
 };
 
-const userReducer = (state = intialState, action) => {
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.ADD_USER_START:
       return { ...state, loading: true };
@@ -31,7 +31,7 @@ const userReducer = (state = intialState, action) => {
       );
       let updatedUser = { ...state.users };
       updatedUser[userIndex] = action.payload.data;
-      return { ...state, users: updatedUser };
+      return { ...state, users: updatedUser, loading: false};
     case types.LOAD_USERS_START:
       return { ...state, loading: true };
     case types.LOAD_USERS_FAILURE:

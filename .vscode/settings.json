@@ -6,7 +6,9 @@
         "CURRENTUSERSPRINTS",
         "CURRENTUSERSQUADS",
         "Droppable",
+        "ESNEXT",
         "Esteamate",
+        "downlevel",
         "firstname",
         "haspopup",
         "lastname",
@@ -16,6 +18,9 @@
         "mixins",
         "signin",
         "signout",
-        "squadleaves"
+        "sourcemap",
+        "squadleaves",
+        "tslib",
+        "typechecking"
     ]
 }

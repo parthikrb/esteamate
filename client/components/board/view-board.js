@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { updateRetro } from "../../store/actions/retro";
 import { addRetro } from "../../store/actions/retro";
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import AddRetroPoint from "./add-retro-point";
 
-const onDragEnd = (result, columns, setColumns) => {
+const onDragEnd = (result, columns, setColumns, retros, sprint, onUpdate) => {
   if (!result.destination) return;
   const { source, destination } = result;
+  const id = result.draggableId;
+  const retroPoint = retros.find((retro) => retro.id === id);
+  const data = {
+    classification: destination.droppableId,
+    description: retroPoint.description,
+    sprint: sprint,
+  };
 
   if (source.droppableId !== destination.droppableId) {
     const sourceColumn = columns[source.droppableId];
@@ -16,6 +24,7 @@ const onDragEnd = (result, columns, setColumns) => {
     const destItems = [...destColumn.items];
     const [removed] = sourceItems.splice(source.index, 1);
     destItems.splice(destination.index, 0, removed);
+    onUpdate(id, data);
     setColumns({
       ...columns,
       [source.droppableId]: {
@@ -42,7 +51,7 @@ const onDragEnd = (result, columns, setColumns) => {
   }
 };
 
-const ViewBoard = React.memo(({ retros, sprint, onSave }) => {
+const ViewBoard = React.memo(({ retros, sprint, onSave, onUpdate }) => {
   const initialColumn = {
     good: {
       name: "Went well",
@@ -60,7 +69,7 @@ const ViewBoard = React.memo(({ retros, sprint, onSave }) => {
 
   useEffect(() => {
     if (sprint) {
-      retros = retros.filter((retro) => retro.sprint.id === sprint);
+      retros = retros && retros.filter((retro) => retro.sprint.id === sprint);
     }
     const copiedGood = { ...columns.good };
     const copiedBad = { ...columns.bad };
@@ -92,7 +101,9 @@ const ViewBoard = React.memo(({ retros, sprint, onSave }) => {
       style={{ display: "flex", justifyContent: "space-around", height: "80%" }}
     >
       <DragDropContext
-        onDragEnd={(result) => onDragEnd(result, columns, setColumns)}
+        onDragEnd={(result) =>
+          onDragEnd(result, columns, setColumns, retros, sprint, onUpdate)
+        }
       >
         {Object.entries(columns).map(([key, column], index) => {
           return (
@@ -128,7 +139,6 @@ const ViewBoard = React.memo(({ retros, sprint, onSave }) => {
                           handleSave={handleSave}
                         />
                         {column.items.map((item, index) => {
-                          //   console.log(item);
                           return (
                             <Draggable
                               key={item.id}
@@ -193,6 +203,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onSave: (data) => dispatch(addRetro(data)),
+    onUpdate: (id, data) => dispatch(updateRetro(id, { ...data })),
   };
 };
 
