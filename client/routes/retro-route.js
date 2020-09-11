@@ -4,7 +4,7 @@ import HistoryIcon from "@material-ui/icons/History";
 const retroRoute = [
   {
     label: "Cast",
-    path: "/retro/cast",
+    path: "/retro",
     icon: <CastIcon />,
   },
   {

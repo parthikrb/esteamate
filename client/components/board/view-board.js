@@ -51,146 +51,155 @@ const onDragEnd = (result, columns, setColumns, retros, sprint, onUpdate) => {
   }
 };
 
-const ViewBoard = React.memo(({ retros, sprint, onSave, onUpdate }) => {
-  const initialColumn = {
-    good: {
-      name: "Went well",
-      items: [],
-    },
-    bad: {
-      name: "Needs Improvement",
-      items: [],
-    },
-    action: {
-      name: "Action Items",
-      items: [],
-    },
-  };
-
-  useEffect(() => {
-    if (sprint) {
-      retros = retros && retros.filter((retro) => retro.sprint.id === sprint);
-    }
-    const copiedGood = { ...columns.good };
-    const copiedBad = { ...columns.bad };
-    const copiedAction = { ...columns.action };
-    setColumns({
-      ...columns,
+const ViewBoard = React.memo(
+  ({ retros, sprint, onSave, onUpdate, history }) => {
+    const initialColumn = {
       good: {
-        ...copiedGood,
-        items: retros.filter((retro) => retro.classification === "good"),
+        name: "Went well",
+        items: [],
       },
       bad: {
-        ...copiedBad,
-        items: retros.filter((retro) => retro.classification === "bad"),
+        name: "Needs Improvement",
+        items: [],
       },
       action: {
-        ...copiedAction,
-        items: retros.filter((retro) => retro.classification === "action"),
+        name: "Action Items",
+        items: [],
       },
-    });
-  }, [retros, sprint]);
+    };
 
-  const [columns, setColumns] = useState(initialColumn);
-  const handleSave = (data) => {
-    onSave(data);
-  };
+    useEffect(() => {
+      if (sprint) {
+        retros = retros && retros.filter((retro) => retro.sprint.id === sprint);
+      }
+      const copiedGood = { ...columns.good };
+      const copiedBad = { ...columns.bad };
+      const copiedAction = { ...columns.action };
+      setColumns({
+        ...columns,
+        good: {
+          ...copiedGood,
+          items: retros.filter((retro) => retro.classification === "good"),
+        },
+        bad: {
+          ...copiedBad,
+          items: retros.filter((retro) => retro.classification === "bad"),
+        },
+        action: {
+          ...copiedAction,
+          items: retros.filter((retro) => retro.classification === "action"),
+        },
+      });
+    }, [retros, sprint]);
 
-  return (
-    <div
-      style={{ display: "flex", justifyContent: "space-around", height: "80%" }}
-    >
-      <DragDropContext
-        onDragEnd={(result) =>
-          onDragEnd(result, columns, setColumns, retros, sprint, onUpdate)
-        }
+    const [columns, setColumns] = useState(initialColumn);
+    const handleSave = (data) => {
+      onSave(data);
+    };
+
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          height: "80%",
+        }}
       >
-        {Object.entries(columns).map(([key, column], index) => {
-          return (
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-              key={key}
-            >
-              <h3 style={{ marginBottom: 0 }}>{column.name}</h3>
-              <div style={{ margin: 8 }}>
-                <Droppable droppableId={key} key={key}>
-                  {(provided, snapshot) => {
-                    return (
-                      <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        style={{
-                          background: snapshot.isDraggingOver
-                            ? "lightblue"
-                            : "lightgray",
-                          padding: 4,
-                          width: 320,
-                          height: 420,
-                          overflowY: "auto",
-                        }}
-                      >
-                        <AddRetroPoint
-                          classification={key}
-                          sprint={sprint}
-                          handleSave={handleSave}
-                        />
-                        {column.items.map((item, index) => {
-                          return (
-                            <Draggable
-                              key={item.id}
-                              draggableId={item.id}
-                              index={index}
-                            >
-                              {(provided, snapshot) => {
-                                return (
-                                  <div
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
-                                    {...provided.dragHandleProps}
-                                    style={{
-                                      userSelect: "none",
-                                      padding: 5,
-                                      margin: "0 0 8px 0",
-                                      minHeight: "50px",
-                                      backgroundColor: snapshot.isDragging
-                                        ? "#33135C"
-                                        : key === "good"
-                                        ? "lightgreen"
-                                        : key === "bad"
-                                        ? "#FC6C85"
-                                        : key === "action"
-                                        ? "orange"
-                                        : "inherit",
-                                      color: snapshot.isDragging
-                                        ? "white"
-                                        : "black",
-                                      ...provided.draggableProps.style,
-                                    }}
-                                  >
-                                    {item.description}
-                                  </div>
-                                );
-                              }}
-                            </Draggable>
-                          );
-                        })}
-                        {provided.placeholder}
-                      </div>
-                    );
-                  }}
-                </Droppable>
+        <DragDropContext
+          onDragEnd={(result) =>
+            onDragEnd(result, columns, setColumns, retros, sprint, onUpdate)
+          }
+        >
+          {Object.entries(columns).map(([key, column], index) => {
+            return (
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+                key={key}
+              >
+                <h3 style={{ marginBottom: 0 }}>{column.name}</h3>
+                <div style={{ margin: 8 }}>
+                  <Droppable droppableId={key} key={key}>
+                    {(provided, snapshot) => {
+                      return (
+                        <div
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                          style={{
+                            background: snapshot.isDraggingOver
+                              ? "lightblue"
+                              : "lightgray",
+                            padding: 4,
+                            width: 320,
+                            height: 420,
+                            overflowY: "auto",
+                          }}
+                        >
+                          {!history && (
+                            <AddRetroPoint
+                              classification={key}
+                              sprint={sprint}
+                              handleSave={handleSave}
+                            />
+                          )}
+                          {column.items.map((item, index) => {
+                            return (
+                              <Draggable
+                                key={item.id}
+                                draggableId={item.id}
+                                index={index}
+                                isDragDisabled={history}
+                              >
+                                {(provided, snapshot) => {
+                                  return (
+                                    <div
+                                      ref={provided.innerRef}
+                                      {...provided.draggableProps}
+                                      {...provided.dragHandleProps}
+                                      style={{
+                                        userSelect: "none",
+                                        padding: 5,
+                                        margin: "0 0 8px 0",
+                                        minHeight: "50px",
+                                        backgroundColor: snapshot.isDragging
+                                          ? "#33135C"
+                                          : key === "good"
+                                          ? "lightgreen"
+                                          : key === "bad"
+                                          ? "#FC6C85"
+                                          : key === "action"
+                                          ? "orange"
+                                          : "inherit",
+                                        color: snapshot.isDragging
+                                          ? "white"
+                                          : "black",
+                                        ...provided.draggableProps.style,
+                                      }}
+                                    >
+                                      {item.description}
+                                    </div>
+                                  );
+                                }}
+                              </Draggable>
+                            );
+                          })}
+                          {provided.placeholder}
+                        </div>
+                      );
+                    }}
+                  </Droppable>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </DragDropContext>
-    </div>
-  );
-});
+            );
+          })}
+        </DragDropContext>
+      </div>
+    );
+  }
+);
 
 const mapStateToProps = (state) => {
   return {
