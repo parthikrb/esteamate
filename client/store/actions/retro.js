@@ -57,6 +57,34 @@ export const updateRetro = (id, data) => {
   };
 };
 
+export const deleteRetroStart = () => {
+  return { type: types.DELETE_RETRO_START };
+};
+
+export const deleteRetroSuccess = (id) => {
+  return {
+    type: types.DELETE_RETRO_SUCCESS,
+    payload: { id },
+  };
+};
+
+export const deleteRetroFailure = (data) => {
+  return {
+    type: types.DELETE_RETRO_FAILURE,
+    payload: { data },
+  };
+};
+
+export const deleteRetro = (id) => {
+  return (dispatch) => {
+    dispatch(deleteRetroStart());
+    axios
+      .delete("/api/retros/" + id)
+      .then((response) => dispatch(deleteRetroSuccess(id)))
+      .catch((error) => dispatch(deleteRetroFailure(error)));
+  };
+};
+
 export const loadRetrosStart = () => {
   return {
     type: types.LOAD_RETROS_START,

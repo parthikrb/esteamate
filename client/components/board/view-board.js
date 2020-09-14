@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { updateRetro } from "../../store/actions/retro";
-import { addRetro } from "../../store/actions/retro";
+import { updateRetro, addRetro, deleteRetro } from "../../store/actions/retro";
 
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import AddRetroPoint from "./add-retro-point";
-import Fab from "@material-ui/core/Fab";
-import DoneIcon from "@material-ui/icons/Done";
-import DoneAllIcon from "@material-ui/icons/DoneAll";
+import RetroActions from "./retro-actions";
+import EditPoint from "./edit-point";
 
 const onDragEnd = (
   result,
@@ -64,7 +62,7 @@ const onDragEnd = (
 };
 
 const ViewBoard = React.memo(
-  ({ retros, sprint, onSave, onUpdate, history, currentUser }) => {
+  ({ retros, sprint, onSave, onUpdate, onDelete, history, currentUser }) => {
     const initialColumn = {
       good: {
         name: "Went well",
@@ -79,6 +77,9 @@ const ViewBoard = React.memo(
         items: [],
       },
     };
+
+    const [openEdit, setOpenEdit] = useState(false);
+    const [editPoint, setEditPoint] = useState(undefined);
 
     useEffect(() => {
       if (!history) {
@@ -112,12 +113,8 @@ const ViewBoard = React.memo(
       onSave(data);
     };
 
-    const handleResolve = (event) => {
-      event.persist();
-      const id = event.target.id;
-      console.log(event.target.id);
+    const handleResolve = (id) => {
       const retroPoint = retros.find((retro) => retro.id === id);
-      console.log(retroPoint);
       const data = {
         ...retroPoint,
         sprint: retroPoint.sprint.id,
@@ -127,6 +124,35 @@ const ViewBoard = React.memo(
       onUpdate(id, data);
     };
 
+    const handleEdit = (id) => {
+      setOpenEdit(true);
+      setEditPoint(retros.find((retro) => retro.id === id));
+    };
+
+    const handleDelete = (id) => {
+      onDelete(id);
+    };
+
+    const handleAction = (operation, id) => {
+      console.log(operation);
+      switch (operation) {
+        case "edit":
+          handleEdit(id);
+          break;
+        case "delete":
+          handleDelete(id);
+          break;
+        case "resolve":
+          handleResolve(id);
+          break;
+        default:
+          return;
+      }
+    };
+
+    const handleCloseEdit = () => {
+      setOpenEdit(false);
+    };
     return (
       <div
         style={{
@@ -135,6 +161,11 @@ const ViewBoard = React.memo(
           height: "80%",
         }}
       >
+        <EditPoint
+          shouldOpen={openEdit}
+          shouldCloseView={handleCloseEdit}
+          point={editPoint}
+        />
         <DragDropContext
           onDragEnd={(result) =>
             onDragEnd(
@@ -147,7 +178,7 @@ const ViewBoard = React.memo(
             )
           }
         >
-          {Object.entries(columns).map(([key, column], index) => {
+          {Object.entries(columns).map(([key, column]) => {
             return (
               <div
                 style={{
@@ -227,39 +258,21 @@ const ViewBoard = React.memo(
                                           flexWrap: "wrap",
                                           flexDirection: "column",
                                           flexGrow: 1,
+                                          maxWidth: "80%",
                                         }}
                                       >
                                         {item.description}
                                       </div>
-                                      {item.classification === "action" &&
-                                        !history && (
-                                          <div
-                                            style={{
-                                              float: "right",
-                                            }}
-                                          >
-                                            <Fab
-                                              size="small"
-                                              color="primary"
-                                              aria-label="resolve"
-                                              onClick={handleResolve}
-                                            >
-                                              <DoneIcon
-                                                fontSize="large"
-                                                id={item.id}
-                                              />
-                                            </Fab>
-                                          </div>
-                                        )}
-                                      {item.classification === "action" &&
-                                        item.resolved &&
-                                        history && (
-                                          <div style={{ float: "right" }}>
-                                            <DoneAllIcon
-                                              fontSize="large"
-                                              color="primary"
-                                            />
-                                          </div>
+                                      {!history &&
+                                        currentUser &&
+                                        (currentUser.isAdmin ||
+                                          item.created_by ===
+                                            currentUser.id) && (
+                                          <RetroActions
+                                            item={item}
+                                            currentUser={currentUser}
+                                            takeAction={handleAction}
+                                          />
                                         )}
                                     </div>
                                   );
@@ -295,6 +308,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onSave: (data) => dispatch(addRetro(data)),
     onUpdate: (id, data) => dispatch(updateRetro(id, { ...data })),
+    onDelete: (id) => dispatch(deleteRetro(id)),
   };
 };
 

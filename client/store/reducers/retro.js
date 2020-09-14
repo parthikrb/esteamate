@@ -10,6 +10,8 @@ const retroReducer = (state = initialState, action) => {
   switch (action.type) {
     case types.ADD_RETRO_START:
     case types.LOAD_RETROS_START:
+    case types.UPDATE_RETRO_START:
+    case types.DELETE_RETRO_START:
       return { ...state, loading: true };
     case types.ADD_RETRO_SUCCESS:
       return {
@@ -35,8 +37,19 @@ const retroReducer = (state = initialState, action) => {
         retros: updatedRetro,
         loading: false,
       };
+    case types.DELETE_RETRO_SUCCESS:
+      const deletedRetro = state.retros.filter(
+        (retro) => retro.id !== action.payload.id
+      );
+      return {
+        ...state,
+        retros: deletedRetro,
+        loading: false,
+      };
     case types.ADD_RETRO_FAILURE:
     case types.LOAD_RETROS_FAILURE:
+    case types.UPDATE_RETRO_FAILURE:
+    case types.DELETE_RETRO_FAILURE:
       return {
         ...state,
         loading: false,
