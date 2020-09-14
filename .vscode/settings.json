@@ -1,5 +1,28 @@
 {
     "cSpell.words": [
-        "squadleaves"
+        "Bapana",
+        "CURRENTUSER",
+        "CURRENTUSERRELEASES",
+        "CURRENTUSERSPRINTS",
+        "CURRENTUSERSQUADS",
+        "Droppable",
+        "ESNEXT",
+        "Esteamate",
+        "describedby",
+        "downlevel",
+        "firstname",
+        "haspopup",
+        "labelledby",
+        "lastname",
+        "lightblue",
+        "lightgray",
+        "lightgreen",
+        "mixins",
+        "signin",
+        "signout",
+        "sourcemap",
+        "squadleaves",
+        "tslib",
+        "typechecking"
     ]
 }

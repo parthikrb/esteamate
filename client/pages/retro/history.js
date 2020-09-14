@@ -2,25 +2,24 @@ import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { loadCurrentUserSquads } from "../../store/actions/current-user";
 import { loadRetros } from "../../store/actions/retro";
-import { isAfter, isBefore, isEqual, addDays } from "date-fns";
+import { isBefore, isEqual } from "date-fns";
 
 import ViewBoard from "../../components/board/view-board";
 import SelectSprint from "../../components/board/select-sprint";
 
-const Cast = (props) => {
+const History = (props) => {
   const { retros, sprints } = props;
 
-  const [sprintId, setSprintId] = useState(undefined);
+  const [sprintId, setSprintId] = useState(sprints[0].id);
   // const [retrospective, setRetrospective] = useState(retros);
 
   const currentSprints = sprints.filter(
     (sprint) =>
-      (isAfter(new Date(sprint.end_date), new Date()) ||
-        isEqual(new Date(sprint.end_date), new Date()) ||
-        isAfter(addDays(new Date(sprint.end_date), 5), new Date())) &&
-      (isBefore(new Date(sprint.start_date), new Date()) ||
-        isEqual(new Date(sprint.start_date), new Date()))
+      isBefore(new Date(sprint.end_date), new Date()) ||
+      isEqual(new Date(sprint.end_date), new Date())
   );
+
+  console.log(currentSprints);
 
   useEffect(() => {
     const _sprintId = sprintId ? sprintId : currentSprints[0].id;
@@ -37,12 +36,12 @@ const Cast = (props) => {
         sprints={currentSprints}
         handleSprintChange={handleSprintChange}
       />
-      <ViewBoard retros={retros} sprint={sprintId} history={false} />
+      <ViewBoard retros={retros} sprint={sprintId} history={true} />
     </div>
   );
 };
 
-Cast.getInitialProps = async (context, client) => {
+History.getInitialProps = async (context, client) => {
   await context.store.dispatch(loadCurrentUserSquads(client));
   await context.store.dispatch(loadRetros(client));
   return { retros: [] };
@@ -57,4 +56,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps)(Cast);
+export default connect(mapStateToProps)(History);

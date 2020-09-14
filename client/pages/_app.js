@@ -1,5 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {
+  loadCurrentUser,
+  loadCurrentUserSquads,
+} from "../store/actions/current-user";
 import { makeStyles } from "@material-ui/core/styles";
 import { ToastProvider } from "react-toast-notifications";
 import Head from "next/head";
@@ -41,7 +45,7 @@ const MyApp = (props) => {
         <ToastProvider placement="bottom-right" autoDismiss>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
-          {currentUser ? (
+          {currentUser && Object.keys(currentUser).length > 0 ? (
             <Menu currentUser={currentUser}>
               <div className={classes.content}>
                 <Component {...pageProps} currentUser={currentUser} />
@@ -63,7 +67,13 @@ MyApp.propTypes = {
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
   const client = buildClient(ctx);
-  const { data } = await client.get("/api/users/currentUser");
+  const state = ctx.store.getState();
+
+  await ctx.store.dispatch(loadCurrentUser(client));
+  // await ctx.store.dispatch(loadCurrentUserSquads(client));
+  const currentUser = state.current_user.user;
+
+
 
   let pageProps = {};
   if (Component.getInitialProps) {
@@ -72,7 +82,7 @@ MyApp.getInitialProps = async ({ Component, ctx }) => {
 
   return {
     pageProps,
-    ...data,
+    currentUser,
   };
 };
 

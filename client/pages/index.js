@@ -1,8 +1,15 @@
 import SignInComponent from "../components/auth/signin";
 
 const LandingPage = (props) => {
+  const { currentUser } = props;
   return (
-    <div>{props.currentUser ? <div>Dashboard</div> : <SignInComponent />}</div>
+    <div>
+      {currentUser && Object.keys(currentUser).length > 0 ? (
+        <div>Dashboard</div>
+      ) : (
+        <SignInComponent />
+      )}
+    </div>
   );
 };
 

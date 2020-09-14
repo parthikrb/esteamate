@@ -40,6 +40,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: parthikrb/retro
+      context: retro
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: parthikrb/client
       context: client
       docker:

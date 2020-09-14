@@ -5,7 +5,7 @@ import { Sprint } from '../models/sprint';
 const router = express.Router();
 
 router.delete(
-    '/api/releases/:id',
+    '/api/sprints/:id',
     requireAuth,
     async (req: Request, res: Response) => {
         const { isAdmin } = req.currentUser!;
