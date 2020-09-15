@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { connect } from "react-redux";
-import { clearCurrentUser } from "../../store/actions/current-user";
+import {
+  loadCurrentUser,
+  clearCurrentUser,
+} from "../../store/actions/current-user";
 import {
   AppBar,
   Toolbar,
@@ -74,6 +77,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Menu = (props) => {
+  console.log(props);
   const classes = useStyles();
   const { addToast } = useToasts();
   const router = useRouter();
@@ -243,6 +247,9 @@ const Menu = (props) => {
   );
 };
 
+Menu.getInitialProps = async (context, client) => {
+  await context.store.dispatch(loadCurrentUser(client));
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {

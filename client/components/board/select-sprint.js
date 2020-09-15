@@ -15,7 +15,8 @@ const useStyles = makeStyles((theme) => ({
 
 const SelectSprint = (props) => {
   const { sprints } = props;
-  const [sprintId, setSprintId] = useState(sprints[0].id);
+  const _id = Object.keys(sprints).length > 0 ? sprints[0].id : undefined;
+  const [sprintId, setSprintId] = useState(_id);
 
   const classes = useStyles();
 

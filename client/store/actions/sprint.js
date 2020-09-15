@@ -20,9 +20,9 @@ export const addSprintFailure = (data) => {
 };
 
 export const addSprint = (data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(addSprintStart());
-    axios
+    await axios
       .post("/api/sprints", data)
       .then((response) => dispatch(addSprintSuccess(response.data)))
       .catch((error) => dispatch(addSprintFailure(error)));
@@ -50,11 +50,11 @@ export const loadSprintsFailure = (data) => {
 };
 
 export const loadSprints = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     if (state.sprint.sprints.length === 0) {
       dispatch(loadSprintsStart());
-      client
+      await client
         .get("/api/sprints")
         .then((response) => dispatch(loadSprintsSuccess(response.data)))
         .catch((error) => dispatch(loadSprintsFailed(error)));

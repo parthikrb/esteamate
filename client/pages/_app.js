@@ -1,9 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  loadCurrentUser,
-  loadCurrentUserSquads,
-} from "../store/actions/current-user";
+import { loadCurrentUser } from "../store/actions/current-user";
 import { makeStyles } from "@material-ui/core/styles";
 import { ToastProvider } from "react-toast-notifications";
 import Head from "next/head";
@@ -21,6 +18,7 @@ const useStyles = makeStyles({
   },
 });
 const MyApp = (props) => {
+  console.log(props);
   const classes = useStyles();
   const { Component, pageProps, currentUser } = props;
 
@@ -67,22 +65,17 @@ MyApp.propTypes = {
 
 MyApp.getInitialProps = async ({ Component, ctx }) => {
   const client = buildClient(ctx);
-  const state = ctx.store.getState();
-
   await ctx.store.dispatch(loadCurrentUser(client));
-  // await ctx.store.dispatch(loadCurrentUserSquads(client));
-  const currentUser = state.current_user.user;
-
-
+  const state = await ctx.store.getState();
 
   let pageProps = {};
   if (Component.getInitialProps) {
-    pageProps = await Component.getInitialProps(ctx, client);
+    pageProps = (await Component.getInitialProps(ctx, client)) || {};
   }
 
   return {
     pageProps,
-    currentUser,
+    currentUser: state.current_user.user,
   };
 };
 

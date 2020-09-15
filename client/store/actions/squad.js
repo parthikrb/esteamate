@@ -20,9 +20,9 @@ export const addSquadFailure = (data) => {
 };
 
 export const addSquad = (data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(addSquadStart());
-    axios
+    await axios
       .post("/api/squads", data)
       .then((response) => dispatch(addSquadSuccess(response.data)))
       .catch((error) => dispatch(addSquadFailure(error)));
@@ -50,11 +50,11 @@ export const loadSquadsFailure = (data) => {
 };
 
 export const loadSquads = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     if (state.squad.squads.length === 0) {
       dispatch(loadSquadsStart());
-      client
+      await client
         .get("/api/squads")
         .then((response) => dispatch(loadSquadsSuccess(response.data)))
         .catch((error) => dispatch(loadSquadsFailed(error)));

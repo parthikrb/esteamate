@@ -20,9 +20,9 @@ export const addReleaseFailure = (data) => {
 };
 
 export const addRelease = (data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(addReleaseStart());
-    axios
+    await axios
       .post("/api/releases", data)
       .then((response) => dispatch(addReleaseSuccess(response.data)))
       .catch((error) => dispatch(addReleaseFailure(error)));
@@ -50,11 +50,11 @@ export const loadReleasesFailure = (data) => {
 };
 
 export const loadReleases = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     if (state.release.releases.length === 0) {
       dispatch(loadReleasesStart());
-      client
+      await client
         .get("/api/releases")
         .then((response) => dispatch(loadReleasesSuccess(response.data)))
         .catch((error) => dispatch(loadReleasesFailed(error)));

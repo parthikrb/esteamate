@@ -24,16 +24,16 @@ export const loadCurrentUserFailure = (data) => {
 };
 
 export const loadCurrentUser = (client) => {
-  return (dispatch, getState) => {
+  console.log("Inside Load Current User");
+  return async (dispatch, getState) => {
     const state = getState();
     const current_user = state.current_user.user || {};
     if (current_user && Object.keys(current_user).length === 0) {
       dispatch(loadCurrentUserStart());
-      client
+      await client
         .get("/api/users/currentUser")
         .then((response) => {
           dispatch(loadCurrentUserSuccess(response.data.currentUser));
-          dispatch(loadCurrentUserSquads(client));
         })
         .catch((error) => dispatch(loadCurrentUserFailure(error)));
     }
@@ -61,20 +61,19 @@ export const loadCurrentUserSquadsFailure = (data) => {
 };
 
 export const loadCurrentUserSquads = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     if (state.current_user.user) {
       const current_user_id = state.current_user.user.id || 0;
-      // if (state.current_user.squads.length === 0) {
-      dispatch(loadCurrentUserSquadsStart());
-      client
-        .get("/api/squads/user/" + current_user_id)
-        .then((response) => {
-          dispatch(loadCurrentUserSquadsSuccess(response.data));
-          dispatch(loadCurrentUserReleases(client));
-        })
-        .catch((error) => dispatch(loadCurrentUserSquadsFailure(error)));
-      // }
+      if (state.current_user.squads.length === 0) {
+        dispatch(loadCurrentUserSquadsStart());
+        await client
+          .get("/api/squads/user/" + current_user_id)
+          .then((response) => {
+            dispatch(loadCurrentUserSquadsSuccess(response.data));
+          })
+          .catch((error) => dispatch(loadCurrentUserSquadsFailure(error)));
+      }
     }
   };
 };
@@ -100,18 +99,17 @@ export const loadCurrentUserReleasesFailure = (data) => {
 };
 
 export const loadCurrentUserReleases = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     const currentUserSquads = state.current_user.squads;
     const userSquads = currentUserSquads.reduce((acc, cur) => {
       return (acc += `,${cur.id}`);
     }, "");
     dispatch(loadCurrentUserReleasesStart());
-    client
+    await client
       .get("/api/releases/squad/" + userSquads.slice(1))
       .then((response) => {
         dispatch(loadCurrentUserReleasesSuccess(response.data));
-        dispatch(loadCurrentUserSprints(client));
       })
       .catch((error) => dispatch(loadCurrentUserReleasesFailure(error)));
   };
@@ -138,14 +136,14 @@ export const loadCurrentUserSprintsFailure = (data) => {
 };
 
 export const loadCurrentUserSprints = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     dispatch(loadCurrentUserSprintsStart());
     const state = getState();
     const currentUserReleases = state.current_user.releases;
     const userReleases = currentUserReleases.reduce((acc, cur) => {
       return (acc += `,${cur.id}`);
     }, "");
-    client
+    await client
       .get("/api/sprints/release/" + userReleases.slice(1))
       .then((response) =>
         dispatch(loadCurrentUserSprintsSuccess(response.data))

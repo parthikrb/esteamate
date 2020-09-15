@@ -59,9 +59,9 @@ export const loadUsersFailure = (error) => {
 };
 
 export const addUser = (data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(addUserStart());
-    axios
+    await axios
       .post("/api/users/signup", data)
       .then((response) => dispatch(addUserSuccess(response.data)))
       .catch((error) => dispatch(addUserFailure(error)));
@@ -69,11 +69,11 @@ export const addUser = (data) => {
 };
 
 export const loadUsers = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     if (state.user.users.length === 0) {
       dispatch(loadUsersStart());
-      client
+      await client
         .get("/api/users")
         .then((response) => dispatch(loadUsersSuccess(response.data)))
         .catch((error) => dispatch(loadUsersFailure(error)));
