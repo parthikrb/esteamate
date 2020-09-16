@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { loadUsers } from "../../store/actions/user";
+import { loadCurrentUser } from "../../store/actions/current-user";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -58,8 +59,8 @@ const User = (props) => {
             rows={
               filterColumn
                 ? users.filter((user) =>
-                  user[filterColumn].toLowerCase().includes(query)
-                )
+                    user[filterColumn].toLowerCase().includes(query)
+                  )
                 : users
             }
             sendRowDetails={fetchUserDetails}
@@ -86,15 +87,18 @@ const User = (props) => {
 };
 
 User.getInitialProps = async (context, client) => {
+  await context.store.dispatch(loadCurrentUser(client));
   await context.store.dispatch(loadUsers(client));
-  return { users: [] };
+
+  const state = context.store.getState();
+  return { users: state.user.users, currentUser: state.current_user.user };
 };
 
 const mapStateToProps = (state) => {
   return {
     users: state.user.users,
     loading: state.user.loading,
-    error: state.user.error
+    error: state.user.error,
   };
 };
 

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
-import { loadCurrentUserSquads } from "../../store/actions/current-user";
+import * as actions from "../../store/actions/current-user";
 import { loadRetros } from "../../store/actions/retro";
 import { isAfter, isBefore, isEqual, addDays } from "date-fns";
 
@@ -9,7 +8,7 @@ import SelectSprint from "../../components/board/select-sprint";
 
 const Cast = (props) => {
   const { retros, sprints } = props;
-
+  console.log(sprints);
   const [sprintId, setSprintId] = useState(undefined);
   // const [retrospective, setRetrospective] = useState(retros);
 
@@ -43,18 +42,17 @@ const Cast = (props) => {
 };
 
 Cast.getInitialProps = async (context, client) => {
-  await context.store.dispatch(loadCurrentUserSquads(client));
+  await context.store.dispatch(actions.loadCurrentUser(client));
+  await context.store.dispatch(actions.loadCurrentUserSquads(client));
+  await context.store.dispatch(actions.loadCurrentUserReleases(client));
+  await context.store.dispatch(actions.loadCurrentUserSprints(client));
+
   await context.store.dispatch(loadRetros(client));
-  return { retros: [] };
+
+  const state = await context.store.getState();
+
+  console.log(state);
+  return { retros: state.retro.retros, sprints: state.current_user.sprints };
 };
 
-const mapStateToProps = (state) => {
-  return {
-    retros: state.retro.retros,
-    sprints: state.current_user.sprints,
-    loading: state.retro.loading,
-    error: state.retro.error,
-  };
-};
-
-export default connect(mapStateToProps)(Cast);
+export default Cast;

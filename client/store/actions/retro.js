@@ -20,9 +20,9 @@ export const addRetroFailure = (data) => {
 };
 
 export const addRetro = (data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(addRetroStart());
-    axios
+    await axios
       .post("/api/retros", data)
       .then((response) => dispatch(addRetroSuccess(response.data)))
       .catch((error) => dispatch(addRetroFailure(error)));
@@ -48,9 +48,9 @@ export const updateRetroFailure = (data) => {
 };
 
 export const updateRetro = (id, data) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(updateRetroStart());
-    axios
+    await axios
       .put("/api/retros/" + id, data)
       .then((response) => dispatch(updateRetroSuccess(id, response.data)))
       .catch((error) => dispatch(updateRetroFailure(error)));
@@ -76,9 +76,9 @@ export const deleteRetroFailure = (data) => {
 };
 
 export const deleteRetro = (id) => {
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(deleteRetroStart());
-    axios
+    await axios
       .delete("/api/retros/" + id)
       .then((response) => dispatch(deleteRetroSuccess(id)))
       .catch((error) => dispatch(deleteRetroFailure(error)));
@@ -106,11 +106,11 @@ export const loadRetrosFailure = (data) => {
 };
 
 export const loadRetros = (client) => {
-  return (dispatch, getState) => {
+  return async (dispatch, getState) => {
     const state = getState();
     if (state.retro.retros.length === 0) {
       dispatch(loadRetrosStart());
-      client
+      await client
         .get("/api/retros")
         .then((response) => dispatch(loadRetrosSuccess(response.data)))
         .catch((error) => dispatch(loadRetrosFailed(error)));
