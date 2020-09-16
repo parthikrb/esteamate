@@ -90,7 +90,7 @@ const Menu = (props) => {
 
   useEffect(() => {
     const path = router.pathname;
-    if (path.includes("/admin")) {
+    if (path.includes("/admin") && isAdmin) {
       handleAdminMenuClick();
     } else if (path.includes("/retro")) {
       handleRetroMenuClick();

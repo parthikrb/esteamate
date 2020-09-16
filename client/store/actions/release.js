@@ -57,7 +57,7 @@ export const loadReleases = (client) => {
       await client
         .get("/api/releases")
         .then((response) => dispatch(loadReleasesSuccess(response.data)))
-        .catch((error) => dispatch(loadReleasesFailed(error)));
+        .catch((error) => dispatch(loadReleasesFailure(error)));
     }
   };
 };

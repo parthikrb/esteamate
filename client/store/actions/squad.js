@@ -57,7 +57,7 @@ export const loadSquads = (client) => {
       await client
         .get("/api/squads")
         .then((response) => dispatch(loadSquadsSuccess(response.data)))
-        .catch((error) => dispatch(loadSquadsFailed(error)));
+        .catch((error) => dispatch(loadSquadsFailure(error)));
     }
   };
 };

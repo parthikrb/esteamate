@@ -57,7 +57,7 @@ export const loadSprints = (client) => {
       await client
         .get("/api/sprints")
         .then((response) => dispatch(loadSprintsSuccess(response.data)))
-        .catch((error) => dispatch(loadSprintsFailed(error)));
+        .catch((error) => dispatch(loadSprintsFailure(error)));
     }
   };
 };

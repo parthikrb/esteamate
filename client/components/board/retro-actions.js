@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import SpeedDial from "@material-ui/lab/SpeedDial";
 import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
@@ -40,9 +40,6 @@ const userActions = [
   { icon: <DeleteIcon />, name: "Delete", operation: "delete" },
 ];
 
-const resolveAction = [
-  { icon: <DoneIcon />, name: "Resolve", operation: "resolve" },
-];
 
 const RetroActions = ({ item, currentUser, takeAction }) => {
   const type = item.classification;
