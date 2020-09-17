@@ -40,7 +40,6 @@ const userActions = [
   { icon: <DeleteIcon />, name: "Delete", operation: "delete" },
 ];
 
-
 const RetroActions = ({ item, currentUser, takeAction }) => {
   const type = item.classification;
   const { id, created_by } = item;
@@ -98,7 +97,15 @@ const RetroActions = ({ item, currentUser, takeAction }) => {
             currentUser &&
             !currentUser.admin &&
             created_by === currentUser.id
-          ? userActions
+          ? userActions.map((action) => (
+              <SpeedDialAction
+                key={action.name}
+                id={action.name}
+                icon={action.icon}
+                tooltipTitle={action.name}
+                onClick={(e) => handleClick(e, action.operation, id)}
+              />
+            ))
           : null}
       </SpeedDial>
     </div>
