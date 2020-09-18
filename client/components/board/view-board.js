@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { updateRetro, addRetro, deleteRetro } from "../../store/actions/retro";
-
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import AddRetroPoint from "./add-retro-point";
 import RetroActions from "./retro-actions";
@@ -109,6 +108,7 @@ const ViewBoard = React.memo(
     }, [retros, sprint]);
 
     const [columns, setColumns] = useState(initialColumn);
+
     const handleSave = (data) => {
       onSave(data);
     };
@@ -153,6 +153,7 @@ const ViewBoard = React.memo(
     const handleCloseEdit = () => {
       setOpenEdit(false);
     };
+
     return (
       <div
         style={{
@@ -201,8 +202,8 @@ const ViewBoard = React.memo(
                               ? "lightblue"
                               : "lightgray",
                             padding: 4,
-                            width: 320,
-                            height: 420,
+                            width: '24.8vw',
+                            height: '66vh',
                             overflowY: "auto",
                           }}
                         >
