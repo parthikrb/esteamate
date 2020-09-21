@@ -1,0 +1,33 @@
+.rbc-btn-group {
+  flex-grow: 1;
+}
+
+.rbc-toolbar-label {
+  margin-left: 53vw;
+}
+
+.rbc-btn-group > button:nth-of-type(2n) {
+  background-color: #eccc68;
+}
+
+.rbc-btn-group > button:first-of-type {
+  background-color: #7bed9f;
+}
+
+.rbc-btn-group > button:nth-of-type(3n) {
+  background-color: #70a1ff;
+}
+
+.rbc-event,
+.rbc-event-content {
+  background-color: #ff6b81;
+}
+
+.rbc-today {
+  background-color: #7bed9f;
+}
+
+.rbc-current {
+  color: #f1f2f6;
+}
+

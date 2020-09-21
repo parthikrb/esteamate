@@ -6,7 +6,7 @@ import StorageIcon from "@material-ui/icons/Storage";
 const capacityRoute = [
   {
     label: "Dashboard",
-    path: "/capacity/dashboard",
+    path: "/capacity",
     icon: <DashboardIcon />,
   },
   {
