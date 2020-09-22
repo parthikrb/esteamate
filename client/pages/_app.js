@@ -9,8 +9,10 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import buildClient from "../helpers/build-client";
 import theme from "./theme";
 import Menu from "../containers/menu/menu";
-
 import { wrapper } from "../store/store";
+
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import './calendar.css'
 
 const useStyles = makeStyles({
   content: {
