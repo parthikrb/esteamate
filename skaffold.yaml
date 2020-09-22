@@ -48,6 +48,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: parthikrb/capacity
+      context: capacity
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: parthikrb/client
       context: client
       docker:

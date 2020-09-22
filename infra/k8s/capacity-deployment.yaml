@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: capacity-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: capacity
+    template:
+        metadata:
+            labels:
+                app: capacity
+        spec:
+            containers:
+                - name: capacity
+                  image: parthikrb/capacity
+                  env:
+                      - name: NATS_CLIENT_ID
+                        valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
+                      - name: NATS_URL
+                        value: 'http://nats-service:4222'
+                      - name: NATS_CLUSTER_ID
+                        value: esteamate
+                      - name: MONGO_URI
+                        value: 'mongodb://host.docker.internal:27017/capacity'
+                      - name: JWT_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: jwt-secret
+                                key: JWT_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: capacity-service
+spec:
+    selector:
+        app: capacity
+    ports:
+        - name: capacity
+          protocol: TCP
+          port: 3000
+          targetPort: 3000

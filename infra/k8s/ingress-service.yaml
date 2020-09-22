@@ -30,6 +30,10 @@ spec:
             backend:
               serviceName: retro-service
               servicePort: 3000
+          - path: /api/leaves/?(.*)
+            backend:
+              serviceName: capacity-service
+              servicePort: 3000
           - path: /?(.*)
             backend:
               serviceName: client-service

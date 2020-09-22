@@ -20,6 +20,7 @@
 
 .rbc-event,
 .rbc-event-content {
+  cursor: none;
   background-color: #ff6b81;
 }
 
@@ -30,4 +31,3 @@
 .rbc-current {
   color: #f1f2f6;
 }
-
