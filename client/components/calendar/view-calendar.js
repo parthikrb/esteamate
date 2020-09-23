@@ -28,7 +28,7 @@ const ViewCalendar = (props) => {
     let _events = Array.from(events);
     let dateIndex;
 
-    if (event.action !== "doubleClick") {
+    if (event.action === "click") {
       days.map(async (day) => {
         dateIndex = _events.findIndex(
           (e) => e.title === currentUser.fullname && isEqual(day, e.start)

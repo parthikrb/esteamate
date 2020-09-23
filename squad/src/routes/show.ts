@@ -46,7 +46,11 @@ router.get(
           scrum_team: id,
         },
       ],
-    }).exec();
+    })
+      .populate("product_owner")
+      .populate("scrum_master")
+      .populate("scrum_team")
+      .exec();
 
     if (!associatedSquads) {
       throw new NotFoundError();
