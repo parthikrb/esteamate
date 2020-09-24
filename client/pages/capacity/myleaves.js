@@ -1,5 +1,5 @@
 import React from "react";
-import { loadSquads } from "../../store/actions/squad";
+import * as actions from "../../store/actions/leave";
 import ViewCalendar from "../../components/calendar/view-calendar";
 
 const MyLeaves = ({ currentUser, leaves }) => {
@@ -10,7 +10,7 @@ MyLeaves.getInitialProps = async (context, client) => {
   const state = await context.store.getState();
   const currentUser = state.current_user.user;
   const userSquads = await client.get("/api/squads/user/" + currentUser.id);
-  
+
   let userSquadDetails = [];
   userSquads.data.map((squad) => {
     const squadIndex = userSquadDetails.findIndex(
@@ -30,9 +30,9 @@ MyLeaves.getInitialProps = async (context, client) => {
     squadUsers.push(`${userSquad.firstname} ${userSquad.lastname}`)
   );
 
-  const { data } = await client.get("/api/leaves/user/" + squadUsers);
+  await context.store.dispatch(actions.loadUserLeaves(client, squadUsers));
 
-  return { currentUser: currentUser, leaves: data };
+  return { currentUser: currentUser, leaves: state.leave.squadLeaves };
 };
 
 export default MyLeaves;

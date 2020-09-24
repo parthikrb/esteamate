@@ -288,7 +288,7 @@ const Dashboard = (props) => {
                         ],
                       }}
                       width={null}
-                      height="280"
+                      height={280}
                       options={options}
                     />
                     <div className={classes.footer}>200 112 0</div>

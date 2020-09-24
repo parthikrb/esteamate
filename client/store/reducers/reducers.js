@@ -5,6 +5,7 @@ import releaseReducer from "./release";
 import sprintReducer from "./sprint";
 import retroReducer from "./retro";
 import currentUserReducer from "./current-user";
+import leaveReducer from "./leave";
 
 const reducers = {
   user: userReducer,
@@ -13,6 +14,7 @@ const reducers = {
   sprint: sprintReducer,
   retro: retroReducer,
   current_user: currentUserReducer,
+  leave: leaveReducer,
 };
 
 export default combineReducers(reducers);
