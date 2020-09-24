@@ -113,7 +113,7 @@ export const loadRetros = (client) => {
       await client
         .get("/api/retros")
         .then((response) => dispatch(loadRetrosSuccess(response.data)))
-        .catch((error) => dispatch(loadRetrosFailed(error)));
+        .catch((error) => dispatch(loadRetrosFailure(error)));
     }
   };
 };
