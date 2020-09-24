@@ -77,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Menu = (props) => {
-  console.log(props);
   const classes = useStyles();
   const { addToast } = useToasts();
   const router = useRouter();

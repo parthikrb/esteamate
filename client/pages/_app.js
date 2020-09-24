@@ -20,7 +20,6 @@ const useStyles = makeStyles({
   },
 });
 const MyApp = (props) => {
-  console.log(props);
   const classes = useStyles();
   const { Component, pageProps, currentUser } = props;
 

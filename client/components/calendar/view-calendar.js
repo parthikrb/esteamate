@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import { isEqual, isWeekend } from "date-fns";
-import axios from "axios";
+import * as actions from "../../store/actions/leave";
 
 const localizer = momentLocalizer(moment);
 
@@ -28,26 +29,20 @@ const ViewCalendar = (props) => {
     let _events = Array.from(events);
     let dateIndex;
 
-    if (event.action !== "doubleClick") {
+    if (event.action === "click") {
       days.map(async (day) => {
         dateIndex = _events.findIndex(
           (e) => e.title === currentUser.fullname && isEqual(day, e.start)
         );
 
         if (dateIndex > -1 && !isWeekend(day)) {
-          axios.delete("/api/leaves/" + events[dateIndex].id);
+          props.onDelete(events[dateIndex].id);
           _events.splice(dateIndex, 1);
           setEvents(_events);
         } else if (!isWeekend(day)) {
-          const { data } = await axios.post("/api/leaves", {
+          props.onAdd({
             user: currentUser.fullname,
             date: day,
-          });
-          _events.push({
-            id: data.id,
-            start: new Date(day),
-            end: new Date(day),
-            title: currentUser.fullname,
           });
           setEvents(_events);
         }
@@ -73,4 +68,17 @@ const ViewCalendar = (props) => {
   );
 };
 
-export default ViewCalendar;
+const mapStateToProps = (state) => {
+  return {
+    leaves: state.leave.squadLeaves,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onAdd: (data) => dispatch(actions.addLeave(data)),
+    onDelete: (id) => dispatch(actions.deleteLeave(id)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ViewCalendar);

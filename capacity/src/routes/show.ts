@@ -10,7 +10,11 @@ router.get(
   async (req: Request, res: Response) => {
     const { user } = req.params;
 
-    const leave = await Leave.find({ user }).exec();
+    const leave = await Leave.find({
+      user: {
+        $in: user.split(",").map((s: string) => s),
+      },
+    }).exec();
 
     res.status(200).send(leave);
   }

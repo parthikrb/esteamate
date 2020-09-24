@@ -10,14 +10,9 @@ const capacityRoute = [
     icon: <DashboardIcon />,
   },
   {
-    label: "My Leaves",
+    label: "Leaves",
     path: "/capacity/myleaves",
     icon: <WorkOffIcon />,
-  },
-  {
-    label: "Squad Leaves",
-    path: "/capacity/squadleaves",
-    icon: <StorageIcon />,
   },
 ];
 
