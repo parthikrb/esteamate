@@ -13,11 +13,29 @@ export const loadUserLeavesFailure = (data) => {
   return { type: types.LOAD_USER_LEAVES_FAILURE, payload: { data } };
 };
 
-export const loadUserLeaves = (client, users) => {
-  return (dispatch) => {
+export const loadUserSquadLeaves = (client, userId) => {
+  return async (dispatch) => {
+    const userSquads = await client.get("/api/squads/user/" + userId);
+
+    let userSquadDetails = [];
+    userSquads.data.map((squad) => {
+      const squadIndex = userSquadDetails.findIndex(
+        (s) => s.username === squad.username
+      );
+      if (squadIndex < 0) {
+        userSquadDetails.push(
+          ...squad.product_owner,
+          ...squad.scrum_master,
+          ...squad.scrum_team
+        );
+      }
+    });
+
+    let squadUsers = [];
+    userSquadDetails.map((userSquad) => squadUsers.push(userSquad.username));
     dispatch(loadUserLeavesStart());
     client
-      .get("/api/leaves/user/" + users)
+      .get("/api/leaves/user/" + squadUsers)
       .then((response) => dispatch(loadUserLeavesSuccess(response.data)))
       .catch((error) => dispatch(loadUserLeavesFailure(error)));
   };

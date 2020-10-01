@@ -9,28 +9,7 @@ const MyLeaves = ({ currentUser, leaves }) => {
 MyLeaves.getInitialProps = async (context, client) => {
   const state = await context.store.getState();
   const currentUser = state.current_user.user;
-  const userSquads = await client.get("/api/squads/user/" + currentUser.id);
-
-  let userSquadDetails = [];
-  userSquads.data.map((squad) => {
-    const squadIndex = userSquadDetails.findIndex(
-      (s) => s.username === squad.username
-    );
-    if (squadIndex < 0) {
-      userSquadDetails.push(
-        ...squad.product_owner,
-        ...squad.scrum_master,
-        ...squad.scrum_team
-      );
-    }
-  });
-
-  let squadUsers = [];
-  userSquadDetails.map((userSquad) =>
-    squadUsers.push(`${userSquad.firstname} ${userSquad.lastname}`)
-  );
-
-  await context.store.dispatch(actions.loadUserLeaves(client, squadUsers));
+  await context.store.dispatch(actions.loadUserSquadLeaves(client, currentUser.id));
 
   return { currentUser: currentUser, leaves: state.leave.squadLeaves };
 };

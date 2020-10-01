@@ -3,7 +3,8 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import * as actions from "../../store/actions/current-user";
-import { isBefore, isAfter, isEqual } from "date-fns";
+import { loadUserSquadLeaves } from "../../store/actions/leave";
+import { isBefore, isAfter, isEqual, isWithinInterval } from "date-fns";
 import Duration from "../../components/capacity/duration";
 import getWorkingDaysCount from "../../helpers/working-days";
 import { Bar } from "react-chartjs-2";
@@ -91,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
   footer: {
     color: "#f5f6fa",
-    display: "flex",
+    // display: "contents",
     marginTop: "auto",
     bottom: 0,
     padding: 3,
@@ -104,10 +105,24 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     minHeight: "20px",
   },
+  totalHours: {
+    marginLeft: "20px",
+    display: 'flex',
+    justifyContent: "space-around",
+  },
+  totalDescriptions: {
+    display: 'flex',
+    justifyContent: "space-around",
+    marginLeft: "20px",
+  },
+  totalDesc: {
+    fontSize: "x-small",
+  },
 }));
 
 const Dashboard = (props) => {
-  const { currentUserDetails } = props;
+  const { currentUserDetails, leaves } = props;
+  console.log(leaves);
   const { currentUser, squads, releases, sprints } = currentUserDetails;
   const [currentReleases, setCurrentReleases] = useState([]);
   const [flatSquad, setFlatSquad] = useState([]);
@@ -193,6 +208,10 @@ const Dashboard = (props) => {
           r["baCount"] = baCount;
 
           sprints.map((sp) => {
+            let devLeave = 0;
+            let qaLeave = 0;
+            let baLeave = 0;
+
             if (r.id === sp.release) {
               sp["days"] = getWorkingDaysCount(
                 new Date(sp.start_date),
@@ -210,6 +229,29 @@ const Dashboard = (props) => {
               sp["baReserve"] = r.is_release_reserve
                 ? Math.ceil((r.ba_reserve / sp.baTotal) * 100)
                 : 21;
+
+              leaves.map((leave) => {
+                if (
+                  isWithinInterval(new Date(leave.date), {
+                    start: new Date(sp.start_date),
+                    end: new Date(sp.end_date),
+                  })
+                ) {
+                  leave.role === "Developer"
+                    ? (devLeave += 1)
+                    : leave.role === "Quality Analyst"
+                    ? (qaLeave += 1)
+                    : leave.role === "Business Analyst"
+                    ? (baLeave += 1)
+                    : null;
+                }
+              });
+              sp["devLeave"] = devLeave * 8;
+              sp["qaLeave"] = qaLeave * 8;
+              sp["baLeave"] = baLeave * 8;
+              sp["devNet"] = sp.devTotal - sp.devReserve - sp.devLeave;
+              sp["qaNet"] = sp.qaTotal - sp.qaReserve - sp.qaLeave;
+              sp["baNet"] = sp.baTotal - sp.baReserve - sp.baLeave;
             }
           });
         }
@@ -227,7 +269,7 @@ const Dashboard = (props) => {
             return <AntTab key={release.id} label={release.release_name} />;
           })}
         </AntTabs>
-        {currentReleases.length && (
+        {currentReleases.length > 0 && (
           <Duration
             startDate={currentReleases[value].start_date}
             endDate={currentReleases[value].end_date}
@@ -235,7 +277,7 @@ const Dashboard = (props) => {
         )}
 
         <div className={classes.sprints}>
-          {currentReleases.length &&
+          {currentReleases.length > 0 &&
             sprints
               .filter((sprint) => sprint.release === currentReleases[value].id)
               .map((spr) => {
@@ -283,7 +325,11 @@ const Dashboard = (props) => {
                             borderWidth: 1,
                             hoverBackgroundColor: "#ff4757",
                             hoverBorderColor: "#ff4757",
-                            data: Array.from([8, 13, 0]),
+                            data: Array.from([
+                              spr.devLeave,
+                              spr.qaLeave,
+                              spr.baLeave,
+                            ]),
                           },
                         ],
                       }}
@@ -291,7 +337,18 @@ const Dashboard = (props) => {
                       height={280}
                       options={options}
                     />
-                    <div className={classes.footer}>200 112 0</div>
+                    <div className={classes.footer}>
+                      <span className={classes.totalHours}>
+                        <span>{isNaN(spr.devNet) ? 0 : spr.devNet}</span>
+                        <span>{isNaN(spr.qaNet) ? 0 : spr.qaNet}</span>
+                        <span>{isNaN(spr.baNet) ? 0 : spr.baNet}</span>
+                      </span>
+                      <span className={classes.totalDescriptions}>
+                        <span className={classes.totalDesc}>Dev</span>
+                        <span className={classes.totalDesc}>QA</span>
+                        <span className={classes.totalDesc}>BA</span>
+                      </span>
+                    </div>
                   </div>
                 );
               })}
@@ -302,13 +359,19 @@ const Dashboard = (props) => {
 };
 
 Dashboard.getInitialProps = async (context, client) => {
+  const state = await context.store.getState();
   await context.store.dispatch(actions.loadCurrentUser(client));
   await context.store.dispatch(actions.loadCurrentUserSquads(client));
   await context.store.dispatch(actions.loadCurrentUserReleases(client));
   await context.store.dispatch(actions.loadCurrentUserSprints(client));
-  const state = await context.store.getState();
 
-  return { currentUserDetails: state.current_user };
+  const currentUser = state.current_user.user;
+  await context.store.dispatch(loadUserSquadLeaves(client, currentUser.id));
+
+  return {
+    currentUserDetails: state.current_user,
+    leaves: state.leave.squadLeaves,
+  };
 };
 
 export default Dashboard;
