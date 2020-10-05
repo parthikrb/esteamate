@@ -92,7 +92,6 @@ const useStyles = makeStyles((theme) => ({
   },
   footer: {
     color: "#f5f6fa",
-    // display: "contents",
     marginTop: "auto",
     bottom: 0,
     padding: 3,
@@ -107,11 +106,11 @@ const useStyles = makeStyles((theme) => ({
   },
   totalHours: {
     marginLeft: "20px",
-    display: 'flex',
+    display: "flex",
     justifyContent: "space-around",
   },
   totalDescriptions: {
-    display: 'flex',
+    display: "flex",
     justifyContent: "space-around",
     marginLeft: "20px",
   },
@@ -190,15 +189,32 @@ const Dashboard = (props) => {
       let devCount = 0;
       let qaCount = 0;
       let baCount = 0;
+      let devReserve = 0;
+      let qaReserve = 0;
+      let baReserve = 0;
 
       sq.team.map((member) => {
-        member.role === "Developer"
-          ? devCount++
-          : member.role === "Quality Analyst"
-          ? qaCount++
-          : member.role === "Business Analyst"
-          ? baCount++
-          : null;
+        switch (member.role) {
+          case "Developer":
+            devCount++;
+            devReserve += member.capacity_reserve;
+            break;
+          case "Quality Analyst":
+            qaCount++;
+            qaReserve += member.capacity_reserve;
+            break;
+          case "Business Analyst":
+            baCount++;
+            baReserve += member.capacity_reserve;
+            break;
+        }
+        // member.role === "Developer"
+        //   ? devCount++
+        //   : member.role === "Quality Analyst"
+        //   ? qaCount++
+        //   : member.role === "Business Analyst"
+        //   ? baCount++
+        //   : null;
       });
       tempRelease.map((r) => {
         if (sq.id === r.squad) {
@@ -221,14 +237,14 @@ const Dashboard = (props) => {
               sp["qaTotal"] = sp.days * r.qaCount * 8;
               sp["baTotal"] = sp.days * r.baCount * 8;
               sp["devReserve"] = r.is_release_reserve
-                ? Math.ceil((r.dev_reserve / sp.devTotal) * 100)
-                : 10;
+                ? Math.ceil(sp.devTotal * (r.dev_reserve / 100))
+                : Math.ceil(sp.devTotal * (devReserve / 100));
               sp["qaReserve"] = r.is_release_reserve
-                ? Math.ceil((r.qa_reserve / sp.qaTotal) * 100)
-                : 21;
+                ? Math.ceil(sp.qaTotal * (r.qa_reserve / 100))
+                : Math.ceil(sp.qaTotal * (qaReserve / 100));
               sp["baReserve"] = r.is_release_reserve
-                ? Math.ceil((r.ba_reserve / sp.baTotal) * 100)
-                : 21;
+                ? Math.ceil(sp.baTotal * (r.ba_reserve / 100))
+                : Math.ceil(sp.baTotal * (baReserve / 100));
 
               leaves.map((leave) => {
                 if (
