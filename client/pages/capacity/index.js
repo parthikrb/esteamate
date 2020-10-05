@@ -208,13 +208,6 @@ const Dashboard = (props) => {
             baReserve += member.capacity_reserve;
             break;
         }
-        // member.role === "Developer"
-        //   ? devCount++
-        //   : member.role === "Quality Analyst"
-        //   ? qaCount++
-        //   : member.role === "Business Analyst"
-        //   ? baCount++
-        //   : null;
       });
       tempRelease.map((r) => {
         if (sq.id === r.squad) {
