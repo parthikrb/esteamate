@@ -6,7 +6,7 @@ import HistoryIcon from "@material-ui/icons/History";
 const plannerRoute = [
   {
     label: "Poll",
-    path: "/planner/poll",
+    path: "/planner",
     icon: <CastConnectedIcon />,
   },
   {
@@ -19,7 +19,7 @@ const plannerRoute = [
 const plannerAdminRoute = [
   {
     label: "Vote",
-    path: "/planner/vote",
+    path: "/planner",
     icon: <CastIcon />,
   },
   {
