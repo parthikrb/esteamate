@@ -11,7 +11,7 @@ router.get(
     const { user } = req.params;
 
     const leave = await Leave.find({
-      user: {
+      username: {
         $in: user.split(",").map((s: string) => s),
       },
     }).exec();

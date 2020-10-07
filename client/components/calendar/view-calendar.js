@@ -43,6 +43,8 @@ const ViewCalendar = (props) => {
           props.onAdd({
             user: currentUser.fullname,
             date: day,
+            username: currentUser.username,
+            role: currentUser.role,
           });
           setEvents(_events);
         }
