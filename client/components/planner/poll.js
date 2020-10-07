@@ -30,7 +30,7 @@ const Poll = () => {
         <EstimationChat />
       </GridListTile>
       <GridListTile cols={0.5} rows={2.8}>
-        <EstimationChat />
+        <EstimationChart />
       </GridListTile>
     </GridList>
   );
