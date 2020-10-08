@@ -23,6 +23,7 @@
         "firstname",
         "fullname",
         "haspopup",
+        "kubernetes",
         "labelledby",
         "lastname",
         "lightblue",
