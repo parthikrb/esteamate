@@ -1,23 +1,45 @@
+interface User {
+  id: string;
+  username: string;
+  fullname: string;
+  email: string;
+  isAdmin: boolean;
+  role: string;
+  iat?: number;
+}
+
 interface Users {
-  id: String;
-  username: String;
-  room: String;
+  id: string;
+  user: User;
+  room: string;
 }
 
 let users: Users[] = [];
 
-const addUser = (id: String, username: String, room: String) => {
-  users.push({ id, username, room });
-  return users;
+const addUser = (id: string, user: User, room: string) => {
+  const username = user.username.trim().toLowerCase();
+  room = room.trim().toLowerCase();
+
+  const existingUser = users.find(
+    (u) => u.room === room && u.user.username === username
+  );
+
+  if (existingUser) return { error: "Username is taken." };
+
+  const newUser = { id, user, room };
+
+  users.push(newUser);
+
+  return { newUser };
 };
 
-const removeUser = (id: String) => {
-  const userIndex = users.findIndex((user) => user.id === id);
-  return users.splice(userIndex, 1);
+const removeUser = (id: string) => {
+  const index = users.findIndex((user) => user.id === id);
+
+  if (index !== -1) return users.splice(index, 1)[0];
 };
 
-const getRoomUsers = (room: String) => {
-  return users.filter((user) => user.room === room);
-};
+const getUsersInRoom = (room: string) =>
+  users.filter((user) => user.room === room);
 
-export { addUser, removeUser, getRoomUsers };
+export { addUser, removeUser, getUsersInRoom };

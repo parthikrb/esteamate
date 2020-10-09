@@ -4,8 +4,8 @@ import socketIO from "socket.io";
 import "express-async-errors";
 import cors from "cors";
 import { json } from "body-parser";
-import cookie from "cookie";
-import { addUser, removeUser, getRoomUsers } from "./utils/user";
+// import cookie from "cookie";
+import { addUser, removeUser, getUsersInRoom } from "./utils/user";
 
 // Set Cookie
 import cookieSession from "cookie-session";
@@ -28,27 +28,31 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 io.on("connection", (socket) => {
-  socket.on("newUser", ({ username, squad }) => {
-    socket.join(squad);
-    addUser(socket.id, username, squad);
-    socket.broadcast.to(squad).emit("userConnected", username);
+  socket.on("join", ({ user, squad }, callback) => {
+    console.log("User Joined");
+    const { error, newUser } = addUser(socket.id, user, squad);
 
-    const users = getRoomUsers(squad);
-    console.log(users);
-  });
+    if (error) return callback(error);
 
-  // const cookies = cookie.parse(socket.request.headers.cookie || "");
-  // console.log(cookies);
-  socket.on("getRoomUsers", (room) => {
-    console.log(`Room Users in Server ${room}`);
-    const roomUsers = getRoomUsers(room);
-    socket.broadcast.to(room).emit("roomUsers", roomUsers);
+    socket.join(newUser?.room!);
+
+    socket.broadcast
+      .to(newUser?.room!)
+      .emit("message", `${newUser?.user.fullname} has Joined!`);
+
+    io.to(newUser?.room!).emit("roomData", getUsersInRoom(newUser?.room!));
+
+    callback();
   });
 
   socket.on("disconnect", () => {
-    removeUser(socket.id);
-    socket.emit("userDisconnected");
-    console.log(`${socket.id} disconnected`);
+    console.log("User Left");
+    const user = removeUser(socket.id);
+
+    if (user) {
+      io.to(user.room).emit("message", `${user.user.fullname} has left`);
+      io.to(user.room).emit("roomData", getUsersInRoom(user.room));
+    }
   });
 });
 
