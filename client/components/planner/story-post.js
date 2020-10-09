@@ -9,7 +9,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { isAfter } from "date-fns";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
     "& > *": {
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StoryPost = ({ squads, releases, sprints }) => {
+const StoryPost = ({ squads, releases, sprints, handleSquadSelection }) => {
   const classes = useStyles();
 
   const [squad, setSquad] = useState("");
@@ -34,7 +34,9 @@ const StoryPost = ({ squads, releases, sprints }) => {
   const [sprint, setSprint] = useState("");
 
   const handleSquadChange = (event) => {
-    setSquad(event.target.value);
+    const value = typeof event === "string" ? event : event.target.value;
+    handleSquadSelection(value);
+    setSquad(value);
   };
 
   const handleReleaseChange = (event) => {
@@ -47,7 +49,8 @@ const StoryPost = ({ squads, releases, sprints }) => {
 
   useEffect(() => {
     if (squads.length === 1) {
-      setSquad(squads[0].id);
+      // setSquad(squads[0].id);
+      handleSquadChange(squads[0].id);
 
       if (releases.filter((release) => release.squad === squad).length === 1) {
         setRelease(releases.filter((release) => release.squad === squad)[0].id);
@@ -126,11 +129,12 @@ const StoryPost = ({ squads, releases, sprints }) => {
           </Select>
         </FormControl>
 
-        <TextField id="story" label="Story Number" />
+        <TextField disabled={!!!sprint} id="story" label="Story Number" />
       </form>
       <div className={classes.buttons}>
         <Button>Revote</Button>
         <Button color="secondary">Save</Button>
+        <Button>Flip</Button>
         <Button color="primary">Poll</Button>
       </div>
     </Paper>

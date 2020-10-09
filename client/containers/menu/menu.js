@@ -28,6 +28,7 @@ import capacityRoute from "../../routes/capacity-route";
 import adminRoute from "../../routes/admin-route";
 import retroRoute from "../../routes/retro-route";
 import { plannerRoute, plannerAdminRoute } from "../../routes/planner-route";
+import { socket } from "../../helpers/build-socket";
 
 const drawerWidth = 220;
 
@@ -122,6 +123,7 @@ const Menu = (props) => {
 
   const handleLogoutAction = async () => {
     await axios.post("/api/users/signout").then(() => {
+      socket.disconnect();
       router.push("/");
       props.onLogout();
       addToast("User logged out!", {

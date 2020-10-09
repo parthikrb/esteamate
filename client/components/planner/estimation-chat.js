@@ -1,24 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { socket } from "../../helpers/build-socket";
+import UserChatTile from "./user-chat-tile";
 
-const EstimationChat = ({ currentUser, squads }) => {
+const EstimationChat = ({ currentUser, squad }) => {
   const [users, setUsers] = useState(undefined);
 
   useEffect(() => {
-    console.log(`object`)
-    squads.map((squad) => {
-      socket.emit("getRoomUsers", squad.id);
+    socket.on("roomData", (data) => {
+      let _users = [];
+      console.log(data);
+      data.map((users) => _users.push(users.user));
+      setUsers(_users);
     });
 
-    socket.on("roomUsers", (roomUsers) => {
-      console.log(`Room Users ${JSON.stringify(roomUsers)}`);
-      setUsers(roomUsers);
+    socket.on("message", (message) => {
+      console.log(message);
     });
   }, []);
 
   return (
     <div>
-      Estimation Chat - {users && users.map((user) => <p>{user.id}</p>)}
+      {users &&
+        users.map((user, index) => {
+          return (
+            !user.isAdmin && <UserChatTile key={index} user={user} vote="0" />
+          );
+        })}
     </div>
   );
 };

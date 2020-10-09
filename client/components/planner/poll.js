@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
@@ -22,30 +22,41 @@ const useStyles = makeStyles((theme) => ({
 const Poll = ({ currentUser, squads, releases, sprints }) => {
   const classes = useStyles();
 
-  useEffect(() => {
-    socket.on("userConnected", (username) => {
-      console.log(`${username} connected`);
-    });
+  const [squad, setSquad] = useState(squads[0].id);
 
-    socket.on("userDisconnected", () => {
-      squads.map((squad) => {
-        socket.emit("getRoomUsers", squad.id);
-      });
-    });
+  const handleSquadSelection = (value) => {
+    setSquad(value);
+  };
 
-    return () => socket.disconnect(currentUser.fullname);
-  }, []);
+  // useEffect(() => {
+  //   socket.on("userConnected", (username) => {
+  //     console.log(`${username} connected`);
+  //   });
+
+  //   // socket.on("userDisconnected", () => {
+  //   //   squads.map((squad) => {
+  //   //     socket.emit("getRoomUsers", squad.id);
+  //   //   });
+  //   // });
+
+  //   return () => socket.disconnect(currentUser.fullname);
+  // }, []);
 
   return (
     <GridList spacing={1} className={classes.root}>
       <GridListTile cols={1.5} rows={0.5}>
-        <StoryPost squads={squads} releases={releases} sprints={sprints} />
+        <StoryPost
+          squads={squads}
+          releases={releases}
+          sprints={sprints}
+          handleSquadSelection={handleSquadSelection}
+        />
       </GridListTile>
       <GridListTile cols={1.5} rows={2}>
-        <EstimationChat currentUser={currentUser} squads={squads} />
+        <EstimationChart />
       </GridListTile>
       <GridListTile cols={0.5} rows={2.8}>
-        <EstimationChart />
+        <EstimationChat currentUser={currentUser} squad={squad} />
       </GridListTile>
     </GridList>
   );
