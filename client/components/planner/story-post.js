@@ -8,6 +8,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import { isAfter } from "date-fns";
+import { socket } from "../../helpers/build-socket";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -26,12 +27,14 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const StoryPost = ({ squads, releases, sprints, handleSquadSelection }) => {
+const StoryPost = ({ squads, releases, sprints, handleSquadSelection, switchFlip }) => {
   const classes = useStyles();
 
   const [squad, setSquad] = useState("");
   const [release, setRelease] = useState("");
   const [sprint, setSprint] = useState("");
+  const [story, setStory] = useState("");
+  const [flipped, setFlipped] = useState(false);
 
   const handleSquadChange = (event) => {
     const value = typeof event === "string" ? event : event.target.value;
@@ -45,6 +48,17 @@ const StoryPost = ({ squads, releases, sprints, handleSquadSelection }) => {
 
   const handleSprintChange = (event) => {
     setSprint(event.target.value);
+  };
+
+  const handlePoll = () => {
+    socket.emit("poll", { squad, story });
+    setFlipped(false);
+    switchFlip(false);
+  };
+
+  const handleFlip = () => {
+    setFlipped(true);
+    switchFlip(true);
   };
 
   useEffect(() => {
@@ -129,13 +143,21 @@ const StoryPost = ({ squads, releases, sprints, handleSquadSelection }) => {
           </Select>
         </FormControl>
 
-        <TextField disabled={!!!sprint} id="story" label="Story Number" />
+        <TextField
+          disabled={!!!sprint}
+          id="story"
+          label="Story Number"
+          value={story}
+          onChange={(e) => setStory(e.target.value)}
+        />
       </form>
       <div className={classes.buttons}>
-        <Button>Revote</Button>
+        <Button onClick={handlePoll}>Revote</Button>
         <Button color="secondary">Save</Button>
-        <Button>Flip</Button>
-        <Button color="primary">Poll</Button>
+        <Button onClick={handleFlip}>Flip</Button>
+        <Button color="primary" onClick={handlePoll}>
+          Poll
+        </Button>
       </div>
     </Paper>
   );

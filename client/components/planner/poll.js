@@ -24,23 +24,16 @@ const Poll = ({ currentUser, squads, releases, sprints }) => {
 
   const [squad, setSquad] = useState(squads[0].id);
 
+  const [flipped, setFlipped] = useState(false);
+
+  const handleFlip = (value) => {
+    console.log(value);
+    setFlipped(value);
+  };
+
   const handleSquadSelection = (value) => {
     setSquad(value);
   };
-
-  // useEffect(() => {
-  //   socket.on("userConnected", (username) => {
-  //     console.log(`${username} connected`);
-  //   });
-
-  //   // socket.on("userDisconnected", () => {
-  //   //   squads.map((squad) => {
-  //   //     socket.emit("getRoomUsers", squad.id);
-  //   //   });
-  //   // });
-
-  //   return () => socket.disconnect(currentUser.fullname);
-  // }, []);
 
   return (
     <GridList spacing={1} className={classes.root}>
@@ -50,13 +43,18 @@ const Poll = ({ currentUser, squads, releases, sprints }) => {
           releases={releases}
           sprints={sprints}
           handleSquadSelection={handleSquadSelection}
+          switchFlip={handleFlip}
         />
       </GridListTile>
       <GridListTile cols={1.5} rows={2}>
         <EstimationChart />
       </GridListTile>
       <GridListTile cols={0.5} rows={2.8}>
-        <EstimationChat currentUser={currentUser} squad={squad} />
+        <EstimationChat
+          currentUser={currentUser}
+          squad={squad}
+          flipped={flipped}
+        />
       </GridListTile>
     </GridList>
   );

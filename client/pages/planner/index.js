@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { socket } from "../../helpers/build-socket";
 import Poll from "../../components/planner/poll";
 import Vote from "../../components/planner/vote";
@@ -6,6 +6,7 @@ import * as actions from "../../store/actions/current-user";
 
 const Planner = ({ currentUser, squads, releases, sprints }) => {
   const { isAdmin } = currentUser;
+
 
   useEffect(() => {
     console.log("fired");
@@ -35,7 +36,7 @@ const Planner = ({ currentUser, squads, releases, sprints }) => {
           sprints={sprints}
         />
       ) : (
-        <Vote />
+        <Vote currentUser={currentUser} squads={squads} />
       )}
     </div>
   );

@@ -5,6 +5,8 @@ interface User {
   email: string;
   isAdmin: boolean;
   role: string;
+  voted: boolean;
+  vote?: number;
   iat?: number;
 }
 
@@ -17,6 +19,8 @@ interface Users {
 let users: Users[] = [];
 
 const addUser = (id: string, user: User, room: string) => {
+  user.voted = false;
+  user.vote = 0;
   const username = user.username.trim().toLowerCase();
   room = room.trim().toLowerCase();
 

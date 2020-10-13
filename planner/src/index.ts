@@ -45,6 +45,23 @@ io.on("connection", (socket) => {
     callback();
   });
 
+  socket.on("vote", ({ user, room, vote }) => {
+    const users = getUsersInRoom(room);
+    users.map((us) => {
+      if (us.user.id === user.id) {
+        us.user.vote = vote;
+        us.user.voted = true;
+      }
+    });
+
+    io.to(room).emit("roomData", users);
+    // socket.broadcast.to(room).emit("message", { user, vote });
+  });
+
+  socket.on("poll", ({ squad, story }) => {
+    socket.broadcast.to(squad).emit("hostMessage", story);
+  });
+
   socket.on("disconnect", () => {
     console.log("User Left");
     const user = removeUser(socket.id);

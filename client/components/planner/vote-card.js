@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { socket } from "../../helpers/build-socket";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -42,15 +43,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const VoteCard = ({ value }) => {
+const VoteCard = ({ value, currentUser, squads }) => {
   const classes = useStyles();
   const [clicked, setClicked] = useState(false);
 
   const handleClick = (event) => {
     event.persist();
-    console.log(event);
     setClicked(!clicked ? true : false);
+    squads.map((squad) => {
+      socket.emit("vote", {
+        user: currentUser,
+        room: squad.id,
+        vote: event.target.innerText,
+      });
+    });
   };
+
   return (
     <div
       className={clicked ? classes.cardSelected : classes.card}
