@@ -28,7 +28,9 @@ const addUser = (id: string, user: User, room: string) => {
     (u) => u.room === room && u.user.username === username
   );
 
-  if (existingUser) return { error: "Username is taken." };
+  if (existingUser) {
+    removeUser(existingUser.id);
+  }
 
   const newUser = { id, user, room };
 

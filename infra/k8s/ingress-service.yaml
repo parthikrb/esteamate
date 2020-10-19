@@ -34,6 +34,10 @@ spec:
             backend:
               serviceName: capacity-service
               servicePort: 3000
+          - path: /api/estimation/?(.*)
+            backend:
+              serviceName: estimation-service
+              servicePort: 3000
           - path: /socket.io/?(.*)
             backend:
               serviceName: planner-service

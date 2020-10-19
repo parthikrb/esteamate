@@ -7,7 +7,6 @@ import * as actions from "../../store/actions/current-user";
 const Planner = ({ currentUser, squads, releases, sprints }) => {
   const { isAdmin } = currentUser;
 
-
   useEffect(() => {
     console.log("fired");
     squads.map((squad) => {
@@ -17,11 +16,7 @@ const Planner = ({ currentUser, squads, releases, sprints }) => {
           user: currentUser,
           squad: squad.id,
         },
-        (error) => {
-          if (error) {
-            alert(error);
-          }
-        }
+        () => {}
       );
     });
   }, []);

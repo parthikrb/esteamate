@@ -59,6 +59,12 @@ const VoteCard = ({ value, currentUser, squads }) => {
     });
   };
 
+  useEffect(() => {
+    socket.on("hostMessage", () => {
+      setClicked(false);
+    });
+  }, []);
+  
   return (
     <div
       className={clicked ? classes.cardSelected : classes.card}

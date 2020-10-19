@@ -1,17 +1,17 @@
 import express from "express";
-import http from "http";
-import socketIO from "socket.io";
 import "express-async-errors";
 import cors from "cors";
 import { json } from "body-parser";
-// import cookie from "cookie";
-import { addUser, removeUser, getUsersInRoom } from "./utils/user";
 
 // Set Cookie
 import cookieSession from "cookie-session";
 
 // DB
 import mongoose from "mongoose";
+
+// Routes
+import { createCapacityRouter } from "./routes/new";
+import { indexCapacityRouter } from "./routes/index";
 
 // Error Handlers
 import {
@@ -22,63 +22,7 @@ import {
   natsWrapper,
 } from "@parthikrb/common";
 
-
 const app = express();
-
-const server = http.createServer(app);
-const io = socketIO(server);
-
-io.on("connection", (socket) => {
-  socket.on("join", ({ user, squad }, callback) => {
-    console.log("User Joined");
-    const { newUser } = addUser(socket.id, user, squad);
-
-    socket.join(newUser?.room!);
-
-    socket.broadcast
-      .to(newUser?.room!)
-      .emit("message", `${newUser?.user.fullname} has Joined!`);
-
-    io.to(newUser?.room!).emit("roomData", getUsersInRoom(newUser?.room!));
-
-    callback();
-  });
-
-  socket.on("vote", ({ user, room, vote }) => {
-    const users = getUsersInRoom(room);
-    users.map((us) => {
-      if (us.user.id === user.id) {
-        us.user.vote = vote;
-        us.user.voted = true;
-      }
-    });
-
-    io.to(room).emit("roomData", users);
-    // socket.broadcast.to(room).emit("message", { user, vote });
-  });
-
-  socket.on("poll", ({ squad, story }) => {
-    const users = getUsersInRoom(squad);
-    users.map((us) => {
-      us.user.vote = 0;
-      us.user.voted = false;
-    });
-
-    io.to(squad).emit("roomData", users);
-    socket.broadcast.to(squad).emit("hostMessage", story);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User Left");
-    const user = removeUser(socket.id);
-
-    if (user) {
-      io.to(user.room).emit("message", `${user.user.fullname} has left`);
-      io.to(user.room).emit("roomData", getUsersInRoom(user.room));
-    }
-  });
-});
-
 app.use(cors());
 
 app.set("trust proxy", true); // trust first proxy
@@ -96,6 +40,10 @@ app.use(
 );
 
 app.use(currentUser);
+
+// Routes
+app.use(createCapacityRouter);
+app.use(indexCapacityRouter);
 
 app.all("*", (req, res) => {
   throw new NotFoundError();
@@ -147,7 +95,7 @@ const startApp = async () => {
   } catch (err) {
     console.error(err.message);
   }
-  server.listen(3000, () => {
+  app.listen(3000, () => {
     console.log(`Listening on PORT 3000`);
   });
 };

@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: estimation-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: estimation
+    template:
+        metadata:
+            labels:
+                app: estimation
+        spec:
+            containers:
+                - name: estimation
+                  image: parthikrb/estimation
+                  env:
+                      - name: NATS_CLIENT_ID
+                        valueFrom:
+                            fieldRef:
+                                fieldPath: metadata.name
+                      - name: NATS_URL
+                        value: 'http://nats-service:4222'
+                      - name: NATS_CLUSTER_ID
+                        value: esteamate
+                      - name: MONGO_URI
+                        value: 'mongodb://host.docker.internal:27017/estimation'
+                      - name: JWT_KEY
+                        valueFrom:
+                            secretKeyRef:
+                                name: jwt-secret
+                                key: JWT_KEY
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: estimation-service
+spec:
+    selector:
+        app: estimation
+    ports:
+        - name: estimation
+          protocol: TCP
+          port: 3000
+          targetPort: 3000

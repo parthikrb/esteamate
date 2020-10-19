@@ -27,7 +27,16 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const StoryPost = ({ squads, releases, sprints, handleSquadSelection, switchFlip }) => {
+const StoryPost = ({
+  squads,
+  releases,
+  sprints,
+  handleSquadSelection,
+  handleSprintSelection,
+  handleStory,
+  switchFlip,
+  onSave,
+}) => {
   const classes = useStyles();
 
   const [squad, setSquad] = useState("");
@@ -47,11 +56,13 @@ const StoryPost = ({ squads, releases, sprints, handleSquadSelection, switchFlip
   };
 
   const handleSprintChange = (event) => {
+    handleSprintSelection(event.target.value);
     setSprint(event.target.value);
   };
 
   const handlePoll = () => {
     socket.emit("poll", { squad, story });
+    handleStory(story);
     setFlipped(false);
     switchFlip(false);
   };
@@ -59,6 +70,10 @@ const StoryPost = ({ squads, releases, sprints, handleSquadSelection, switchFlip
   const handleFlip = () => {
     setFlipped(true);
     switchFlip(true);
+  };
+
+  const handleSave = () => {
+    onSave();
   };
 
   useEffect(() => {
@@ -153,7 +168,9 @@ const StoryPost = ({ squads, releases, sprints, handleSquadSelection, switchFlip
       </form>
       <div className={classes.buttons}>
         <Button onClick={handlePoll}>Revote</Button>
-        <Button color="secondary">Save</Button>
+        <Button color="secondary" onClick={handleSave}>
+          Save
+        </Button>
         <Button onClick={handleFlip}>Flip</Button>
         <Button color="primary" onClick={handlePoll}>
           Poll
