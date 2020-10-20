@@ -7,7 +7,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { isAfter } from "date-fns";
+import { isAfter, isBefore } from "date-fns";
 import { socket } from "../../helpers/build-socket";
 
 const useStyles = makeStyles(() => ({
@@ -37,6 +37,7 @@ const StoryPost = ({
   handleStory,
   switchFlip,
   onSave,
+  history,
 }) => {
   const classes = useStyles();
 
@@ -127,7 +128,9 @@ const StoryPost = ({
               .filter(
                 (release) =>
                   release.squad === squad &&
-                  isAfter(new Date(release.end_date), new Date())
+                  (history
+                    ? isBefore(new Date(release.start_date), new Date())
+                    : isAfter(new Date(release.end_date), new Date()))
               )
               .map((rel) => (
                 <MenuItem key={rel.id} value={rel.id}>
@@ -149,7 +152,9 @@ const StoryPost = ({
               .filter(
                 (sprint) =>
                   sprint.release === release &&
-                  isAfter(new Date(sprint.end_date), new Date())
+                  (history
+                    ? isBefore(new Date(sprint.end_date), new Date())
+                    : isAfter(new Date(sprint.end_date), new Date()))
               )
               .map((rel) => (
                 <MenuItem key={rel.id} value={rel.id}>
@@ -158,25 +163,28 @@ const StoryPost = ({
               ))}
           </Select>
         </FormControl>
-
-        <TextField
-          disabled={!sprint}
-          id="story"
-          label="Story Number"
-          value={story}
-          onChange={(e) => setStory(e.target.value)}
-        />
+        {!history && (
+          <TextField
+            disabled={!sprint}
+            id="story"
+            label="Story Number"
+            value={story}
+            onChange={(e) => setStory(e.target.value)}
+          />
+        )}
       </form>
-      <div className={classes.buttons}>
-        <Button onClick={handlePoll}>Revote</Button>
-        <Button color="secondary" onClick={handleSave}>
-          Save
-        </Button>
-        <Button onClick={handleFlip}>Flip</Button>
-        <Button color="primary" onClick={handlePoll}>
-          Poll
-        </Button>
-      </div>
+      {!history && (
+        <div className={classes.buttons}>
+          <Button onClick={handlePoll}>Revote</Button>
+          <Button color="secondary" onClick={handleSave}>
+            Save
+          </Button>
+          <Button onClick={handleFlip}>Flip</Button>
+          <Button color="primary" onClick={handlePoll}>
+            Poll
+          </Button>
+        </div>
+      )}
     </Paper>
   );
 };

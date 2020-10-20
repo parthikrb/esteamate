@@ -121,6 +121,7 @@ const EstimationChart = ({ estimation }) => {
         </span>
       </div>
       <Bar
+        style={{ width: "80%" }}
         data={{
           labels: labels,
           datasets: [
