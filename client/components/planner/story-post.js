@@ -13,6 +13,7 @@ import { socket } from "../../helpers/build-socket";
 const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
+    justifyContent: "space-around",
     "& > *": {
       margin: 1,
       width: "23%",
