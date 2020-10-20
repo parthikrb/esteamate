@@ -22,7 +22,6 @@ import {
   natsWrapper,
 } from "@parthikrb/common";
 
-
 const app = express();
 
 const server = http.createServer(app);
@@ -46,7 +45,7 @@ io.on("connection", (socket) => {
 
   socket.on("vote", ({ user, room, vote }) => {
     const users = getUsersInRoom(room);
-    users.map((us) => {
+    users.forEach((us) => {
       if (us.user.id === user.id) {
         us.user.vote = vote;
         us.user.voted = true;
@@ -59,7 +58,7 @@ io.on("connection", (socket) => {
 
   socket.on("poll", ({ squad, story }) => {
     const users = getUsersInRoom(squad);
-    users.map((us) => {
+    users.forEach((us) => {
       us.user.vote = 0;
       us.user.voted = false;
     });

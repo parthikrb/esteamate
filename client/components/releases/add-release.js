@@ -21,7 +21,6 @@ import {
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddHeaderComponent from "../shared/add-header";
-import axios from "axios";
 import RequiredField from "../shared/required-field";
 
 const AddReleaseComponent = (props) => {

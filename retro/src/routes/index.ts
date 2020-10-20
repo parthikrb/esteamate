@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { requireAuth, NotAuthorizedError } from '@parthikrb/common';
+import { requireAuth } from '@parthikrb/common';
 import { Retro } from '../models/retro';
 
 

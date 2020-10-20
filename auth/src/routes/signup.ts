@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
+import { body } from 'express-validator';
 import { User } from '../models/user';
 import { BadRequestError, validateRequest, natsWrapper } from '@parthikrb/common';
 import { UserCreatedPublisher } from '../events/publishers/user-created-publisher';

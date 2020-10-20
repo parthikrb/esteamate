@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { socket } from "../../helpers/build-socket";
 import Poll from "../../components/planner/poll";
 import Vote from "../../components/planner/vote";

@@ -1,14 +1,14 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
 
-import { requireAuth, validateRequest } from "@parthikrb/common";
+import { validateRequest } from "@parthikrb/common";
 import { Capacity } from "../models/capacity";
 
 const router = express.Router();
 
 router.post(
   "/api/estimation",
-    // requireAuth,
+  // requireAuth,
   [
     body("sprint").isString().withMessage("Sprint is required"),
     body("story").isString().withMessage("Story must be a string"),

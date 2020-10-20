@@ -11,22 +11,16 @@ import {
   TextField,
   CssBaseline,
   FormControl,
-  FormControlLabel,
   Grid,
-  Switch,
-  Input,
-  InputLabel,
-  InputAdornment,
 } from "@material-ui/core";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddHeaderComponent from "../shared/add-header";
-import axios from "axios";
 import RequiredField from "../shared/required-field";
 
 const AddSprintComponent = (props) => {
   const { releases } = props;
-  const [addMore, setAddMore] = useState(false);
+  const [, setAddMore] = useState(false);
   const [formFields, setFormFields] = useState({
     releaseName: "",
     sprintName: "",

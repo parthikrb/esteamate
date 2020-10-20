@@ -21,7 +21,7 @@ router.post(
       throw new BadRequestError("Invalid username");
     }
 
-    if ((password === "" || undefined || null) && existingUser) {
+    if ((password === "" || undefined || null) && !!existingUser) {
       res
         .status(200)
         .send({ message: "User exists! Send along the Password." });

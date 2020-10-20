@@ -32,7 +32,7 @@ const Vote = ({ currentUser, squads }) => {
   return (
     <div className={classes.root}>
       <div className={classes.voteInfo}>
-        {!!!story ? `Awaiting Host` : `You are estimating for Story ${story}`}
+        {!story ? `Awaiting Host` : `You are estimating for Story ${story}`}
       </div>
       <div className={classes.cards}>
         {cardValues.map((value, index) => (
