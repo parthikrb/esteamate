@@ -1,5 +1,4 @@
 import express, { Request, Response } from "express";
-import { requireAuth } from "@parthikrb/common";
 import { Capacity } from "../models/capacity";
 
 const router = express.Router();

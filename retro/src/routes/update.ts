@@ -2,9 +2,7 @@ import express, { Request, Response } from "express";
 import {
   requireAuth,
   validateRequest,
-  NotAuthorizedError,
   BadRequestError,
-  natsWrapper,
 } from "@parthikrb/common";
 import { body } from "express-validator";
 import { Retro } from "../models/retro";
@@ -21,7 +19,6 @@ router.put(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { isAdmin } = req.currentUser!;
     const { id } = req.params;
 
     // if (!isAdmin) {

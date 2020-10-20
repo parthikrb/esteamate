@@ -160,7 +160,7 @@ const StoryPost = ({
         </FormControl>
 
         <TextField
-          disabled={!!!sprint}
+          disabled={!sprint}
           id="story"
           label="Story Number"
           value={story}

@@ -40,10 +40,6 @@ const EditPoint = ({
   const [open, setOpen] = React.useState(false);
   const [updatedPoint, setUpdatedPoint] = useState({});
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
     shouldCloseView();

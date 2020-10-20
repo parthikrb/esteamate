@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { UserDocument, userSchema } from './user'
 
 interface SquadAttributes {
     squad_name: string;

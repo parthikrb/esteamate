@@ -1,7 +1,6 @@
 import express, { Request, Response } from "express";
 import { requireAuth, BadRequestError } from "@parthikrb/common";
 import { Release } from "../models/release";
-import mongoose from "mongoose";
 
 const router = express.Router();
 

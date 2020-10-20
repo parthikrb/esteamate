@@ -153,8 +153,8 @@ const EstimationChart = ({ estimation }) => {
             },
           ],
         }}
-        width={null}
-        height={170}
+        // width={null}
+        // height={170}
         options={options}
       />
     </div>

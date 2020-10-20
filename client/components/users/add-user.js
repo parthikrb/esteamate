@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { addUser } from "../../store/actions/user";
-import { useToasts } from "react-toast-notifications";
+// import { useToasts } from "react-toast-notifications";
 import {
   TextField,
   CssBaseline,
@@ -13,8 +13,6 @@ import {
   Select,
 } from "@material-ui/core";
 import AddHeaderComponent from "../shared/add-header";
-import { useForm } from "react-hook-form";
-import axios from "axios";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import RequiredField from "../shared/required-field";
 
@@ -42,7 +40,7 @@ const AddUserComponent = (props) => {
     role: false,
   });
 
-  const { addToast } = useToasts();
+  // const { addToast } = useToasts();
 
   const handleSave = async () => {
     // await axios
