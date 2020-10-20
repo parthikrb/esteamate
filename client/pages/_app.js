@@ -7,7 +7,7 @@ import Head from "next/head";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import buildClient from "../helpers/build-client";
-import theme from "./theme";
+import theme from "../helpers/theme";
 import Menu from "../containers/menu/menu";
 import { wrapper } from "../store/store";
 

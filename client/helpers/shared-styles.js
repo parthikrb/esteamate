@@ -1,4 +1,4 @@
-import theme from "../pages/theme";
+import theme from "../helpers/theme";
 
 const styleRoot = {
   display: "flex",
