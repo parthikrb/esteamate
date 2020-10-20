@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { socket } from "../../helpers/build-socket";
 import Poll from "../../components/planner/poll";
 import Vote from "../../components/planner/vote";
@@ -16,11 +16,7 @@ const Planner = ({ currentUser, squads, releases, sprints }) => {
           user: currentUser,
           squad: squad.id,
         },
-        (error) => {
-          if (error) {
-            alert(error);
-          }
-        }
+        () => {}
       );
     });
   }, []);
@@ -35,7 +31,7 @@ const Planner = ({ currentUser, squads, releases, sprints }) => {
           sprints={sprints}
         />
       ) : (
-        <Vote />
+        <Vote currentUser={currentUser} squads={squads} />
       )}
     </div>
   );

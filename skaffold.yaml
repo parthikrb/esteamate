@@ -64,6 +64,14 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: parthikrb/estimation
+      context: estimation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
+            dest: .
     - image: parthikrb/client
       context: client
       docker:

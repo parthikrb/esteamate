@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { socket } from "../../helpers/build-socket";
+
 import VoteCard from "./vote-card";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,20 +19,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Vote = () => {
+const Vote = ({ currentUser, squads }) => {
   const classes = useStyles();
   const cardValues = [1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
+
+  const [story, setStory] = useState("");
+
+  useEffect(() => {
+    socket.on("hostMessage", (data) => setStory(data));
+  }, []);
 
   return (
     <div className={classes.root}>
       <div className={classes.voteInfo}>
-        You are casting your vote for Story
+        {!!!story ? `Awaiting Host` : `You are estimating for Story ${story}`}
       </div>
       <div className={classes.cards}>
         {cardValues.map((value, index) => (
           <VoteCard
             key={index}
             value={value}
+            currentUser={currentUser}
+            squads={squads}
           />
         ))}
       </div>
