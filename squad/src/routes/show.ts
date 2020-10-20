@@ -1,10 +1,6 @@
 import express, { Request, Response } from "express";
 import { Squad } from "../models/squad";
-import {
-  requireAuth,
-  NotFoundError,
-  NotAuthorizedError,
-} from "@parthikrb/common";
+import { requireAuth, NotFoundError } from "@parthikrb/common";
 
 const router = express.Router();
 
@@ -31,7 +27,6 @@ router.get(
   "/api/squads/user/:id",
   requireAuth,
   async (req: Request, res: Response) => {
-    const { isAdmin } = req.currentUser!;
     const { id } = req.params;
 
     const associatedSquads = await Squad.find({

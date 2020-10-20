@@ -31,17 +31,11 @@ const History = ({ currentUser, squads, releases, sprints }) => {
   const [story, setStory] = useState(undefined);
   const [stories, setStories] = useState([]);
 
-  const [flipped, setFlipped] = useState(false);
   const [estimation, setEstimation] = useState({
     dev_estimation: 0,
     qa_estimation: 0,
     ba_estimation: 0,
   });
-
-  const handleFlip = (value) => {
-    console.log(value);
-    setFlipped(value);
-  };
 
   const handleSquadSelection = (value) => {
     setSquad(value);
@@ -49,10 +43,6 @@ const History = ({ currentUser, squads, releases, sprints }) => {
 
   const handleSprintSelection = (value) => {
     setSprint(value);
-  };
-
-  const handleStory = (value) => {
-    setStory(value);
   };
 
   const handleTotal = (value) => {

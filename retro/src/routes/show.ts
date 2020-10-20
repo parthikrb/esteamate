@@ -8,7 +8,6 @@ router.get(
   "/api/retros/id/:id",
   requireAuth,
   async (req: Request, res: Response) => {
-    const { isAdmin } = req.currentUser!;
     const { id } = req.params;
 
     // if (!isAdmin) {

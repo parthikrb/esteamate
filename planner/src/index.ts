@@ -32,13 +32,13 @@ io.on("connection", (socket) => {
     console.log("User Joined");
     const { newUser } = addUser(socket.id, user, squad);
 
-    socket.join(newUser?.room!);
+    socket.join(newUser.room!);
 
     socket.broadcast
-      .to(newUser?.room!)
-      .emit("message", `${newUser?.user.fullname} has Joined!`);
+      .to(newUser.room!)
+      .emit("message", `${newUser.user.fullname} has Joined!`);
 
-    io.to(newUser?.room!).emit("roomData", getUsersInRoom(newUser?.room!));
+    io.to(newUser.room!).emit("roomData", getUsersInRoom(newUser.room!));
 
     callback();
   });
