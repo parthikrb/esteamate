@@ -5,7 +5,7 @@ import Router from "next/router";
 import { TextField, Button } from "@material-ui/core";
 import { Fingerprint } from "@material-ui/icons";
 import { useToasts } from "react-toast-notifications";
-import theme from "../../pages/theme";
+import theme from "../../helpers/theme";
 
 const useStyles = makeStyles({
   root: {
@@ -14,39 +14,39 @@ const useStyles = makeStyles({
     boxSizing: "border-box",
     margin: 0,
     padding: 0,
-    display: 'flex',
+    display: "flex",
   },
   leftBox: {
     marginLeft: 0,
     height: "100%",
     width: "300px",
     backgroundColor: theme.palette.primary.main,
-    display: 'flex',
-    position: 'relative',
+    display: "flex",
+    position: "relative",
     borderRadius: "0 12.5px 12.5px 0",
   },
   rightBox: {
-    display: 'flex',
+    display: "flex",
     height: "100%",
-    position: 'relative',
-    margin: 'auto',
-    textAlign: 'center',
+    position: "relative",
+    margin: "auto",
+    textAlign: "center",
   },
   hexImage: {
-    display: 'flex',
-    position: 'absolute',
-    color: 'white',
+    display: "flex",
+    position: "absolute",
+    color: "white",
     marginLeft: "-20px",
     marginTop: "-20px",
-    width: 'inherit',
-    height: 'auto',
+    width: "inherit",
+    height: "auto",
     filter:
       "invert(48%) sepia(13%) saturate(3207%) hue-rotate(130deg) brightness(95%) contrast(80%)",
   },
   title: {
-    margin: 'auto',
-    color: 'white',
-    textAlign: 'center',
+    margin: "auto",
+    color: "white",
+    textAlign: "center",
     zIndex: 10,
   },
   mainTitle: {
@@ -57,18 +57,18 @@ const useStyles = makeStyles({
   },
   brandImage: {
     zIndex: 1,
-    display: 'flex',
-    position: 'absolute',
+    display: "flex",
+    position: "absolute",
     bottom: "10px",
     left: "25%",
   },
   loginForm: {
-    position: 'relative',
-    margin: 'auto',
+    position: "relative",
+    margin: "auto",
     width: "300px",
     "& > Button": {
       marginTop: "20px",
-      width: 'inherit',
+      width: "inherit",
     },
   },
 });
