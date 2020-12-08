@@ -22,7 +22,7 @@ const Cast = (props) => {
   );
 
   useEffect(() => {
-    const _sprintId = sprintId ? sprintId : currentSprints[0].id;
+    const _sprintId = sprintId ? sprintId : currentSprints[0]?.id;
     setSprintId(_sprintId);
   }, [retros]);
 
