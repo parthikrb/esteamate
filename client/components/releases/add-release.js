@@ -79,14 +79,22 @@ const AddReleaseComponent = (props) => {
     console.log(typeof value);
     const formValues = { ...formFields };
     const values =
-      event.target.type === "checkbox" ? value : event.target.value;
+      event.target.type === "checkbox"
+        ? value
+        : typeof value === "object"
+        ? value?.id
+        : event.target.value;
 
-    formValues[event.target.name] =
+    const fieldName =
+      typeof value === "object" ? "squadName" : event.target.name;
+
+    formValues[fieldName] =
       value && typeof value !== "boolean"
         ? value.id
         : value && event.target.type === "checkbox"
         ? value
         : values;
+    console.log(formValues);
     setFormFields(formValues);
   };
 

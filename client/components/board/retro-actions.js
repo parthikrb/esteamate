@@ -9,8 +9,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    transform: "translateZ(0px)",
-    transform: "translateY(-8px)",
+    transform: "translateZ(0px) translateY(-8px)",
+    // transform: "",
     flexGrow: 1,
   },
 

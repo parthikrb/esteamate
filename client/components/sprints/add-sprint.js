@@ -7,12 +7,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker,
 } from "@material-ui/pickers";
-import {
-  TextField,
-  CssBaseline,
-  FormControl,
-  Grid,
-} from "@material-ui/core";
+import { TextField, CssBaseline, FormControl, Grid } from "@material-ui/core";
 import { styleRoot, styleAddControls } from "../../helpers/shared-styles";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import AddHeaderComponent from "../shared/add-header";
@@ -60,17 +55,32 @@ const AddSprintComponent = (props) => {
 
   const handleValueChange = (event, value) => {
     console.log(typeof value);
+    console.log(value);
     const formValues = { ...formFields };
     const values =
-      event.target.type === "checkbox" ? value : event.target.value;
+      event.target.type === "checkbox"
+        ? value
+        : typeof value === "object"
+        ? value?.id
+        : event.target.value;
 
-    formValues[event.target.name] =
+    const fieldName =
+      typeof value === "object" ? "releaseName" : event.target.name;
+
+    formValues[fieldName] =
       value && typeof value !== "boolean"
         ? value.id
         : value && event.target.type === "checkbox"
         ? value
         : values;
+    console.log(formValues);
     setFormFields(formValues);
+  };
+
+  const handleAutoValueChange = (event, value) => {
+    console.log(`Auto`);
+    console.log(event);
+    console.log(value);
   };
 
   const handleAddMoreChange = (event) => {

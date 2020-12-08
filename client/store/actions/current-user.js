@@ -1,5 +1,4 @@
 import * as types from "./action-types";
-import axios from "axios";
 
 export const clearCurrentUser = () => {
   return { type: types.CLEAR_CURRENTUSER };

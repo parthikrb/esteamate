@@ -122,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
 const Dashboard = (props) => {
   const { currentUserDetails, leaves } = props;
   console.log(leaves);
-  const { currentUser, squads, releases, sprints } = currentUserDetails;
+  const { squads, releases, sprints } = currentUserDetails;
   const [currentReleases, setCurrentReleases] = useState([]);
   const [flatSquad, setFlatSquad] = useState([]);
   const classes = useStyles();
@@ -185,7 +185,7 @@ const Dashboard = (props) => {
           isEqual(new Date(release.start_date), new Date()))
     );
 
-    _squads.map((sq) => {
+    _squads.forEach((sq) => {
       let devCount = 0;
       let qaCount = 0;
       let baCount = 0;

@@ -1,12 +1,7 @@
 import express, { Request, Response } from "express";
-import {
-  requireAuth,
-  validateRequest,
-  NotAuthorizedError,
-} from "@parthikrb/common";
+import { requireAuth, validateRequest } from "@parthikrb/common";
 import { body } from "express-validator";
 import { Retro } from "../models/retro";
-
 
 const router = express.Router();
 
@@ -20,18 +15,10 @@ router.post(
   ],
   validateRequest,
   async (req: Request, res: Response) => {
-    const { isAdmin } = req.currentUser!;
-
-    // if (!isAdmin) {
-    //   throw new NotAuthorizedError();
-    // }
-
     const retro = Retro.build(req.body);
     await retro.save();
 
-    const newRetro = await Retro.findById(retro.id)
-      .populate("sprint")
-      .exec();
+    const newRetro = await Retro.findById(retro.id).populate("sprint").exec();
 
     res.status(201).send(newRetro);
   }

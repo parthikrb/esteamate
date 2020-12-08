@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-service
@@ -11,38 +11,65 @@ spec:
       http:
         paths:
           - path: /api/users/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: auth-service
-              servicePort: 3000
+              service:
+                name: auth-service
+                port:
+                  number: 3000
           - path: /api/squads/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: squad-service
-              servicePort: 3000
+              service:
+                name: squad-service
+                port:
+                  number: 3000
           - path: /api/releases/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: release-service
-              servicePort: 3000
+              service:
+                name: release-service
+                port:
+                  number: 3000
           - path: /api/sprints/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: sprint-service
-              servicePort: 3000
+              service:
+                name: sprint-service
+                port:
+                  number: 3000
           - path: /api/retros/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: retro-service
-              servicePort: 3000
+              service:
+                name: retro-service
+                port:
+                  number: 3000
           - path: /api/leaves/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: capacity-service
-              servicePort: 3000
+              service:
+                name: capacity-service
+                port:
+                  number: 3000
           - path: /api/estimation/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: estimation-service
-              servicePort: 3000
+              service:
+                name: estimation-service
+                port:
+                  number: 3000
           - path: /socket.io/?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: planner-service
-              servicePort: 3000
+              service:
+                name: planner-service
+                port:
+                  number: 3000
           - path: /?(.*)
+            pathType: Prefix  
             backend:
-              serviceName: client-service
-              servicePort: 3000
+              service:
+                name: client-service
+                port:
+                  number: 3000
